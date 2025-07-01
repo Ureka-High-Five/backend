@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8
+    container_name: local-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: user
+      MYSQL_DATABASE: highfive
+    ports:
+      - "3306:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - local-net
+
+  redis:
+    image: redis:6
+    container_name: local-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - local-net
+
+volumes:
+  db-data:
+
+networks:
+  local-net:
