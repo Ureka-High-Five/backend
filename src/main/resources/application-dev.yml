@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url:
+    password:
+
+  data:
+    redis:
+      host:
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+    tagsSorter: alpha

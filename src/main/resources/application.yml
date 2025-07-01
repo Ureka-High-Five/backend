@@ -1,0 +1,8 @@
+# 공통 설정
+spring:
+  profiles:
+    active: local
+
+logging:
+  level:
+    root: info
