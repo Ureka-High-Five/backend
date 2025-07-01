@@ -31,6 +31,15 @@ jobs:
       - name: Debug SSH Key
         run: echo "${{ secrets.DEV_SSH_KEY }}" | wc -l
 
+      - name: EC2에 build/libs 디렉토리 생성
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.DEV_EC2_HOST }}
+          username: ec2-user
+          key: ${{ secrets.DEV_SSH_KEY }}
+          script: |
+            mkdir -p ~/app/src/main/java/org/highfive/backend/infra/docker/build/libs
+
       - name: 빌드된 JAR 파일 EC2로 전송
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -38,7 +47,7 @@ jobs:
           username: ec2-user
           key: ${{ secrets.DEV_SSH_KEY }}
           source: "build/libs/*.jar"
-          target: "~/app/src/main/java/org/highfive/backend/infra/docker/build/libs"
+          target: "~/app/src/main/java/org/highfive/backend/infra/docker/build/libs/"
 
       - name: docker-compose 파일 EC2로 전송
         uses: appleboy/scp-action@v0.1.7
