@@ -37,9 +37,7 @@ jobs:
           host: ${{ secrets.DEV_EC2_HOST }}
           username: ec2-user
           key: ${{ secrets.DEV_SSH_KEY }}
-          source: |
-            src/main/java/org/highfive/backend/infra/docker/docker-compose-dev.yml
-            src/main/java/org/highfive/backend/infra/docker/Dockerfile
+          source: "src/main/java/org/highfive/backend/infra/docker/*"
           target: "~/app"
 
       - name: .env 값 주입후, docker-compose 실행
