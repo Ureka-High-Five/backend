@@ -36,7 +36,7 @@ jobs:
           username: ec2-user
           key: ${{ secrets.DEV_SSH_KEY }}
           source: "src/main/java/org/highfive/backend/infra/docker/docker-compose-dev.yml"
-          target: "~/app"
+          target: ~/app/docker-compose-dev.yml
 
       - name: .env 값 주입후, docker-compose 실행
         uses: appleboy/ssh-action@v1.0.0
