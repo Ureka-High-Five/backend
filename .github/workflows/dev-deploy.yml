@@ -1,6 +1,8 @@
 name: DEV_CI/CD
 
 on:
+  push:
+    branches: [develop]
   pull_request:
     branches: [develop]
     types: [closed]
@@ -44,7 +46,7 @@ jobs:
           host: ${{ secrets.DEV_EC2_HOST }}
           username: ec2-user
           key: ${{ secrets.DEV_SSH_KEY }}
-          script: >
+          script: |
             cd ~/app/src/main/java/org/highfive/backend/infra/docker
             echo 'DB_PASSWORD=${{ secrets.DEV_DB_PASSWORD }}' > .env
             echo 'JWT_SECRET=${{ secrets.DEV_JWT_SECRET }}' >> .env
