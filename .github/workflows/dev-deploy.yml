@@ -44,14 +44,14 @@ jobs:
           host: ${{ secrets.DEV_EC2_HOST }}
           username: ec2-user
           key: ${{ secrets.DEV_SSH_KEY }}
-          script: |
+          script: >
             cd ~/app/src/main/java/org/highfive/backend/infra/docker
-            echo "DB_PASSWORD=${{ secrets.DEV_DB_PASSWORD }}" > .env
-            echo "JWT_SECRET=${{ secrets.DEV_JWT_SECRET }}" >> .env
-            echo "DB_NAME=${{ secrets.DEV_DB_NAME }}" >> .env
-            echo "DB_USER=${{ secrets.DEV_DB_USER }}" >> .env
-            echo "REDIS_HOST=${{ secrets.DEV_REDIS_HOST }}" >> .env
-            echo "REDIS_PORT=${{ secrets.DEV_REDIS_PORT }}" >> .env
-            echo "SERVER_PORT=${{ secrets.DEV_SERVER_PORT }}" >> .env
+            echo 'DB_PASSWORD=${{ secrets.DEV_DB_PASSWORD }}' > .env
+            echo 'JWT_SECRET=${{ secrets.DEV_JWT_SECRET }}' >> .env
+            echo 'DB_NAME=${{ secrets.DEV_DB_NAME }}' >> .env
+            echo 'DB_USER=${{ secrets.DEV_DB_USER }}' >> .env
+            echo 'REDIS_HOST=${{ secrets.DEV_REDIS_HOST }}' >> .env
+            echo 'REDIS_PORT=${{ secrets.DEV_REDIS_PORT }}' >> .env
+            echo 'SERVER_PORT=${{ secrets.DEV_SERVER_PORT }}' >> .env
             docker compose --env-file .env -f docker-compose-dev.yml down
             docker compose --env-file .env -f docker-compose-dev.yml up -d --build
