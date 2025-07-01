@@ -27,7 +27,7 @@ jobs:
         run: ./gradlew clean build -x test
 
       - name: Debug SSH Key
-        run: echo "${{ secrets.DEV_SSH_KEY }}" | wc -l"
+        run: echo "${{ secrets.DEV_SSH_KEY }}" | wc -l
 
       - name: docker-compose 파일 EC2로 전송
         uses: appleboy/scp-action@v0.1.7
