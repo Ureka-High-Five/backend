@@ -47,7 +47,7 @@ jobs:
           username: ec2-user
           key: ${{ secrets.DEV_SSH_KEY }}
           source: "build/libs/*.jar"
-          target: "~/app/src/main/java/org/highfive/backend/infra/docker/build/libs/"
+          target: "~/app/src/main/java/org/highfive/backend/infra/docker/"
 
       - name: docker-compose 파일 EC2로 전송
         uses: appleboy/scp-action@v0.1.7
