@@ -26,17 +26,17 @@ jobs:
       - name: 스프링 빌드 .jar 파일 생성
         run: ./gradlew clean build -x test
 
+      - name: Debug SSH Key
+        run: echo "${{ secrets.DEV_SSH_KEY }}" | wc -l"
+
       - name: docker-compose 파일 EC2로 전송
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.DEV_EC2_HOST }}
           username: ec2-user
-          key: ${{ secrets.DEV_EC2_SSH_KEY }}
+          key: ${{ secrets.DEV_SSH_KEY }}
           source: "docker-compose.dev.yml"
           target: "~/app"
-
-      - name: Debug SSH Key
-        run: echo "${{ secrets.EC2_SSH_KEY }}" | wc -l
 
       - name: .env 값 주입후, docker-compose 실행
         uses: appleboy/ssh-action@v1.0.0
