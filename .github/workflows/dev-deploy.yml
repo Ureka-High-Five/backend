@@ -47,8 +47,9 @@ jobs:
           username: ec2-user
           key: ${{ secrets.DEV_SSH_KEY }}
           script: |
-            mkdir -p ~/app/src/main/java/org/highfive/backend/infra/docker/build/libs
-
+            if [ ! -d ~/app/src/main/java/org/highfive/backend/infra/docker/build/libs ]; then
+              mkdir -p ~/app/src/main/java/org/highfive/backend/infra/docker/build/libs
+            fi
 
       - name: EC2에 log 디렉토리 생성
         uses: appleboy/ssh-action@v1.0.0
@@ -57,7 +58,18 @@ jobs:
           username: ec2-user
           key: ${{ secrets.DEV_SSH_KEY }}
           script: |
-            mkdir -p ~/app/logs
+            if [ ! -d ~/app/logs ]; then
+              mkdir -p ~/app/logs
+            fi
+
+      - name: 빈 로그 파일 생성
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.DEV_EC2_HOST }}
+          username: ec2-user
+          key: ${{ secrets.DEV_SSH_KEY }}
+          script: |
+            touch ~/app/logs/app.log
 
       - name: 빌드된 JAR 파일 EC2로 전송
         uses: appleboy/scp-action@v0.1.7
