@@ -40,6 +40,15 @@ jobs:
           script: |
             mkdir -p ~/app/src/main/java/org/highfive/backend/infra/docker/build/libs
 
+      - name: EC2 기존 app 폴더 초기화
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.DEV_EC2_HOST }}
+          username: ec2-user
+          key: ${{ secrets.DEV_SSH_KEY }}
+          script: |
+            rm -rf ~/app
+
       - name: 빌드된 JAR 파일 EC2로 전송
         uses: appleboy/scp-action@v0.1.7
         with:
