@@ -70,6 +70,7 @@ jobs:
           key: ${{ secrets.DEV_SSH_KEY }}
           script: |
             touch ~/app/logs/app.log
+            echo "$(date '+%Y-%m-%d %H:%M:%S') - Initial log created by CI/CD" > ~/app/logs/app.log
 
       - name: 빌드된 JAR 파일 EC2로 전송
         uses: appleboy/scp-action@v0.1.7
