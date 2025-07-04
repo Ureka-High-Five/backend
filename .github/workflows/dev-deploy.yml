@@ -3,7 +3,6 @@ name: DEV_CI/CD
 on:
   pull_request:
     branches: [develop]
-    types: [closed]
 
 jobs:
   deploy:
