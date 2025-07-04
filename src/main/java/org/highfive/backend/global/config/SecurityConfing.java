@@ -1,4 +1,4 @@
-package org.highfive.backend.config;
+package org.highfive.backend.global.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
