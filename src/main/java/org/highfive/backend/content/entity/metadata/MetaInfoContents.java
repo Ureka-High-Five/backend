@@ -1,27 +1,26 @@
-package org.highfive.backend.user.entity.preference;
+package org.highfive.backend.content.entity.metadata;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
-import org.highfive.backend.content.entity.metadata.Director;
-import org.highfive.backend.user.entity.User;
+import org.highfive.backend.content.entity.Content;
 
 @Entity
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserDirector {
+public class MetaInfoContents {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "meta_info_id")
+    private MetaInfo metaInfo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "director_id")
-    private Director director;
+    @JoinColumn(name = "content_id")
+    private Content content;
 }

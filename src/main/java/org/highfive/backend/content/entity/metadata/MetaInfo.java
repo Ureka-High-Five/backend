@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,18 +13,18 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Director {
+public class MetaInfo {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue
     private Long id;
 
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private LocalDate birth;
+    @Enumerated(EnumType.STRING)
+    private MetaType type;
 
     @Builder.Default
-    @OneToMany(mappedBy = "director")
-    private List<DirectorContents> directorContents = new ArrayList<>();
+    @OneToMany(mappedBy = "metaInfo")
+    private List<MetaInfoContents> metaInfoContents = new ArrayList<>();
 }

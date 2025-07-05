@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.highfive.backend.content.entity.shorts.ShortsComment;
 import org.highfive.backend.content.entity.shorts.log.ShortsLikeTimeLog;
-import org.highfive.backend.user.entity.preference.UserGenre;
+import org.highfive.backend.user.entity.preference.PreferMetaInfo;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -50,7 +50,7 @@ public class User {
     private float averageRating;
 
     @OneToMany(mappedBy = "user")
-    private List<UserGenre> userGenres = new ArrayList<>();
+    private List<PreferMetaInfo> preferMetaInfos = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "user")

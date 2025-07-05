@@ -6,10 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
-import org.highfive.backend.content.entity.curation.CurationContents;
-import org.highfive.backend.content.entity.metadata.ActorContents;
-import org.highfive.backend.content.entity.metadata.Country;
 import org.highfive.backend.content.entity.metadata.Episode;
+import org.highfive.backend.content.entity.metadata.MetaInfoContents;
 import org.highfive.backend.content.entity.metadata.Series;
 import org.highfive.backend.content.entity.shorts.Shorts;
 import org.springframework.data.annotation.CreatedDate;
@@ -31,10 +29,6 @@ public class Content {
 
     @Id @GeneratedValue
     private Long id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "country_id")
-    private Country country;
 
     @Column(nullable = false)
     private String title;
@@ -60,7 +54,7 @@ public class Content {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Type type;
+    private ContentType contentType;
 
     @Column(nullable = false)
     private String embedding;
@@ -73,19 +67,15 @@ public class Content {
 
     @Builder.Default
     @OneToMany(mappedBy = "content")
-    private List<ActorContents> actorContents = new ArrayList<>();
-
-    @Builder.Default
-    @OneToMany(mappedBy = "content")
-    private List<CurationContents> curationContents = new ArrayList<>();
-
-    @Builder.Default
-    @OneToMany(mappedBy = "content")
     private List<Episode> episodes = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "content")
     private List<Shorts> shorts = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "content")
+    private List<MetaInfoContents> metaInfoContents = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "series_id")
