@@ -1,0 +1,39 @@
+package org.highfive.backend.content.entity.curation;
+
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
+import org.highfive.backend.user.entity.User;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Builder
+@DynamicUpdate
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Curation {
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @Column(nullable = false)
+    private String title;
+
+    @Column(length = 1000)
+    private String description;
+
+    private String thumbnailUrl;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "curation", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CurationContents> curationContents = new ArrayList<>();
+}

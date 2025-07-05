@@ -1,8 +1,13 @@
-package org.highfive.backend.user;
+package org.highfive.backend.user.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
+import org.highfive.backend.content.entity.shorts.ShortsComment;
+import org.highfive.backend.content.entity.shorts.log.ShortsLikeTimeLog;
+import org.highfive.backend.user.entity.preference.UserGenre;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -12,6 +17,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
+@Builder
+@AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
@@ -43,7 +50,15 @@ public class User {
     private float averageRating;
 
     @OneToMany(mappedBy = "user")
-    private List<MemberGenre> memberGenres = new ArrayList<>();
+    private List<UserGenre> userGenres = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "user")
+    private List<ShortsComment> shortsComments = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "user")
+    private List<ShortsLikeTimeLog> shortsLikeTimeLogs = new ArrayList<>();
 
     @CreatedDate
     private LocalDateTime createdAt;
