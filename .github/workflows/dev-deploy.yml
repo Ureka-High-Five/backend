@@ -28,7 +28,7 @@ jobs:
           script: |
             rm -rf ~/app
 
-      - name: EC2에 build/libs 디렉토리 생성
+      - name: EC2에 build/libs 폴더 생성
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.DEV_EC2_HOST }}
