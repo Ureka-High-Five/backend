@@ -10,7 +10,6 @@ jobs:
       github.event.workflow_run.conclusion == 'success' &&
       github.event.workflow_run.head_branch == 'develop'
     runs-on: ubuntu-latest
-    concurrency: deploy-dev
 
     steps:
       - uses: actions/checkout@v4
