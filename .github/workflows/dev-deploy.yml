@@ -2,8 +2,8 @@ name: DEV_CI/CD
 
 on:
   workflow_run:
-    workflows: [ "DEV_CI" ]
-    types: [ completed ]
+    workflows: ["DEV_CI"]
+    types: [completed]
 
 jobs:
   deploy:
