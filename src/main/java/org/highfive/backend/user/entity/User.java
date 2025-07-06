@@ -49,6 +49,7 @@ public class User {
 
     private float averageRating;
 
+    @Builder.Default
     @OneToMany(mappedBy = "user")
     private List<PreferMetaInfo> preferMetaInfos = new ArrayList<>();
 
