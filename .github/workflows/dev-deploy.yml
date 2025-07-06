@@ -4,7 +4,6 @@ on:
   workflow_run:
     workflows: [ "DEV_CI" ]
     types: [ completed ]
-    branches: [ develop ]
 
 jobs:
   deploy:
