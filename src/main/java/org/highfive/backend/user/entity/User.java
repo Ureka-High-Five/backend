@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.highfive.backend.auth.client.dto.response.KakaoUserResponseDto;
 import org.highfive.backend.content.entity.shorts.ShortsComment;
 import org.highfive.backend.content.entity.shorts.log.ShortsLikeTimeLog;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Setter
 @Table(name = "users")
 @Builder
 @AllArgsConstructor
