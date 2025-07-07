@@ -1,5 +1,5 @@
 package org.highfive.backend.content.entity;
 
 public enum ContentType {
-    TV, DRAMA
+    TV, MOVIE
 }
