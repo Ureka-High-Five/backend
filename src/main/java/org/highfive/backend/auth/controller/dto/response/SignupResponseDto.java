@@ -1,0 +1,6 @@
+package org.highfive.backend.auth.controller.dto.response;
+
+public record SignupResponseDto(
+        String nickname
+) {
+}
