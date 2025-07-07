@@ -5,9 +5,12 @@ import lombok.RequiredArgsConstructor;
 import org.highfive.backend.auth.client.KakaoOAuthClient;
 import org.highfive.backend.auth.client.dto.response.KakaoUserResponseDto;
 import org.highfive.backend.auth.controller.dto.request.OAuthRequestDto;
+import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.user.entity.User;
 import org.highfive.backend.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
+
+import static org.highfive.backend.global.code.SuccessCode.OK;
 
 @Service
 @RequiredArgsConstructor
@@ -17,7 +20,7 @@ public class AuthService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void login(final OAuthRequestDto OAuthRequestDto) {
+    public Response<?> login(final OAuthRequestDto OAuthRequestDto) {
         final String code = OAuthRequestDto.code();
         final String token = kakaoOAuthClient.requestToken(code).accessToken();
         final KakaoUserResponseDto userInfo = kakaoOAuthClient.requestUser(token);
@@ -28,6 +31,8 @@ public class AuthService {
         }
 
         saveUser(userInfo);
+        final String nickname = userInfo.kakaoAccount().profile().nickname();
+        return new Response<>(OK.getCode(), nickname, OK.getMessage());
     }
 
     private void saveUser(final KakaoUserResponseDto userInfo) {
