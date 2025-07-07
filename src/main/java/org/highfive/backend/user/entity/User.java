@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import org.highfive.backend.auth.client.dto.response.KakaoUserResponseDto;
 import org.highfive.backend.content.entity.shorts.ShortsComment;
 import org.highfive.backend.content.entity.shorts.log.ShortsLikeTimeLog;
 import org.highfive.backend.user.entity.preference.PreferMetaInfo;
@@ -27,9 +28,6 @@ public class User {
     private Long id;
 
     @Column(nullable = false)
-    private String email;
-
-    @Column(nullable = false)
     private String name;
 
     private int age;
@@ -49,6 +47,8 @@ public class User {
 
     private float averageRating;
 
+    private Long viewCount;
+
     @Builder.Default
     @OneToMany(mappedBy = "user")
     private List<PreferMetaInfo> preferMetaInfos = new ArrayList<>();
@@ -61,6 +61,18 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<ShortsLikeTimeLog> shortsLikeTimeLogs = new ArrayList<>();
 
+    @Column(nullable = false)
+    private String kakaoUserId;
+
     @CreatedDate
     private LocalDateTime createdAt;
+
+    public static User from(final KakaoUserResponseDto response) {
+        final KakaoUserResponseDto.KakaoProfile profile = response.kakaoAccount().profile();
+        return User.builder()
+                .kakaoUserId(response.id())
+                .name(profile.nickname())
+                .profileUrl(profile.profileImageUrl())
+                .build();
+    }
 }
