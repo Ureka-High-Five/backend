@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import org.highfive.backend.content.entity.metadata.MetaInfo;
 import org.highfive.backend.user.entity.User;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -21,6 +22,10 @@ public class PreferMetaInfo {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "meta_info_id")
+    private MetaInfo metaInfo;
 
     @Column(nullable = false)
     private int weight;
