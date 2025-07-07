@@ -1,4 +1,4 @@
-package org.highfive.backend;
+package org.highfive.backend.global;
 
 import java.util.List;
 import org.springframework.core.ParameterizedTypeReference;
