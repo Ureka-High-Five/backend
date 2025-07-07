@@ -1,8 +1,8 @@
 package org.highfive.backend.auth.client;
 
 import lombok.extern.slf4j.Slf4j;
-import org.highfive.backend.auth.client.dto.response.KakaoUserResponse;
-import org.highfive.backend.auth.client.dto.response.KakaoTokenResponse;
+import org.highfive.backend.auth.client.dto.response.KakaoUserResponseDto;
+import org.highfive.backend.auth.client.dto.response.KakaoTokenResponseDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -47,7 +47,7 @@ public class KakaoOAuthClient {
                 .build();
     }
 
-    public KakaoTokenResponse requestToken(final String code) {
+    public KakaoTokenResponseDto requestToken(final String code) {
         return authClient.post()
                 .uri(TOKEN_URL)
                 .body(fromFormData("grant_type", "authorization_code")
@@ -56,12 +56,12 @@ public class KakaoOAuthClient {
                         .with("redirect_uri",redirectUri)
                         .with("code",code))
                 .retrieve()
-                .bodyToMono(KakaoTokenResponse.class)
+                .bodyToMono(KakaoTokenResponseDto.class)
                 .doOnError(e -> log.error("Kakao token 요청 실패", e))
                 .block();
     }
 
-    public KakaoUserResponse requestUser(final String accessToken) {
+    public KakaoUserResponseDto requestUser(final String accessToken) {
         return userInfoClient.post()
                 .uri(uriBuilder -> uriBuilder
                         .path(USER_INFO_URL)
@@ -71,7 +71,7 @@ public class KakaoOAuthClient {
                 .header(HttpHeaders.AUTHORIZATION, BEARER + accessToken)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
                 .retrieve()
-                .bodyToMono(KakaoUserResponse.class)
+                .bodyToMono(KakaoUserResponseDto.class)
                 .doOnError(e -> log.error("Kakao 사용자 정보 요청 실패", e))
                 .block();
     }
