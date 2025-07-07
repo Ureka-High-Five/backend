@@ -3,7 +3,7 @@ package org.highfive.backend.auth.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.auth.client.KakaoOAuthClient;
-import org.highfive.backend.auth.client.dto.response.KakaoUserResponse;
+import org.highfive.backend.auth.client.dto.response.KakaoUserResponseDto;
 import org.highfive.backend.auth.controller.dto.request.OAuthRequestDto;
 import org.highfive.backend.user.entity.User;
 import org.highfive.backend.user.repository.UserRepository;
@@ -20,7 +20,7 @@ public class AuthService {
     public void login(final OAuthRequestDto OAuthRequestDto) {
         final String code = OAuthRequestDto.code();
         final String token = kakaoOAuthClient.requestToken(code).accessToken();
-        final KakaoUserResponse userInfo = kakaoOAuthClient.requestUser(token);
+        final KakaoUserResponseDto userInfo = kakaoOAuthClient.requestUser(token);
         final String kakaoUserId = userInfo.id();
 
         if(userRepository.existsByKakaoUserId(kakaoUserId)) {
@@ -30,7 +30,7 @@ public class AuthService {
         saveUser(userInfo);
     }
 
-    private void saveUser(final KakaoUserResponse userInfo) {
+    private void saveUser(final KakaoUserResponseDto userInfo) {
         final User user = User.from(userInfo);
         userRepository.save(user);
     }
