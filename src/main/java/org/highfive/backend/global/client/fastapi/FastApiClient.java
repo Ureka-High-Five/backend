@@ -1,7 +1,10 @@
 package org.highfive.backend.global.client.fastapi;
 
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.highfive.backend.global.client.fastapi.dto.RecommendContentsResponseDto;
+import org.highfive.backend.global.code.ErrorCode;
+import org.highfive.backend.global.exception.BusinessException;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -9,8 +12,10 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
+@Slf4j
 @Component
 public class FastApiClient {
 
@@ -48,14 +53,20 @@ public class FastApiClient {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Long> request = new HttpEntity<>(userId, headers);
 
-        ResponseEntity<List<RecommendContentsResponseDto>> response = restTemplate.exchange(
-                url,
-                HttpMethod.GET,
-                request,
-                new ParameterizedTypeReference<>() {}
-        );
+        try {
+            ResponseEntity<List<RecommendContentsResponseDto>> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    request,
+                    new ParameterizedTypeReference<>() {}
+            );
 
-        return response.getBody();
+            return response.getBody();
+
+        } catch (ResourceAccessException e) {
+            log.error("FastAPI 서버에 접근할 수 없습니다.", e);
+            throw new BusinessException(ErrorCode.FAST_API_ERROR);
+        }
     }
 
     private String genUrl(final String endPoint) {

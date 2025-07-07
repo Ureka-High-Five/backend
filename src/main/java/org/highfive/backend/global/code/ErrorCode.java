@@ -7,7 +7,11 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
 
     INTERNAL_SERVER_ERROR("SERVER_001", "서버 오류 입니다.", HttpStatus.INTERNAL_SERVER_ERROR),
-    BAD_REQUEST("SEVER_002", "올바르지 않은 입력값입니다.", HttpStatus.BAD_REQUEST);
+    BAD_REQUEST("SEVER_002", "올바르지 않은 입력값입니다.", HttpStatus.BAD_REQUEST),
+
+    FAST_API_ERROR("40002", "FastAPI 서버에 접근할 수 없습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+
+    ;
 
     private final String code;
     private final String message;
