@@ -17,6 +17,8 @@ public class FastApiClient {
     private final String fastApiUrl = "http://localhost:8000";
     private final RestTemplate restTemplate = new RestTemplate();
 
+    private HttpHeaders headers = new HttpHeaders();
+
     /**
      * 온보딩 화면에서 선택한 컨텐츠를 FastAPI 서버에 전달합니다.
      * FastAPI 서버는 사용자의 초기 가중치와 벡터를 저장합니다.
@@ -26,8 +28,6 @@ public class FastApiClient {
      */
     public Boolean onboarding(final List<Integer> contentIds) {
         String url = genUrl("/user/preferences");
-
-        HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<List<Integer>> request = new HttpEntity<>(contentIds, headers);
 
@@ -45,8 +45,6 @@ public class FastApiClient {
      */
     public List<RecommendContentsResponseDto> getContentsByUserId(final long userId) {
         String url = genUrl("/contents");
-
-        HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Long> request = new HttpEntity<>(userId, headers);
 
