@@ -3,7 +3,7 @@ package org.highfive.backend.global.client.fastapi;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.highfive.backend.global.client.fastapi.dto.RecommendContentsResponseDto;
-import org.highfive.backend.global.code.ErrorCode;
+import org.highfive.backend.global.client.fastapi.exception.FastApiErrorCode;
 import org.highfive.backend.global.exception.BusinessException;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -65,7 +65,7 @@ public class FastApiClient {
 
         } catch (ResourceAccessException e) {
             log.error("FastAPI 서버에 접근할 수 없습니다.", e);
-            throw new BusinessException(ErrorCode.FAST_API_ERROR);
+            throw new BusinessException(FastApiErrorCode.FAST_API_ERROR);
         }
     }
 
