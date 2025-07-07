@@ -1,4 +1,4 @@
-package org.highfive.backend.global.exception;
+package org.highfive.backend.global.code;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
