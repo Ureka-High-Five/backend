@@ -12,6 +12,8 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import static org.highfive.backend.global.code.GlobalErrorCode.INTERNAL_SERVER_ERROR;
+
 @RestControllerAdvice
 public class ValidationExceptionHandler {
 
@@ -23,7 +25,7 @@ public class ValidationExceptionHandler {
     })
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public ResponseEntity<ErrorResponseDto> handleValidation() {
-        final ErrorCode errorCode = ErrorCode.BAD_REQUEST;
-        return ResponseEntity.status(errorCode.getStatus()).body(new ErrorResponseDto(errorCode));
+        final ErrorCode errorCode = INTERNAL_SERVER_ERROR;
+        return ResponseEntity.status(errorCode.getHttpStatus()).body(new ErrorResponseDto(errorCode));
     }
 }
