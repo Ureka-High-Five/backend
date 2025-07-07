@@ -2,6 +2,7 @@ package org.highfive.backend.global.client.fastapi;
 
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.highfive.backend.global.client.fastapi.dto.OnboardingResponseDto;
 import org.highfive.backend.global.client.fastapi.dto.RecommendContentsResponseDto;
 import org.highfive.backend.global.code.ErrorCode;
 import org.highfive.backend.global.exception.BusinessException;
@@ -31,12 +32,12 @@ public class FastApiClient {
      * @param contentIds // 온보딩 화면에서 선택한 컨텐츠 id
      * @return // 가중치와 벡터 저장 성공 시 true 아니면 false
      */
-    public Boolean onboarding(final List<Integer> contentIds) {
+    public OnboardingResponseDto onboarding(final List<Integer> contentIds) {
         String url = genUrl("/user/preferences");
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<List<Integer>> request = new HttpEntity<>(contentIds, headers);
 
-        ResponseEntity<Boolean> response = restTemplate.postForEntity(url, request, Boolean.class);
+        ResponseEntity<OnboardingResponseDto> response = restTemplate.postForEntity(url, request, OnboardingResponseDto.class);
 
         return response.getBody();
     }
