@@ -10,7 +10,7 @@ import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.user.entity.User;
 
 @Entity
-@Table(name = "contents")
+@Table(name = "reviews")
 @Builder
 @AllArgsConstructor
 @DynamicUpdate
