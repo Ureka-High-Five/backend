@@ -24,7 +24,7 @@ public class FastApiClient {
      * @return // 가중치와 벡터 저장 성공 시 true 아니면 false
      */
     public Boolean onboarding(final List<Integer> contentIds) {
-        String url = genUrl("/onboarding");
+        String url = genUrl("/user/preferences");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -51,7 +51,7 @@ public class FastApiClient {
 
         ResponseEntity<List<Integer>> response = restTemplate.exchange(
                 url,
-                HttpMethod.POST,
+                HttpMethod.GET,
                 request,
                 new ParameterizedTypeReference<>() {}
         );
