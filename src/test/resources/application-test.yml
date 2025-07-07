@@ -6,3 +6,8 @@ datasource:
 jpa:
   hibernate:
     ddl-auto: create-drop
+
+kakao:
+  client-id: abcdefghijklmnob
+  client-secret: ABCDEFGHIJKLMNOP
+  redirect-uri: http://localhost:8080/auth/login/kakao
