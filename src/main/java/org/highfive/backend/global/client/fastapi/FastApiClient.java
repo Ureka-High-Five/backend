@@ -1,6 +1,7 @@
-package org.highfive.backend.global;
+package org.highfive.backend.global.client.fastapi;
 
 import java.util.List;
+import org.highfive.backend.global.client.fastapi.dto.RecommendContentsResponseDto;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -42,14 +43,14 @@ public class FastApiClient {
      * @param userId // 사용자 아이디
      * @return // 추천할 컨텐츠 아이디
      */
-    public List<Integer> getContentsByUserId(final long userId) {
+    public List<RecommendContentsResponseDto> getContentsByUserId(final long userId) {
         String url = genUrl("/contents");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Long> request = new HttpEntity<>(userId, headers);
 
-        ResponseEntity<List<Integer>> response = restTemplate.exchange(
+        ResponseEntity<List<RecommendContentsResponseDto>> response = restTemplate.exchange(
                 url,
                 HttpMethod.GET,
                 request,
