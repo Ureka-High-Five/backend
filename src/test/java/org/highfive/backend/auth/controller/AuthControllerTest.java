@@ -1,9 +1,9 @@
 package org.highfive.backend.auth.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.highfive.backend.auth.client.exception.AuthErrorCode;
 import org.highfive.backend.auth.controller.dto.request.OAuthRequestDto;
 import org.highfive.backend.auth.service.AuthService;
-import org.highfive.backend.global.code.ErrorCode;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
 import org.junit.jupiter.api.DisplayName;
@@ -65,7 +65,7 @@ class AuthControllerTest {
         OAuthRequestDto requestDto = new OAuthRequestDto("invalid-code");
 
         when(authService.login(any(OAuthRequestDto.class)))
-                .thenThrow(new BusinessException(ErrorCode.KAKAO_TOKEN_ERROR));
+                .thenThrow(new BusinessException(AuthErrorCode.KAKAO_TOKEN_ERROR));
 
         // when & then
         mockMvc.perform(post("/auth")
@@ -73,8 +73,8 @@ class AuthControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().is5xxServerError())
-                .andExpect(jsonPath("$.code", is(ErrorCode.KAKAO_TOKEN_ERROR.getCode())))
-                .andExpect(jsonPath("$.message", is(ErrorCode.KAKAO_TOKEN_ERROR.getMessage())));
+                .andExpect(jsonPath("$.code", is(AuthErrorCode.KAKAO_TOKEN_ERROR.getCode())))
+                .andExpect(jsonPath("$.message", is(AuthErrorCode.KAKAO_TOKEN_ERROR.getMessage())));
     }
 
     @Test
@@ -84,7 +84,7 @@ class AuthControllerTest {
         OAuthRequestDto requestDto = new OAuthRequestDto("invalid-code");
 
         when(authService.login(any(OAuthRequestDto.class)))
-                .thenThrow(new BusinessException(ErrorCode.KAKAO_USERINFO_ERROR));
+                .thenThrow(new BusinessException(AuthErrorCode.KAKAO_USERINFO_ERROR));
 
         // when & then
         mockMvc.perform(post("/auth")
@@ -92,7 +92,7 @@ class AuthControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().is5xxServerError())
-                .andExpect(jsonPath("$.code", is(ErrorCode.KAKAO_USERINFO_ERROR.getCode())))
-                .andExpect(jsonPath("$.message", is(ErrorCode.KAKAO_USERINFO_ERROR.getMessage())));
+                .andExpect(jsonPath("$.code", is(AuthErrorCode.KAKAO_USERINFO_ERROR.getCode())))
+                .andExpect(jsonPath("$.message", is(AuthErrorCode.KAKAO_USERINFO_ERROR.getMessage())));
     }
 }
