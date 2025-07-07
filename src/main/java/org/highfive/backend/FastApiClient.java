@@ -34,6 +34,31 @@ public class FastApiClient {
 
         return response.getBody();
     }
+
+    /**
+     * 사용자 아이디를 FastAPI 서버에 전달합니다.
+     * FastAPI 서버는 사용자에게 추천할 컨텐츠를 반환합니다.
+     *
+     * @param userId // 사용자 아이디
+     * @return // 추천할 컨텐츠 아이디
+     */
+    public List<Integer> getContentsByUserId(final long userId) {
+        String url = genUrl("/contents");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Long> request = new HttpEntity<>(userId, headers);
+
+        ResponseEntity<List<Integer>> response = restTemplate.exchange(
+                url,
+                HttpMethod.POST,
+                request,
+                new ParameterizedTypeReference<>() {}
+        );
+
+        return response.getBody();
+    }
+
     private String genUrl(String endPoint) {
         return fastApiUrl + endPoint;
     }
