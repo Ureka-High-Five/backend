@@ -60,7 +60,7 @@ public class FastApiClient {
         return response.getBody();
     }
 
-    private String genUrl(String endPoint) {
+    private String genUrl(final String endPoint) {
         return fastApiUrl + endPoint;
     }
 }
