@@ -1,7 +1,7 @@
 package org.highfive.backend.global.exception.handler;
 
 import jakarta.validation.ConstraintViolationException;
-import org.highfive.backend.global.exception.ErrorCode;
+import org.highfive.backend.global.code.ErrorCode;
 import org.highfive.backend.global.exception.ErrorResponseDto;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
