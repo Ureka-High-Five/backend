@@ -8,6 +8,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.highfive.backend.auth.exception.AuthErrorCode;
+import org.highfive.backend.auth.service.TokenService;
+import org.highfive.backend.global.exception.BusinessException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -18,19 +20,18 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtUtils jwtUtils;
+    private final TokenService tokenService;
 
     @Override
     protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain) throws ServletException, IOException {
 
         try {
-            final String token = jwtUtils.resolveToken(request);
-            if(token != null) {
-                jwtUtils.validateToken(token);
-                Authentication authentication = jwtUtils.getAuthentication(token);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
-        } catch (JwtException | IllegalArgumentException e) {
+            final String token = tokenService.resolveToken(request);
+            tokenService.validateToken(token);
+            Authentication authentication = tokenService.getAuthentication(token);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        } catch (JwtException | IllegalArgumentException | BusinessException e) {
             log.error("JWT 인증 실패 : {}", e.getMessage(), e);
             errorResponse(response);
             return;

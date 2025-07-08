@@ -1,5 +1,6 @@
 package org.highfive.backend.auth.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.auth.client.KakaoOAuthClient;
@@ -8,8 +9,7 @@ import org.highfive.backend.auth.dto.request.OAuthRequestDto;
 import org.highfive.backend.auth.dto.request.ReissueRequestDto;
 import org.highfive.backend.auth.dto.response.TokenResponseDto;
 import org.highfive.backend.auth.exception.AuthErrorCode;
-import org.highfive.backend.auth.jwt.JwtUtils;
-import org.highfive.backend.auth.repository.RefreshTokenRepository;
+import org.highfive.backend.auth.repository.redis.TokenRedisRepository;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.user.entity.Role;
@@ -28,8 +28,8 @@ public class AuthService {
 
     private final KakaoOAuthClient kakaoOAuthClient;
     private final UserRepository userRepository;
-    private final JwtUtils jwtUtils;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final TokenService tokenService;
+    private final TokenRedisRepository tokenRedisRepository;
 
     @Transactional
     public Response<?> login(final OAuthRequestDto OAuthRequestDto) {
@@ -46,23 +46,33 @@ public class AuthService {
         }
 
         final List<String> roles = List.of(Role.USER.toString());
-        return tokenResponse(jwtUtils.generateAccessToken(kakaoUserId, roles), jwtUtils.generateRefreshToken(kakaoUserId, roles));
+        return tokenResponse(tokenService.generateAccessToken(kakaoUserId, roles), tokenService.generateRefreshToken(kakaoUserId, roles));
     }
 
     public Response<TokenResponseDto> reissue(final ReissueRequestDto reissueRequestDto) {
 
         final String refreshToken = reissueRequestDto.refreshToken();
-        final UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) jwtUtils.getAuthentication(refreshToken);
+        final UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) tokenService.getAuthentication(refreshToken);
         final User user = (User) authentication.getPrincipal();
 
-        jwtUtils.validateToken(refreshToken);
-        if(!refreshTokenRepository.isRefreshTokenValid(user.getKakaoUserId(), refreshToken)) {
+        tokenService.validateToken(refreshToken);
+        if(!tokenRedisRepository.isRefreshTokenValid(user.getKakaoUserId(), refreshToken)) {
             throw new BusinessException(AuthErrorCode.TOKEN_MISMATCH_ERROR);
         }
 
-        final String renewAccessToken = jwtUtils.generateAccessToken(user.getKakaoUserId(), List.of(user.getRole().toString()));
-
+        final String renewAccessToken = tokenService.generateAccessToken(user.getKakaoUserId(), List.of(user.getRole().toString()));
         return tokenResponse(renewAccessToken, refreshToken);
+    }
+
+    public Response<Void> logout(final User user, final HttpServletRequest request) {
+        final String accessToken = tokenService.resolveToken(request);
+        final long tokenRemainingTime = tokenService.getRemainingTime(accessToken);
+        tokenRedisRepository.saveLogoutToken(accessToken, tokenRemainingTime);
+
+        final String kakaoUserId = user.getKakaoUserId();
+        tokenRedisRepository.delete(kakaoUserId);
+
+        return new Response<>(OK.getCode(), null, OK.getMessage());
     }
 
     private void saveUser(final KakaoUserResponseDto userInfo) {
