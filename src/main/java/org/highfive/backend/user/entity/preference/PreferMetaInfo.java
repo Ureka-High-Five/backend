@@ -28,5 +28,5 @@ public class PreferMetaInfo {
     private MetaInfo metaInfo;
 
     @Column(nullable = false)
-    private int weight;
+    private double weight;
 }
