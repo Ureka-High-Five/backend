@@ -8,10 +8,6 @@ import org.springframework.data.repository.query.Param;
 
 public interface MetaInfoRepository extends JpaRepository<MetaInfo, Long> {
 
-    @Query("""
-    SELECT m
-    FROM MetaInfo m
-    WHERE m.name = :name AND m.type = 'GENRE'
-""")
+    @Query("SELECT m FROM MetaInfo m WHERE m.name = :name AND m.type = 'GENRE'")
     Optional<MetaInfo> findGenreMetaIdByName(@Param("name") String name);
 }
