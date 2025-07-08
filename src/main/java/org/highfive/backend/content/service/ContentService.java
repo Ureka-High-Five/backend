@@ -30,7 +30,6 @@ public class ContentService {
 
         List<Tuple> joined = getTuplesByGenreOrderByPopularityDesc(content, meta, mic);
 
-        // 장르 이름 기준으로 서로 다른 장르만 INIT_CONTENT_CNT 개 선택
         return selectContentDistinctGenre(joined, content, meta);
     }
 
@@ -42,16 +41,13 @@ public class ContentService {
      * @param meta
      * @return
      */
-    private static List<OnboardingInitContentsResponseDto> selectContentDistinctGenre(List<Tuple> joined,
-                                                                                                 QContent content,
-                                                                                                 QMetaInfo meta) {
+    private static List<OnboardingInitContentsResponseDto> selectContentDistinctGenre(List<Tuple> joined, QContent content, QMetaInfo meta) {
         Set<String> initGenres = new HashSet<>();
         List<OnboardingInitContentsResponseDto> finalResult = new ArrayList<>();
 
         for (Tuple tuple : joined) {
             Content c = tuple.get(content);
             String genreName = tuple.get(meta.name);
-
             if (initGenres.add(genreName)) {
                 finalResult.add(OnboardingInitContentsResponseDto.of(c));
             }
