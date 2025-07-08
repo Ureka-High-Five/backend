@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 public enum ContentErrorCode implements ErrorCode {
 
 
-    CONTENT_001(40402, "존재하지 않는 컨텐츠입니다.", HttpStatus.NOT_FOUND),
+    CONTENT_NOT_FOUND(40402, "존재하지 않는 컨텐츠입니다.", HttpStatus.NOT_FOUND),
     ;
 
     private final int code;

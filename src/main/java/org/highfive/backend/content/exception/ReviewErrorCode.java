@@ -8,8 +8,8 @@ import org.springframework.http.HttpStatus;
 public enum ReviewErrorCode implements ErrorCode {
 
 
-    REVIEW_001(42200, "리뷰에 부적절한 단어가 포함되어있습니다.", HttpStatus.UNPROCESSABLE_ENTITY),
-    REVIEW_002(40403, "존재하지 않는 리뷰입니다.", HttpStatus.NOT_FOUND),
+    REVIEW_CONTAINS_PROHIBITED_WORD(42200, "리뷰에 부적절한 단어가 포함되어있습니다.", HttpStatus.UNPROCESSABLE_ENTITY),
+    REVIEW_NOT_FOUND(40403, "존재하지 않는 리뷰입니다.", HttpStatus.NOT_FOUND),
     ;
 
     private final int code;

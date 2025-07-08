@@ -30,7 +30,7 @@ public class ReviewService {
         // TODO: review에 대한 금칙어 처리 추가 필요
 
         Content content = contentRepository.findById(requestDto.contentId())
-                .orElseThrow(() -> new BusinessException(ContentErrorCode.CONTENT_001));
+                .orElseThrow(() -> new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND));
 
         Review review = ReviewMapper.toReview(requestDto, user, content);
         reviewRepository.save(review);
@@ -43,7 +43,7 @@ public class ReviewService {
         // TODO: review에 대한 금칙어 처리 추가 필요
 
         Review existedReview = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new BusinessException(ReviewErrorCode.REVIEW_002));
+                .orElseThrow(() -> new BusinessException(ReviewErrorCode.REVIEW_NOT_FOUND));
 
         // TODO:  해당 리뷰가 유저가 작성한 것인지 검증하는 코드 추가
         existedReview.updateReview(requestDto.rating(), requestDto.review());
