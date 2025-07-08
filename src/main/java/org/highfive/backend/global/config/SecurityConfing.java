@@ -2,7 +2,7 @@ package org.highfive.backend.global.config;
 
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.auth.jwt.JwtAuthenticationFilter;
-import org.highfive.backend.auth.jwt.JwtUtils;
+import org.highfive.backend.auth.service.TokenService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,7 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfing {
 
-    private final JwtUtils jwtUtils;
+    private final TokenService tokenService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -25,11 +25,18 @@ public class SecurityConfing {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/auth/login", "/auth/login/kakao", "/auth/reissue", "/auth")
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/auth/login",
+                                "/auth/login/kakao",
+                                "/auth/reissue",
+                                "/auth",
+                                "/auth/logout")
                         .permitAll()
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(new JwtAuthenticationFilter(jwtUtils), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthenticationFilter(tokenService), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 }
