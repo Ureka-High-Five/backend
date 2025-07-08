@@ -45,10 +45,28 @@ public class ReviewService {
         Review existedReview = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new BusinessException(ReviewErrorCode.REVIEW_NOT_FOUND));
 
-        // TODO:  해당 리뷰가 유저가 작성한 것인지 검증하는 코드 추가
-        existedReview.updateReview(requestDto.rating(), requestDto.review());
+        if (!existedReview.isWrittenBy(user.getId())) {
+            throw new BusinessException(ReviewErrorCode.REVIEW_FORBIDDEN);
+        }
 
+        existedReview.updateReview(requestDto.rating(), requestDto.review());
         return new Response<>(OK.getCode(), null, null);
 
     }
+
+    public Response<?> deleteReview(Long reviewId, User user) {
+
+        Review existedReview = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new BusinessException(ReviewErrorCode.REVIEW_NOT_FOUND));
+
+        if (!existedReview.isWrittenBy(user.getId())) {
+            throw new BusinessException(ReviewErrorCode.REVIEW_FORBIDDEN);
+        }
+
+        reviewRepository.delete(existedReview);
+
+        return new Response<>(OK.getCode(), null, null);
+    }
+
+
 }

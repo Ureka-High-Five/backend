@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -63,5 +64,9 @@ public class Review {
     public void updateReview(int rating, String reviewText) {
         this.rating = rating;
         this.reviewText = reviewText;
+    }
+
+    public boolean isWrittenBy(Long userId) {
+        return Objects.equals(this.user.getId(), userId);
     }
 }
