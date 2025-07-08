@@ -2,7 +2,6 @@ package org.highfive.backend.global.client.fastapi;
 
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import org.highfive.backend.global.client.fastapi.dto.OnboardingResponseDto;
 import org.highfive.backend.global.client.fastapi.dto.FastApiOnboardingResponseDto;
 import org.highfive.backend.global.client.fastapi.dto.RecommendContentsResponseDto;
 import org.highfive.backend.global.client.fastapi.exception.FastApiErrorCode;
