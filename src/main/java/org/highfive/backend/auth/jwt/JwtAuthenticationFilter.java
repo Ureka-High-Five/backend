@@ -27,15 +27,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             final String token = tokenService.resolveToken(request);
-
-            if(token == null) {
-                throw new BusinessException(AuthErrorCode.TOKEN_ERROR);
-            }
-
-            if(tokenService.isBlackListToken(token)) {
-                throw new BusinessException(AuthErrorCode.TOKEN_ERROR);
-            }
-
             tokenService.validateToken(token);
             Authentication authentication = tokenService.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);

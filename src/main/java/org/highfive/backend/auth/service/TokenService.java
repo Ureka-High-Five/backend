@@ -9,6 +9,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.highfive.backend.auth.exception.AuthErrorCode;
 import org.highfive.backend.auth.repository.redis.TokenRedisRepository;
 import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.user.entity.User;
@@ -86,10 +87,17 @@ public class TokenService {
         return tokenRedisRepository.isBlackListToken(token);
     }
 
-    public boolean validateToken(final String token) {
+    public void validateToken(final String token) {
 
-        Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-        return true;
+        if(token == null) {
+            throw new BusinessException(AuthErrorCode.TOKEN_ERROR);
+        }
+
+        if(isBlackListToken(token)) {
+            throw new BusinessException(AuthErrorCode.TOKEN_ERROR);
+        }
+
+        parseClaims(token);
     }
 
     public Authentication getAuthentication(final String token) {
