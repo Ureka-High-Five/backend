@@ -31,33 +31,33 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @PostMapping
-    public Response<?> createReview(@Valid @RequestBody CreateReviewRequestDto requestDto,
-                                    @AuthenticationPrincipal User user) {
+    public Response<?> createReview(@Valid @RequestBody final CreateReviewRequestDto requestDto,
+                                    @AuthenticationPrincipal final User user) {
         return reviewService.createReview(requestDto, user);
     }
 
     @PatchMapping("/{reviewId}")
     public Response<?> updateReview(
-            @PathVariable Long reviewId,
-            @Valid @RequestBody UpdateReviewRequestDto requestDto,
-            @AuthenticationPrincipal User user) {
+            @PathVariable final Long reviewId,
+            @Valid @RequestBody final UpdateReviewRequestDto requestDto,
+            @AuthenticationPrincipal final User user) {
 
         return reviewService.updateReview(reviewId, requestDto, user);
     }
 
     @DeleteMapping("/{reviewId}")
     public Response<?> deleteReview(
-            @PathVariable Long reviewId,
-            @AuthenticationPrincipal User user) {
+            @PathVariable final Long reviewId,
+            @AuthenticationPrincipal final User user) {
 
         return reviewService.deleteReview(reviewId, user);
     }
 
     @GetMapping("/{contentId}")
     public Response<CursorPageResponse<ReviewSimpleResponseDto>> getReviewByContent(
-            @PathVariable Long contentId,
-            @RequestParam(required = false) String cursor,
-            @RequestParam(defaultValue = "3") int size
+            @PathVariable final Long contentId,
+            @RequestParam(required = false) final String cursor,
+            @RequestParam(defaultValue = "3") final int size
     ) {
         CursorPageResponse<ReviewSimpleResponseDto> response = reviewService.getReviewsByCursor(contentId, cursor,
                 size);
