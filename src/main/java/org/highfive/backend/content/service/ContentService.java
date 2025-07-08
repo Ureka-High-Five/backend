@@ -1,19 +1,10 @@
 package org.highfive.backend.content.service;
 
-import com.querydsl.core.Tuple;
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.content.dto.OnboardingInitContentsResponseDto;
-import org.highfive.backend.content.dto.mapper.ContentMapper;
-import org.highfive.backend.content.entity.Content;
-import org.highfive.backend.content.entity.QContent;
-import org.highfive.backend.content.entity.metadata.MetaType;
-import org.highfive.backend.content.entity.metadata.QMetaInfo;
-import org.highfive.backend.content.entity.metadata.QMetaInfoContents;
+import org.highfive.backend.content.dto.TopContentByGenreDto;
+import org.highfive.backend.content.repository.ContentRepository;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,59 +13,13 @@ public class ContentService {
 
     private static final int INIT_CONTENT_CNT = 6;
 
-    private final JPAQueryFactory queryFactory;
-    
+    private final ContentRepository contentRepository;
+
     public List<OnboardingInitContentsResponseDto> getDistinctGenreTopContents() {
-        QContent content = QContent.content;
-        QMetaInfoContents mic = QMetaInfoContents.metaInfoContents;
-        QMetaInfo meta = QMetaInfo.metaInfo;
+        List<TopContentByGenreDto> topContents = contentRepository.findTopContentPerGenre(INIT_CONTENT_CNT);
 
-        List<Tuple> joined = getTuplesByGenreOrderByPopularityDesc(content, meta, mic);
-
-        return selectContentDistinctGenre(joined, content, meta);
-    }
-
-    /**
-     * 장르 중복없이 컨텐츠를 선택합니다.
-     *
-     * @param joined
-     * @param content
-     * @param meta
-     * @return
-     */
-    private static List<OnboardingInitContentsResponseDto> selectContentDistinctGenre(List<Tuple> joined, QContent content, QMetaInfo meta) {
-        Set<String> initGenres = new HashSet<>();
-        List<OnboardingInitContentsResponseDto> finalResult = new ArrayList<>();
-
-        for (Tuple tuple : joined) {
-            Content c = tuple.get(content);
-            String genreName = tuple.get(meta.name);
-            if (initGenres.add(genreName)) {
-                finalResult.add(ContentMapper.toOnboardingInitContentsResponseDto(c));
-            }
-
-            if (finalResult.size() == INIT_CONTENT_CNT) break;
-        }
-
-        return finalResult;
-    }
-
-    /**
-     * 컨텐츠를 popularity 기준으로 내림차순 정렬하여 컨텐츠와 장르 이름을 반환합니다.
-     *
-     * @param content
-     * @param meta
-     * @param mic
-     * @return
-     */
-    private List<Tuple> getTuplesByGenreOrderByPopularityDesc(QContent content, QMetaInfo meta, QMetaInfoContents mic) {
-        return queryFactory
-                .select(content, meta.name)
-                .from(content)
-                .join(mic).on(mic.content.id.eq(content.id))
-                .join(meta).on(meta.id.eq(mic.metaInfo.id))
-                .where(meta.type.eq(MetaType.GENRE))
-                .orderBy(content.popularity.desc())
-                .fetch();
+        return topContents.stream()
+                .map(dto -> new OnboardingInitContentsResponseDto(dto.getId(), dto.getThumbnailUrl(), dto.getTitle()))
+                .toList();
     }
 }
