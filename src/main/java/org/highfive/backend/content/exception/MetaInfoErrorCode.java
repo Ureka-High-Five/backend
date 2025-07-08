@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 
 @RequiredArgsConstructor
 public enum MetaInfoErrorCode implements ErrorCode {
+    
     GENRE_NOT_FOUND(40404, "존재하지 않는 장르입니다.", HttpStatus.NOT_FOUND)
     ;
 
