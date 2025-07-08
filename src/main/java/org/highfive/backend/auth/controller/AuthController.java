@@ -29,7 +29,7 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public Response<?> logout(@AuthenticationPrincipal final User user, final HttpServletRequest request) {
+    public Response<Void> logout(@AuthenticationPrincipal final User user, final HttpServletRequest request) {
         return authService.logout(user, request);
     }
 
