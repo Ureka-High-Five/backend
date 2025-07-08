@@ -9,15 +9,18 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.user.entity.User;
 
 @Entity
+@Getter
 @Table(name = "reviews")
 @Builder
 @AllArgsConstructor
@@ -63,5 +66,9 @@ public class Review {
     public void updateReview(int rating, String reviewText) {
         this.rating = rating;
         this.reviewText = reviewText;
+    }
+
+    public boolean isWrittenBy(Long userId) {
+        return Objects.equals(this.user.getId(), userId);
     }
 }
