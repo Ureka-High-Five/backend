@@ -1,6 +1,20 @@
 package org.highfive.backend.content.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,10 +29,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 @Table(name = "contents")
 @Builder
@@ -29,7 +39,8 @@ import java.util.List;
 @EntityListeners(AuditingEntityListener.class)
 public class Content {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     private Long id;
 
     @Column(nullable = false)
@@ -50,7 +61,7 @@ public class Content {
     @Column(nullable = false)
     private LocalDateTime openDate;
 
-    private LocalDateTime runningTime;
+    private int runningTime;
 
     private int totalRound;
 
