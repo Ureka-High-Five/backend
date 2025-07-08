@@ -9,7 +9,7 @@ import org.highfive.backend.auth.dto.request.OAuthRequestDto;
 import org.highfive.backend.auth.dto.request.ReissueRequestDto;
 import org.highfive.backend.auth.dto.response.TokenResponseDto;
 import org.highfive.backend.auth.exception.AuthErrorCode;
-import org.highfive.backend.auth.repository.TokenRepository;
+import org.highfive.backend.auth.repository.redis.TokenRedisRepository;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.user.entity.Role;
@@ -29,7 +29,7 @@ public class AuthService {
     private final KakaoOAuthClient kakaoOAuthClient;
     private final UserRepository userRepository;
     private final TokenService tokenService;
-    private final TokenRepository tokenRepository;
+    private final TokenRedisRepository tokenRedisRepository;
 
     @Transactional
     public Response<?> login(final OAuthRequestDto OAuthRequestDto) {
@@ -56,7 +56,7 @@ public class AuthService {
         final User user = (User) authentication.getPrincipal();
 
         tokenService.validateToken(refreshToken);
-        if(!tokenRepository.isRefreshTokenValid(user.getKakaoUserId(), refreshToken)) {
+        if(!tokenRedisRepository.isRefreshTokenValid(user.getKakaoUserId(), refreshToken)) {
             throw new BusinessException(AuthErrorCode.TOKEN_MISMATCH_ERROR);
         }
 
@@ -67,10 +67,10 @@ public class AuthService {
     public Response<Void> logout(final User user, final HttpServletRequest request) {
         final String accessToken = tokenService.resolveToken(request);
         final long tokenRemainingTime = tokenService.getRemainingTime(accessToken);
-        tokenRepository.saveLogoutToken(accessToken, tokenRemainingTime);
+        tokenRedisRepository.saveLogoutToken(accessToken, tokenRemainingTime);
 
         final String kakaoUserId = user.getKakaoUserId();
-        tokenRepository.delete(kakaoUserId);
+        tokenRedisRepository.delete(kakaoUserId);
 
         return new Response<>(OK.getCode(), null, OK.getMessage());
     }

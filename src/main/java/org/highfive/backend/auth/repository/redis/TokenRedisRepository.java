@@ -1,4 +1,4 @@
-package org.highfive.backend.auth.repository;
+package org.highfive.backend.auth.repository.redis;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
-public class TokenRepository {
+public class TokenRedisRepository {
 
     private final String LOG_OUT = "logout";
 

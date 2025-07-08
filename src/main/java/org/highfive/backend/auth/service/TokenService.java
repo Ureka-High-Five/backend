@@ -9,7 +9,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.highfive.backend.auth.repository.TokenRepository;
+import org.highfive.backend.auth.repository.redis.TokenRedisRepository;
 import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.user.entity.User;
 import org.highfive.backend.user.repository.UserRepository;
@@ -51,7 +51,7 @@ public class TokenService {
     private Long refreshTokenExpiration;
 
     private final UserRepository userRepository;
-    private final TokenRepository tokenRepository;
+    private final TokenRedisRepository tokenRedisRepository;
 
     private Key key;
 
@@ -67,7 +67,7 @@ public class TokenService {
     public String generateRefreshToken(final String kakaoUserId, final List<String> roles) {
 
         final String refreshToken = createToken(kakaoUserId, roles, refreshTokenExpiration);
-        tokenRepository.save(kakaoUserId, refreshToken);
+        tokenRedisRepository.save(kakaoUserId, refreshToken);
         return refreshToken;
     }
 
@@ -83,7 +83,7 @@ public class TokenService {
     }
 
     public boolean isBlackListToken(final String token) {
-        return tokenRepository.isBlackListToken(token);
+        return tokenRedisRepository.isBlackListToken(token);
     }
 
     public boolean validateToken(final String token) {
