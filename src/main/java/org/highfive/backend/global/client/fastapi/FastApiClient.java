@@ -51,9 +51,9 @@ public class FastApiClient {
      * @return // 추천할 컨텐츠 아이디
      */
     public List<RecommendContentsResponseDto> getContentsByUserId(final long userId) {
-        String url = genUrl("/contents");
+        final String url = genUrl("/contents");
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<Long> request = new HttpEntity<>(userId, headers);
+        final HttpEntity<Long> request = new HttpEntity<>(userId, headers);
 
         return executeWithFastApiHandling(() ->
                 restTemplate.exchange(
@@ -65,9 +65,9 @@ public class FastApiClient {
         );
     }
 
-    private <T> T executeWithFastApiHandling(FastApiCall<T> apiCall) {
+    private <T> T executeWithFastApiHandling(final FastApiCall<T> apiCall) {
         try {
-            T result = apiCall.call();
+            final T result = apiCall.call();
             if (result == null) {
                 log.error("FastAPI 응답 바디가 null입니다.");
                 throw new BusinessException(FastApiErrorCode.FAST_API_RESPONSE_NULL);
