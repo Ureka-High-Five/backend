@@ -24,7 +24,8 @@ public class RefreshTokenRepository {
         return redisTemplate.opsForValue().get(String.valueOf(userId));
     }
 
-    public void delete(final String userId) {
-        redisTemplate.delete(String.valueOf(userId));
+    public boolean isRefreshTokenValid(final String userId, final String refreshToken) {
+        final String savedToken = getRefreshToken(userId);
+        return savedToken != null && refreshToken.equals(savedToken);
     }
 }
