@@ -32,8 +32,9 @@ public class ContentController {
     }
 
     @GetMapping("{contentId}/detail")
-    public Response<ContentDetailResponseDto> getContentDetail(@PathVariable final Long contentId,
-                                                               @AuthenticationPrincipal final User user) {
+    public Response<ContentDetailResponseDto> getContentDetail(
+            @PathVariable final Long contentId,
+            @AuthenticationPrincipal final User user) {
         return contentService.getContentDetail(contentId, user);
     }
 }
