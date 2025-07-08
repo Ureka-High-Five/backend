@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 import org.highfive.backend.content.entity.metadata.Episode;
@@ -21,6 +22,7 @@ import java.util.List;
 @Entity
 @Table(name = "contents")
 @Builder
+@Getter
 @AllArgsConstructor
 @DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

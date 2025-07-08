@@ -13,6 +13,5 @@ public class ReviewMapper {
 			user,
 			content
 		);
-
 	}
 }
