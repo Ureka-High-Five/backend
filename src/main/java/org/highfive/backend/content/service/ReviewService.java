@@ -45,7 +45,8 @@ public class ReviewService {
         Review existedReview = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new BusinessException(ReviewErrorCode.REVIEW_002));
 
-        existedReview.updateReview(requestDto.rating, requestDto.review);
+        // TODO:  해당 리뷰가 유저가 작성한 것인지 검증하는 코드 추가
+        existedReview.updateReview(requestDto.rating(), requestDto.review());
 
         return new Response<>(OK.getCode(), null, null);
 
