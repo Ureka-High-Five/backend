@@ -92,6 +92,7 @@ public class UserService {
             String genreName = (String) row.get("genreName");
             genreCount.put(genreName, genreCount.getOrDefault(genreName, 0) + 1);
 
-            return genreCount;
+        }
+        return genreCount;
     }
 }
