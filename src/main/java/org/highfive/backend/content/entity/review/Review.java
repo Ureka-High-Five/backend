@@ -13,12 +13,14 @@ import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.user.entity.User;
 
 @Entity
+@Getter
 @Table(name = "reviews")
 @Builder
 @AllArgsConstructor
