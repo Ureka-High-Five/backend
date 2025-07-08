@@ -34,4 +34,21 @@ public class Review {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "content_id")
     private Content content;
+
+    @Builder
+    private Review(int rating, String reviewText, User user, Content content){
+        this.rating = rating;
+        this.reviewText = reviewText;
+        this.user = user;
+        this.content = content;
+    }
+
+    public static Review of(int rating, String reviewText, User user, Content content){
+        return Review.builder()
+            .rating(rating)
+            .reviewText(reviewText)
+            .user(user)
+            .content(content)
+            .build();
+    }
 }
