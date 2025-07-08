@@ -42,8 +42,8 @@ public class UserService {
     private void initVector(SubmitOnboardingRequestDto request, User user) {
         List<Long> contentIds = request.selectedContentIds();
         FastApiOnboardingResponseDto response = fastApiClient.onboarding(contentIds);
-        String vector = response.vector();         // 사용자 벡터
-        Map<String, Double> weights = response.weights();// 사용자 가중치
+        String vector = response.vector(); // 사용자 벡터
+        // 사용자 가중치
 
         user.setEmbedding(vector);
         // todo 가중치 저장
