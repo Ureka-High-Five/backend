@@ -3,21 +3,23 @@ package org.highfive.backend.user.dto.request;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.util.List;
+import org.highfive.backend.user.entity.Gender;
 
 public record SubmitOnboardingRequestDto(
-        @NotNull(message = "userId는 필수입니다.")
+        @NotNull
         Long userId,
 
-        @NotNull(message = "selectedContentIds는 필수입니다.")
-        @Size(min = 10, max = 10, message = "최소 하나 이상의 콘텐츠를 선택해야 합니다.")
-        List<Integer> selectedContentIds,
+        @Size(min = 10, max = 10, message = "총 10개의 작품을 선택해야 합니다.")
+        List<Long> selectedContentIds,
 
-        @NotNull(message = "나이는 필수입니다.")
-        Integer age,
+        @Size(min = 1900, max = 2017)
+        @NotNull
+        Integer year,
 
         @NotNull(message = "성별은 필수입니다.")
-        String gender,
+        Gender gender,
 
         @NotNull(message = "이름은 필수입니다.")
         String name
-) {}
+) {
+}

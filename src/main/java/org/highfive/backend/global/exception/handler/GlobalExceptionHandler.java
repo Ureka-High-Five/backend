@@ -1,7 +1,7 @@
 package org.highfive.backend.global.exception.handler;
 
-import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.global.code.ErrorCode;
+import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.global.exception.ErrorResponseDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,6 +13,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ErrorResponseDto> handleBusinessException(final BusinessException ex) {
         final ErrorCode errorCode = ex.getErrorCode();
-        return ResponseEntity.status(errorCode.getStatus()).body(new ErrorResponseDto(errorCode));
+        return ResponseEntity.status(errorCode.getHttpStatus()).body(new ErrorResponseDto(errorCode));
     }
 }

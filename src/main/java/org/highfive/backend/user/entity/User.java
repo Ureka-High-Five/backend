@@ -21,6 +21,7 @@ import java.util.List;
 @Setter
 @Table(name = "users")
 @Builder
+@Setter
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
