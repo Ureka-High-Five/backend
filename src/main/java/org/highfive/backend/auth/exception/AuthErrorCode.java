@@ -1,12 +1,13 @@
-package org.highfive.backend.auth.client.exception;
+package org.highfive.backend.auth.exception;
 
 import org.highfive.backend.global.code.ErrorCode;
 import org.springframework.http.HttpStatus;
 
 public enum AuthErrorCode implements ErrorCode {
 
-    KAKAO_TOKEN_ERROR(40101, "카카오 인증 토큰 요청 오류입니다.", HttpStatus.BAD_GATEWAY),
-    KAKAO_USERINFO_ERROR(40102, "카카오 유저 정보 요청 오류입니다.", HttpStatus.BAD_GATEWAY);
+    KAKAO_TOKEN_ERROR(50201, "카카오 인증 토큰 요청 오류입니다.", HttpStatus.BAD_GATEWAY),
+    KAKAO_USERINFO_ERROR(50202, "카카오 유저 정보 요청 오류입니다.", HttpStatus.BAD_GATEWAY),
+    TOKEN_ERROR(40101, "유효하지 않은 토큰입니다.", HttpStatus.UNAUTHORIZED);
 
     private final int code;
     private final String message;
