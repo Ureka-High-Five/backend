@@ -1,4 +1,4 @@
-package org.highfive.backend.global.strategy.util;
+package org.highfive.backend.global.util;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.annotation.PostConstruct;
