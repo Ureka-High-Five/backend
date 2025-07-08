@@ -10,6 +10,7 @@ import org.highfive.backend.content.dto.mapper.ContentMapper;
 import org.highfive.backend.content.dto.response.ContentDetailResponseDto;
 import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.content.entity.metadata.MetaInfo;
+import org.highfive.backend.content.entity.metadata.MetaInfoContents;
 import org.highfive.backend.content.entity.metadata.MetaType;
 import org.highfive.backend.content.entity.repository.MetaInfoContentsRepository;
 import org.highfive.backend.content.entity.review.Review;
@@ -45,7 +46,11 @@ public class ContentService {
         Content existedContent = contentRepository.findById(contentId)
                 .orElseThrow(() -> new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND));
 
-        List<MetaInfo> metaInfos = metaInfoContentsRepository.findMetaInfosByContentId(contentId);
+        List<MetaInfoContents> infoContentsList = metaInfoContentsRepository.findByContent_Id(contentId);
+
+        List<MetaInfo> metaInfos = infoContentsList.stream()
+                .map(MetaInfoContents::getMetaInfo)
+                .toList();
 
         Map<MetaType, List<String>> metaMap = metaInfos.stream()
                 .collect(Collectors.groupingBy(
