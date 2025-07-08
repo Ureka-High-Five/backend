@@ -1,5 +1,6 @@
 package org.highfive.backend.user;
 
+import java.time.Year;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +45,7 @@ public class UserService {
     }
 
     private void initBasic(final SubmitOnboardingRequestDto request, final User user) {
-        int age = request.year();
+        int age = Year.now().getValue() - request.year();
         Gender gender = request.gender();
         String name = request.name();
         user.setAge(age);
