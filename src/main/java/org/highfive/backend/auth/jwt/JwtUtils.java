@@ -7,6 +7,7 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.highfive.backend.auth.repository.RefreshTokenRepository;
 import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.user.entity.User;
 import org.highfive.backend.user.repository.UserRepository;
@@ -34,7 +35,7 @@ public class JwtUtils {
     private final String ROLES = "roles";
     private final String AUTHORIZATION = "Authorization";
     private final String BEARER = "Bearer ";
-
+    private final int BEARER_START_INDEX = 7;
 
     @Value("${jwt.secret}")
     private String secret;
@@ -46,29 +47,31 @@ public class JwtUtils {
     private Long refreshTokenExpiration;
 
     private final UserRepository userRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     private Key key;
 
     @PostConstruct
-    public void JwtUtils() {
+    public void initKey() {
         this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
     public String generateAccessToken(final String kakaoUserId, final List<String> roles) {
+        return createToken(kakaoUserId, roles, accessTokenExpiration);
+    }
+
+    public String generateRefreshToken(final String kakaoUserId, final List<String> roles) {
+        final String refreshToken = createToken(kakaoUserId, roles, refreshTokenExpiration);
+        refreshTokenRepository.save(kakaoUserId, refreshToken);
+        return refreshToken;
+    }
+
+    private String createToken(final String kakaoUserId, final List<String> roles, final long expireTime) {
         return Jwts.builder()
                 .setSubject(kakaoUserId)
                 .claim(ROLES, roles)
                 .setIssuedAt(Date.from(Instant.now()))
-                .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpiration))
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
-    }
-
-    public String generateRefreshToken(final String kakaoUserId) {
-        return Jwts.builder()
-                .setSubject(kakaoUserId)
-                .setIssuedAt(Date.from(Instant.now()))
-                .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpiration))
+                .setExpiration(new Date(System.currentTimeMillis() + expireTime))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -96,7 +99,7 @@ public class JwtUtils {
         final String bearer = request.getHeader(AUTHORIZATION);
 
         if(bearer != null && bearer.startsWith(BEARER)) {
-            return bearer.substring(7);
+            return bearer.substring(BEARER_START_INDEX);
         }
 
         return null;

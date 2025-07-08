@@ -25,7 +25,7 @@ public class SecurityConfing {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/auth/**", "/auth/login/kakao")
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/auth/login", "/auth/login/kakao", "/auth/reissue", "/auth")
                         .permitAll()
                         .anyRequest().authenticated()
                 )
