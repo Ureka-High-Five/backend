@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.highfive.backend.auth.client.dto.response.KakaoUserResponseDto;
@@ -19,9 +20,9 @@ import java.util.List;
 
 @Entity
 @Setter
+@Getter
 @Table(name = "users")
 @Builder
-@Setter
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
