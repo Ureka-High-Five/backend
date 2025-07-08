@@ -11,9 +11,10 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 @Slf4j
@@ -37,9 +38,9 @@ public class FastApiClient {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<List<Long>> request = new HttpEntity<>(contentIds, headers);
 
-        ResponseEntity<FastApiOnboardingResponseDto> response = restTemplate.postForEntity(url, request, FastApiOnboardingResponseDto.class);
-
-        return response.getBody();
+        return executeWithFastApiHandling(() ->
+                restTemplate.postForEntity(url, request, FastApiOnboardingResponseDto.class).getBody()
+        );
     }
 
     /**
@@ -54,21 +55,36 @@ public class FastApiClient {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Long> request = new HttpEntity<>(userId, headers);
 
+        return executeWithFastApiHandling(() ->
+                restTemplate.exchange(
+                        url,
+                        HttpMethod.GET,
+                        request,
+                        new ParameterizedTypeReference<List<RecommendContentsResponseDto>>() {}
+                ).getBody()
+        );
+    }
+
+    private <T> T executeWithFastApiHandling(FastApiCall<T> apiCall) {
         try {
-            ResponseEntity<List<RecommendContentsResponseDto>> response = restTemplate.exchange(
-                    url,
-                    HttpMethod.GET,
-                    request,
-                    new ParameterizedTypeReference<>() {}
-            );
-
-            return response.getBody();
-
+            T result = apiCall.call();
+            if (result == null) {
+                log.error("FastAPI 응답 바디가 null입니다.");
+                throw new BusinessException(FastApiErrorCode.FAST_API_RESPONSE_NULL);
+            }
+            return result;
+        } catch (HttpStatusCodeException e) {
+            log.error("FastAPI 응답 오류 - 상태 코드: {}, 응답 바디: {}", e.getStatusCode(), e.getResponseBodyAsString(), e);
+            throw new BusinessException(FastApiErrorCode.FAST_API_RESPONSE_ERROR);
         } catch (ResourceAccessException e) {
             log.error("FastAPI 서버에 접근할 수 없습니다.", e);
+            throw new BusinessException(FastApiErrorCode.FAST_API_CONNECTION_ERROR);
+        } catch (RestClientException e) {
+            log.error("FastAPI 호출 중 알 수 없는 오류 발생", e);
             throw new BusinessException(FastApiErrorCode.FAST_API_ERROR);
         }
     }
+
 
     private String genUrl(final String endPoint) {
         return fastApiUrl + endPoint;

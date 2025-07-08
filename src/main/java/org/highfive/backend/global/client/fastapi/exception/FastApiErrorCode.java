@@ -5,7 +5,10 @@ import org.springframework.http.HttpStatus;
 
 public enum FastApiErrorCode implements ErrorCode {
 
-    FAST_API_ERROR(40002, "FastAPI 서버에 접근할 수 없습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+    FAST_API_ERROR(50001, "FastAPI 서버에 접근할 수 없습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+    FAST_API_RESPONSE_NULL(50201, "FastAPI 응답 바디가 null입니다.", HttpStatus.BAD_GATEWAY),
+    FAST_API_RESPONSE_ERROR(50202, "FastAPI 서버가 에러 응답을 반환했습니다.", HttpStatus.BAD_GATEWAY),
+    FAST_API_CONNECTION_ERROR(50401, "FastAPI 서버에 연결할 수 없습니다.", HttpStatus.GATEWAY_TIMEOUT);
 
     private final int code;
     private final String message;
