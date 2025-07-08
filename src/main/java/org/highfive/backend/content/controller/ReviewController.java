@@ -8,6 +8,7 @@ import org.highfive.backend.content.service.ReviewService;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.user.entity.User;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,12 +38,12 @@ public class ReviewController {
         return reviewService.updateReview(reviewId, requestDto, user);
     }
 
-//    @DeleteMapping("/{reviewId}")
-//    public Response<?> deleteReview(
-//            @PathVariable Long reviewId,
-//            @AuthenticationPrincipal User user) {
-//
-//        return reviewService.deleteReview(reviewId, user);
-//    }
+    @DeleteMapping("/{reviewId}")
+    public Response<?> deleteReview(
+            @PathVariable Long reviewId,
+            @AuthenticationPrincipal User user) {
+
+        return reviewService.deleteReview(reviewId, user);
+    }
 
 }
