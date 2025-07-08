@@ -1,18 +1,17 @@
-package org.highfive.backend.auth.client.exception;
+package org.highfive.backend.user.exception;
 
 import org.highfive.backend.global.code.ErrorCode;
 import org.springframework.http.HttpStatus;
 
-public enum AuthErrorCode implements ErrorCode {
+public enum UserErrorCode implements ErrorCode {
 
-    KAKAO_TOKEN_ERROR(40101, "카카오 인증 토큰 요청 오류입니다.", HttpStatus.BAD_GATEWAY),
-    KAKAO_USERINFO_ERROR(40102, "카카오 유저 정보 요청 오류입니다.", HttpStatus.BAD_GATEWAY);
+    USER_NOT_FOUND_ERROR(40400, "존재하지 않는 유저입니다.", HttpStatus.NOT_FOUND);
 
     private final int code;
     private final String message;
     private final HttpStatus status;
 
-    AuthErrorCode(final int code, final String message, final HttpStatus status) {
+    UserErrorCode(final int code, final String message, final HttpStatus status) {
         this.code = code;
         this.message = message;
         this.status = status;
@@ -33,3 +32,4 @@ public enum AuthErrorCode implements ErrorCode {
         return this.status;
     }
 }
+
