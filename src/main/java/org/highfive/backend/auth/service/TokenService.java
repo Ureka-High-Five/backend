@@ -1,13 +1,15 @@
-package org.highfive.backend.auth.jwt;
+package org.highfive.backend.auth.service;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.highfive.backend.auth.repository.RefreshTokenRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.highfive.backend.auth.repository.TokenRepository;
 import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.user.entity.User;
 import org.highfive.backend.user.repository.UserRepository;
@@ -26,11 +28,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.highfive.backend.auth.exception.AuthErrorCode.TOKEN_ERROR;
 import static org.highfive.backend.user.exception.UserErrorCode.USER_NOT_FOUND_ERROR;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
-public class JwtUtils {
+public class TokenService {
 
     private final String ROLES = "roles";
     private final String AUTHORIZATION = "Authorization";
@@ -47,7 +51,7 @@ public class JwtUtils {
     private Long refreshTokenExpiration;
 
     private final UserRepository userRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final TokenRepository tokenRepository;
 
     private Key key;
 
@@ -61,12 +65,14 @@ public class JwtUtils {
     }
 
     public String generateRefreshToken(final String kakaoUserId, final List<String> roles) {
+
         final String refreshToken = createToken(kakaoUserId, roles, refreshTokenExpiration);
-        refreshTokenRepository.save(kakaoUserId, refreshToken);
+        tokenRepository.save(kakaoUserId, refreshToken);
         return refreshToken;
     }
 
     private String createToken(final String kakaoUserId, final List<String> roles, final long expireTime) {
+
         return Jwts.builder()
                 .setSubject(kakaoUserId)
                 .claim(ROLES, roles)
@@ -76,17 +82,24 @@ public class JwtUtils {
                 .compact();
     }
 
+    public boolean isBlackListToken(final String token) {
+        return tokenRepository.isBlackListToken(token);
+    }
+
     public boolean validateToken(final String token) {
+
         Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
         return true;
     }
 
     public Authentication getAuthentication(final String token) {
-        final Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+
+        final Claims claims = parseClaims(token);
         final String kakaoUserId = claims.getSubject();
         final List<String> roles = claims.get(ROLES, List.class);
 
         List<GrantedAuthority> authorities = new ArrayList<>();
+
         if(roles != null) {
             authorities = roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
         }
@@ -96,6 +109,7 @@ public class JwtUtils {
     }
 
     public String resolveToken(final HttpServletRequest request) {
+
         final String bearer = request.getHeader(AUTHORIZATION);
 
         if(bearer != null && bearer.startsWith(BEARER)) {
@@ -103,5 +117,27 @@ public class JwtUtils {
         }
 
         return null;
+    }
+
+    public long getRemainingTime(final String token) {
+
+        Claims claims = parseClaims(token);
+        Date expiration = claims.getExpiration();
+        long now = System.currentTimeMillis();
+
+        return expiration.getTime() - now;
+    }
+
+    private Claims parseClaims(String token) {
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (JwtException | IllegalArgumentException e) {
+            log.error("JWT 인증 실패 : {}", e.getMessage(), e);
+            throw new BusinessException(TOKEN_ERROR);
+        }
     }
 }
