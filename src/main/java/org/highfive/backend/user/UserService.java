@@ -6,6 +6,7 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.content.entity.metadata.MetaInfo;
 import org.highfive.backend.content.entity.repository.MetaInfoRepository;
+import org.highfive.backend.content.exception.MetaInfoErrorCode;
 import org.highfive.backend.content.repository.ContentRepository;
 import org.highfive.backend.global.client.fastapi.FastApiClient;
 import org.highfive.backend.global.client.fastapi.dto.FastApiOnboardingResponseDto;
@@ -71,13 +72,14 @@ public class UserService {
             final double weight = entry.getValue();
 
             final MetaInfo metaInfo = metaInfoRepository.findGenreMetaIdByName(genreName)
-                    .orElseThrow(() -> new IllegalArgumentException("장르가 존재하지 않음: " + genreName));
+                    .orElseThrow(() -> new BusinessException(MetaInfoErrorCode.GENRE_NOT_FOUND));
 
             final PreferMetaInfo prefer = PreferMetaInfo.builder()
                     .user(user)
                     .weight(weight)
                     .metaInfo(metaInfo)
                     .build();
+
             preferMetaInfoRepository.save(prefer);
         }
     }
