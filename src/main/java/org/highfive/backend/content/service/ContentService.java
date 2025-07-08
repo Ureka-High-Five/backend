@@ -63,7 +63,7 @@ public class ContentService {
     }
 
     /**
-     * 컨텐츠를 popularity 기준으로 내림차순 정렬하여 반환합니다.
+     * 컨텐츠를 popularity 기준으로 내림차순 정렬하여 컨텐츠와 장르 이름을 반환합니다.
      *
      * @param content
      * @param meta
