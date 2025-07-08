@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -20,7 +21,7 @@ public class ReviewController {
 	private final ReviewService reviewService;
 
 	@PostMapping
-	public Response<?> createReview(@RequestBody CreateReviewRequestDto request, @AuthenticationPrincipal User user){
+	public Response<?> createReview(@Valid @RequestBody CreateReviewRequestDto request, @AuthenticationPrincipal User user){
 		return reviewService.createReview(request, user);
 	}
 }
