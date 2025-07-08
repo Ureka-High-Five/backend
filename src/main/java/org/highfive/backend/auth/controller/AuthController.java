@@ -1,7 +1,8 @@
 package org.highfive.backend.auth.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.highfive.backend.auth.controller.dto.request.OAuthRequestDto;
+import org.highfive.backend.auth.dto.request.OAuthRequestDto;
+import org.highfive.backend.auth.dto.request.ReissueTokenDto;
 import org.highfive.backend.auth.service.AuthService;
 import org.highfive.backend.global.dto.Response;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,5 +20,10 @@ public class AuthController {
     @PostMapping
     public Response<?> login(@RequestBody final OAuthRequestDto OAuthRequestDto) {
         return authService.login(OAuthRequestDto);
+    }
+
+    @PostMapping("/reissue")
+    public Response<?> reissueToken(@RequestBody final ReissueTokenDto reissueTokenDto) {
+        return authService.reissue(reissueTokenDto);
     }
 }
