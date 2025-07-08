@@ -7,8 +7,11 @@ import org.highfive.backend.auth.client.dto.response.KakaoUserResponseDto;
 import org.highfive.backend.auth.dto.request.OAuthRequestDto;
 import org.highfive.backend.auth.dto.request.ReissueRequestDto;
 import org.highfive.backend.auth.dto.response.TokenResponseDto;
+import org.highfive.backend.auth.exception.AuthErrorCode;
 import org.highfive.backend.auth.jwt.JwtUtils;
+import org.highfive.backend.auth.repository.RefreshTokenRepository;
 import org.highfive.backend.global.dto.Response;
+import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.user.entity.Role;
 import org.highfive.backend.user.entity.User;
 import org.highfive.backend.user.repository.UserRepository;
@@ -26,6 +29,7 @@ public class AuthService {
     private final KakaoOAuthClient kakaoOAuthClient;
     private final UserRepository userRepository;
     private final JwtUtils jwtUtils;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Transactional
     public Response<?> login(final OAuthRequestDto OAuthRequestDto) {
@@ -52,6 +56,10 @@ public class AuthService {
         final User user = (User) authentication.getPrincipal();
 
         jwtUtils.validateToken(refreshToken);
+        if(!refreshTokenRepository.isRefreshTokenValid(user.getKakaoUserId(), refreshToken)) {
+            throw new BusinessException(AuthErrorCode.TOKEN_MISMATCH_ERROR);
+        }
+
         final String renewAccessToken = jwtUtils.generateAccessToken(user.getKakaoUserId(), List.of(user.getRole().toString()));
 
         return tokenResponse(renewAccessToken, refreshToken);
