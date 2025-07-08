@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Setter
 @Getter
 @Table(name = "users")
 @Builder
@@ -79,4 +78,15 @@ public class User {
                 .profileUrl(profile.profileImageUrl())
                 .build();
     }
+
+    public void updateBasicInfo(String name, int age, Gender gender) {
+        this.name = name;
+        this.age = age;
+        this.gender = gender;
+    }
+
+    public void updateEmbedding(String embedding) {
+        this.embedding = embedding;
+    }
+
 }

@@ -48,9 +48,7 @@ public class UserService {
         int age = Year.now().getValue() - request.year();
         Gender gender = request.gender();
         String name = request.name();
-        user.setAge(age);
-        user.setGender(gender);
-        user.setName(name);
+        user.updateBasicInfo(name, age, gender);
     }
 
     private void initVector(final SubmitOnboardingRequestDto request, final User user) {
@@ -59,7 +57,7 @@ public class UserService {
 
         // 벡터 저장
         String vector = response.vector();
-        user.setEmbedding(vector);
+        user.updateEmbedding(vector);
 
         // 가중치 저장
         Map<String, Integer> genreCount = countGenre(contentIds);
@@ -87,12 +85,13 @@ public class UserService {
 
     private Map<String, Integer> countGenre(final List<Long> contentIds) {
         final Map<String, Integer> genreCount = new HashMap<>();
-        for (long contentId : contentIds) {
-            List<String> genreNames = contentRepository.findGenreNamesByContentId(contentId);
-            for (String genreName : genreNames) {
-                genreCount.put(genreName, genreCount.getOrDefault(genreName, 0) + 1);
-            }
-        }
-        return genreCount;
+
+        List<Map<String, Object>> results = contentRepository.findContentGenresByContentIds(contentIds);
+
+        for (Map<String, Object> row : results) {
+            String genreName = (String) row.get("genreName");
+            genreCount.put(genreName, genreCount.getOrDefault(genreName, 0) + 1);
+
+            return genreCount;
     }
 }
