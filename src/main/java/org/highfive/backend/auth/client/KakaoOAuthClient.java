@@ -4,15 +4,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.highfive.backend.auth.client.dto.response.KakaoTokenResponseDto;
 import org.highfive.backend.auth.client.dto.response.KakaoUserResponseDto;
-import org.highfive.backend.auth.client.exception.AuthErrorCode;
+import org.highfive.backend.auth.exception.AuthErrorCode;
 import org.highfive.backend.global.exception.BusinessException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import static org.highfive.backend.auth.client.exception.AuthErrorCode.KAKAO_TOKEN_ERROR;
-import static org.highfive.backend.auth.client.exception.AuthErrorCode.KAKAO_USERINFO_ERROR;
+import static org.highfive.backend.auth.exception.AuthErrorCode.KAKAO_TOKEN_ERROR;
+import static org.highfive.backend.auth.exception.AuthErrorCode.KAKAO_USERINFO_ERROR;
 import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
 
 @Slf4j

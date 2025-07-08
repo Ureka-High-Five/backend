@@ -1,8 +1,8 @@
 package org.highfive.backend.auth.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.highfive.backend.auth.client.exception.AuthErrorCode;
-import org.highfive.backend.auth.controller.dto.request.OAuthRequestDto;
+import org.highfive.backend.auth.exception.AuthErrorCode;
+import org.highfive.backend.auth.dto.request.OAuthRequestDto;
 import org.highfive.backend.auth.service.AuthService;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;

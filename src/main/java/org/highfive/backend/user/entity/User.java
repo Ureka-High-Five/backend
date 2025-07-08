@@ -1,12 +1,7 @@
 package org.highfive.backend.user.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.highfive.backend.auth.client.dto.response.KakaoUserResponseDto;
 import org.highfive.backend.content.entity.shorts.ShortsComment;
 import org.highfive.backend.content.entity.shorts.log.ShortsLikeTimeLog;
@@ -76,6 +71,7 @@ public class User {
                 .kakaoUserId(response.id())
                 .name(profile.nickname())
                 .profileUrl(profile.profileImageUrl())
+                .role(Role.USER)
                 .build();
     }
 
