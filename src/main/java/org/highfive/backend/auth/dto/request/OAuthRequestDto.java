@@ -1,4 +1,4 @@
-package org.highfive.backend.auth.controller.dto.request;
+package org.highfive.backend.auth.dto.request;
 
 public record OAuthRequestDto(
         String code

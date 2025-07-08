@@ -3,7 +3,7 @@ package org.highfive.backend.auth.service;
 import org.highfive.backend.auth.client.KakaoOAuthClient;
 import org.highfive.backend.auth.client.dto.response.KakaoTokenResponseDto;
 import org.highfive.backend.auth.client.dto.response.KakaoUserResponseDto;
-import org.highfive.backend.auth.controller.dto.request.OAuthRequestDto;
+import org.highfive.backend.auth.dto.request.OAuthRequestDto;
 import org.highfive.backend.global.code.SuccessCode;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.user.entity.User;
