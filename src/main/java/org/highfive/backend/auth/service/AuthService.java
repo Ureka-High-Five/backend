@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.highfive.backend.auth.client.KakaoOAuthClient;
 import org.highfive.backend.auth.client.dto.response.KakaoUserResponseDto;
 import org.highfive.backend.auth.dto.request.OAuthRequestDto;
-import org.highfive.backend.auth.dto.request.ReissueTokenDto;
+import org.highfive.backend.auth.dto.request.ReissueRequestDto;
 import org.highfive.backend.auth.dto.response.TokenResponseDto;
 import org.highfive.backend.auth.jwt.JwtUtils;
 import org.highfive.backend.global.dto.Response;
@@ -45,9 +45,9 @@ public class AuthService {
         return tokenResponse(jwtUtils.generateAccessToken(kakaoUserId, roles), jwtUtils.generateRefreshToken(kakaoUserId, roles));
     }
 
-    public Response<TokenResponseDto> reissue(final ReissueTokenDto reissueTokenDto) {
+    public Response<TokenResponseDto> reissue(final ReissueRequestDto reissueRequestDto) {
 
-        final String refreshToken = reissueTokenDto.refreshToken();
+        final String refreshToken = reissueRequestDto.refreshToken();
         final UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) jwtUtils.getAuthentication(refreshToken);
         final User user = (User) authentication.getPrincipal();
 
