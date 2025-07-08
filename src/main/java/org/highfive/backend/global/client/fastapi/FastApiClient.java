@@ -27,7 +27,7 @@ public class FastApiClient {
 
     /**
      * 온보딩 화면에서 선택한 컨텐츠를 FastAPI 서버에 전달합니다.
-     * FastAPI 서버는 사용자의 초기 가중치와 벡터를 저장합니다.
+     * FastAPI 서버는 사용자의 초기 벡터를 계산하여 반환합니다.
      *
      * @param contentIds // 온보딩 화면에서 선택한 컨텐츠 id
      * @return // 가중치와 벡터 저장 성공 시 true 아니면 false
