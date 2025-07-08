@@ -73,6 +73,7 @@ public class User {
                 .kakaoUserId(response.id())
                 .name(profile.nickname())
                 .profileUrl(profile.profileImageUrl())
+                .role(Role.USER)
                 .build();
     }
 }
