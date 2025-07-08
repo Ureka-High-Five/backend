@@ -7,12 +7,14 @@ import lombok.RequiredArgsConstructor;
 import org.highfive.backend.content.dto.mapper.ReviewMapper;
 import org.highfive.backend.content.dto.request.CreateReviewRequestDto;
 import org.highfive.backend.content.dto.request.UpdateReviewRequestDto;
+import org.highfive.backend.content.dto.response.ReviewSimpleResponseDto;
 import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.content.entity.review.Review;
 import org.highfive.backend.content.exception.ContentErrorCode;
 import org.highfive.backend.content.exception.ReviewErrorCode;
 import org.highfive.backend.content.repository.ContentRepository;
 import org.highfive.backend.content.repository.ReviewRepository;
+import org.highfive.backend.global.dto.CursorPageResponse;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.user.entity.User;
@@ -69,4 +71,9 @@ public class ReviewService {
     }
 
 
+    public CursorPageResponse<ReviewSimpleResponseDto> getReviewsByCursor(Long contentId, String cursor, int size) {
+
+        return reviewRepository.findReviewsByCursor(contentId, cursor,
+                size);
+    }
 }
