@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.content.dto.OnboardingInitContentsResponseDto;
+import org.highfive.backend.content.dto.mapper.ContentMapper;
 import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.content.entity.QContent;
 import org.highfive.backend.content.entity.metadata.MetaType;
@@ -49,7 +50,7 @@ public class ContentService {
             Content c = tuple.get(content);
             String genreName = tuple.get(meta.name);
             if (initGenres.add(genreName)) {
-                finalResult.add(OnboardingInitContentsResponseDto.of(c));
+                finalResult.add(ContentMapper.toOnboardingInitContentsResponseDto(c));
             }
 
             if (finalResult.size() == INIT_CONTENT_CNT) break;
