@@ -1,13 +1,13 @@
-package org.highfive.backend.global.strategy.weight;
+package org.highfive.backend.global.util;
 
 import java.util.Map;
-import org.highfive.backend.global.strategy.util.GenreHolder;
+import org.springframework.stereotype.Component;
 
-public class OnboardingGenreWeightStrategy implements GenreWeightStrategy {
+@Component
+public class WeightManager {
 
     private final double BASIC_WEIGHT = 0.1;
 
-    @Override
     public Map<String, Double> calcWeight(Map<String, Integer> genreCount) {
         Map<String, Double> weightMap = GenreHolder.toWeightMap();
         for (Map.Entry<String, Integer> entry : genreCount.entrySet()) {

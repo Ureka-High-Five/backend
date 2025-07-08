@@ -89,4 +89,15 @@ public class User {
                 .role(Role.USER)
                 .build();
     }
+
+    public void updateBasicInfo(String name, int age, Gender gender) {
+        this.name = name;
+        this.age = age;
+        this.gender = gender;
+    }
+
+    public void updateEmbedding(String embedding) {
+        this.embedding = embedding;
+    }
+
 }
