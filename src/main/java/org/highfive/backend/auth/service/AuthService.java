@@ -15,13 +15,14 @@ import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.user.entity.Role;
 import org.highfive.backend.user.entity.User;
-import org.highfive.backend.user.mapper.UserMapper;
+import org.highfive.backend.user.dto.mapper.UserMapper;
 import org.highfive.backend.user.repository.UserRepository;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static org.highfive.backend.auth.service.TokenType.*;
 import static org.highfive.backend.global.code.SuccessCode.OK;
 
 @Service
@@ -54,10 +55,10 @@ public class AuthService {
     public Response<TokenResponseDto> reissue(final ReissueRequestDto reissueRequestDto) {
 
         final String refreshToken = reissueRequestDto.refreshToken();
-        final UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) tokenService.getAuthentication(refreshToken);
+        final UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) tokenService.getAuthentication(refreshToken, REFRESHTOKEN);
         final User user = (User) authentication.getPrincipal();
 
-        tokenService.validateToken(refreshToken);
+        tokenService.validateToken(refreshToken, REFRESHTOKEN);
         if(!tokenRedisRepository.isRefreshTokenValid(user.getKakaoUserId(), refreshToken)) {
             throw new BusinessException(AuthErrorCode.TOKEN_MISMATCH_ERROR);
         }
@@ -84,11 +85,11 @@ public class AuthService {
     }
 
     private Response<TokenResponseDto> tokenResponse(final String accessToken, final String refreshToken) {
-        final TokenResponseDto tokens = new TokenResponseDto(accessToken, refreshToken);
+        final TokenResponseDto tokens = new TokenResponseDto(accessToken, refreshToken, false);
         return new Response<>(OK.getCode(), tokens, OK.getMessage());
     }
 
     private Response<OnboardingResponseDto> onboardingResponse(final long userId, final String nickname) {
-        return new Response<>(OK.getCode(), new OnboardingResponseDto(userId, nickname), OK.getMessage());
+        return new Response<>(OK.getCode(), new OnboardingResponseDto(userId, nickname, true), OK.getMessage());
     }
 }

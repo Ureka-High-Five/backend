@@ -1,7 +1,7 @@
 package org.highfive.backend.auth.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.auth.dto.request.OAuthRequestDto;
 import org.highfive.backend.auth.dto.request.ReissueRequestDto;
@@ -20,12 +20,12 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public Response<?> login(@RequestBody final OAuthRequestDto OAuthRequestDto) {
+    public Response<?> login(@RequestBody @Valid final OAuthRequestDto OAuthRequestDto) {
         return authService.login(OAuthRequestDto);
     }
 
     @PostMapping("/reissue")
-    public Response<?> reissueToken(@RequestBody final ReissueRequestDto reissueRequestDto) {
+    public Response<?> reissueToken(@RequestBody @Valid final ReissueRequestDto reissueRequestDto) {
         return authService.reissue(reissueRequestDto);
     }
 

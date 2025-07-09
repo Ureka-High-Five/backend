@@ -1,6 +1,7 @@
 package org.highfive.backend.content.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.highfive.backend.content.dto.response.OnboardingInitContentsResponseDto;
 import org.highfive.backend.content.dto.response.ContentDetailResponseDto;
 import org.highfive.backend.content.service.ContentService;
 import org.highfive.backend.global.dto.Response;

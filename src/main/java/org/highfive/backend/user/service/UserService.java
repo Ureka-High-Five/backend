@@ -56,7 +56,7 @@ public class UserService {
     private TokenResponseDto createToken(final String kakaoUserId, final List<String> roles) {
         final String accessToken = tokenService.generateAccessToken(kakaoUserId, roles);
         final String refreshToken = tokenService.generateRefreshToken(kakaoUserId, roles);
-        return new TokenResponseDto(accessToken, refreshToken);
+        return new TokenResponseDto(accessToken, refreshToken, true);
     }
 
     private void initBasic(final SubmitOnboardingRequestDto request, final User user) {
