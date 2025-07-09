@@ -1,11 +1,8 @@
 package org.highfive.backend.content.controller;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.highfive.backend.content.dto.OnboardingInitContentsResponseDto;
 import org.highfive.backend.content.dto.response.ContentDetailResponseDto;
 import org.highfive.backend.content.service.ContentService;
-import org.highfive.backend.global.code.SuccessCode;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.user.entity.User;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

@@ -1,7 +1,7 @@
 package org.highfive.backend.content.dto.mapper;
 
 import java.util.List;
-import org.highfive.backend.content.dto.OnboardingInitContentsResponseDto;
+import org.highfive.backend.content.dto.response.OnboardingInitContentsResponseDto;
 import org.highfive.backend.content.dto.response.ContentDetailResponseDto;
 import org.highfive.backend.content.dto.response.OnboardingSelectContentResponseDto;
 import org.highfive.backend.content.entity.Content;

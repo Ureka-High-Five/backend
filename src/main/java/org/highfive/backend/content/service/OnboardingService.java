@@ -5,16 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.highfive.backend.content.dto.mapper.ContentMapper;
 import org.highfive.backend.content.dto.request.OnboardingSelectContentRequestDto;
 import org.highfive.backend.content.dto.response.OnboardingContentDto;
 import org.highfive.backend.content.dto.response.OnboardingSelectContentResponseDto;
 import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.content.repository.ContentRepository;
-import org.highfive.backend.global.RecommendType;
 import org.highfive.backend.global.client.fastapi.FastApiClient;
 import org.springframework.stereotype.Service;
 
