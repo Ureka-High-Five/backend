@@ -1,6 +1,8 @@
 package org.highfive.backend.content.dto.request;
 
+import java.util.List;
+
 public record OnboardingSelectContentRequestDto(
-    long selectedContentId
+    List<Long> selectedContentId
 ) {
 }
