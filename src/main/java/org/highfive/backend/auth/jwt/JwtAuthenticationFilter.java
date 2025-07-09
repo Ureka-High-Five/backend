@@ -25,6 +25,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain) throws ServletException, IOException {
 
+        final String requestURI = request.getRequestURI();
+        if (requestURI.startsWith("/auth") || requestURI.startsWith("/swagger") || requestURI.startsWith("/v3") || requestURI.equals("/user/userInfo")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         try {
             final String token = tokenService.resolveToken(request);
             tokenService.validateToken(token);
@@ -40,7 +46,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private static void errorResponse(final HttpServletResponse response) throws IOException {
+    private void errorResponse(final HttpServletResponse response) throws IOException {
         final AuthErrorCode authErrorCode = AuthErrorCode.TOKEN_ERROR;
         response.setStatus(authErrorCode.getHttpStatus().value());
         response.setContentType("application/json;charset=UTF-8");
