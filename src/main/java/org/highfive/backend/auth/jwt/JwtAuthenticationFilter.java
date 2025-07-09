@@ -18,6 +18,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+import static org.highfive.backend.auth.service.TokenType.ACCESSTOKEN;
+
 @Slf4j
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -26,6 +28,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final String SWAGGER = "/swagger-ui";
     private final String V3 = "/v3";
     private final String USER_INFO = "/user/info";
+    private final String REISSUE = "/auth/reissue";
 
     private final ObjectMapper objectMapper;
     private final TokenService tokenService;
@@ -34,15 +37,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain) throws ServletException, IOException {
 
         final String requestURI = request.getRequestURI();
-        if (requestURI.startsWith(AUTH_LOGIN) || requestURI.startsWith(SWAGGER) || requestURI.startsWith(V3) || requestURI.equals(USER_INFO)) {
+        if (requestURI.startsWith(AUTH_LOGIN) || requestURI.startsWith(SWAGGER) || requestURI.startsWith(V3) || requestURI.equals(USER_INFO) || requestURI.equals(REISSUE)) {
             filterChain.doFilter(request, response);
             return;
         }
 
         try {
             final String token = tokenService.resolveToken(request);
-            tokenService.validateToken(token);
-            Authentication authentication = tokenService.getAuthentication(token);
+            tokenService.validateToken(token, ACCESSTOKEN);
+            Authentication authentication = tokenService.getAuthentication(token, ACCESSTOKEN);
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
         } catch (JwtException | IllegalArgumentException | BusinessException e) {
@@ -55,8 +58,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private void errorResponse(final HttpServletResponse response) throws IOException {
-        final AuthErrorCode authErrorCode = AuthErrorCode.TOKEN_ERROR;
+        final AuthErrorCode authErrorCode = AuthErrorCode.ACCESS_TOKEN_ERROR;
         response.setStatus(authErrorCode.getHttpStatus().value());
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json;charset=UTF-8");
 
         Response<Object> errorResponse = new Response<>(
                 authErrorCode.getCode(),

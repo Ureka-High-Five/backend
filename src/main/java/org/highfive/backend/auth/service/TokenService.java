@@ -9,7 +9,6 @@ import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.highfive.backend.auth.exception.AuthErrorCode;
 import org.highfive.backend.auth.repository.redis.TokenRedisRepository;
 import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.user.entity.User;
@@ -29,7 +28,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.highfive.backend.auth.exception.AuthErrorCode.TOKEN_ERROR;
+import static org.highfive.backend.auth.exception.AuthErrorCode.ACCESS_TOKEN_ERROR;
+import static org.highfive.backend.auth.exception.AuthErrorCode.REFRESH_TOKEN_ERROR;
 import static org.highfive.backend.user.exception.UserErrorCode.USER_NOT_FOUND_ERROR;
 
 @Slf4j
@@ -87,22 +87,22 @@ public class TokenService {
         return tokenRedisRepository.isBlackListToken(token);
     }
 
-    public void validateToken(final String token) {
+    public void validateToken(final String token, final TokenType tokenType) {
 
         if(token == null) {
-            throw new BusinessException(AuthErrorCode.TOKEN_ERROR);
+            throw new BusinessException(ACCESS_TOKEN_ERROR);
         }
 
         if(isBlackListToken(token)) {
-            throw new BusinessException(AuthErrorCode.TOKEN_ERROR);
+            throw new BusinessException(ACCESS_TOKEN_ERROR);
         }
 
-        parseClaims(token);
+        parseClaims(token, tokenType);
     }
 
-    public Authentication getAuthentication(final String token) {
+    public Authentication getAuthentication(final String token, final TokenType tokenType) {
 
-        final Claims claims = parseClaims(token);
+        final Claims claims = parseClaims(token, tokenType);
         final String kakaoUserId = claims.getSubject();
         final List<String> roles = claims.get(ROLES, List.class);
 
@@ -129,14 +129,14 @@ public class TokenService {
 
     public long getRemainingTime(final String token) {
 
-        Claims claims = parseClaims(token);
+        Claims claims = parseClaims(token, TokenType.ACCESSTOKEN);
         Date expiration = claims.getExpiration();
         long now = System.currentTimeMillis();
 
         return expiration.getTime() - now;
     }
 
-    private Claims parseClaims(String token) {
+    private Claims parseClaims(String token, TokenType type) {
         try {
             return Jwts.parserBuilder()
                     .setSigningKey(key)
@@ -145,7 +145,10 @@ public class TokenService {
                     .getBody();
         } catch (JwtException | IllegalArgumentException e) {
             log.error("JWT 인증 실패 : {}", e.getMessage(), e);
-            throw new BusinessException(TOKEN_ERROR);
+            if(type.equals(TokenType.ACCESSTOKEN)) {
+                throw new BusinessException(ACCESS_TOKEN_ERROR);
+            }
+            throw new BusinessException(REFRESH_TOKEN_ERROR);
         }
     }
 }

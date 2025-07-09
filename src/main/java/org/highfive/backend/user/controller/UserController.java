@@ -18,7 +18,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @PatchMapping("/userInfo")
+    @PatchMapping("/info")
     public Response<TokenResponseDto> submitOnboarding(@Valid @RequestBody final SubmitOnboardingRequestDto request) {
         return userService.initUser(request);
     }

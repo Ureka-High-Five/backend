@@ -64,12 +64,8 @@ public class ContentService {
         List<String> actors = metaMap.getOrDefault(MetaType.ACTOR, List.of());
         List<String> genres = metaMap.getOrDefault(MetaType.GENRE, List.of());
 
-        Review review = reviewRepository.findByUserAndContent(user, existedContent).orElse(null);
-        Integer rating = (review != null) ? review.getRating() : null;
-        String reviewText = (review != null) ? review.getReviewText() : null;
-
         ContentDetailResponseDto response = ContentMapper.toContentDetailResponseDto(existedContent, director, actors,
-                genres, rating, reviewText);
+                genres);
 
         return new Response<>(SuccessCode.OK.getCode(), response, null);
     }

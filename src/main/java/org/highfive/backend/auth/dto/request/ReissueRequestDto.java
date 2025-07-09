@@ -1,4 +1,9 @@
 package org.highfive.backend.auth.dto.request;
 
-public record ReissueRequestDto(String refreshToken) {
+import jakarta.validation.constraints.NotBlank;
+
+public record ReissueRequestDto(
+        @NotBlank
+        String refreshToken
+) {
 }
