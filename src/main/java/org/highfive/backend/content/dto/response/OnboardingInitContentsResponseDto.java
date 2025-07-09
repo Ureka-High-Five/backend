@@ -1,4 +1,4 @@
-package org.highfive.backend.content.dto;
+package org.highfive.backend.content.dto.response;
 
 public record OnboardingInitContentsResponseDto(
         long id,

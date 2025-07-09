@@ -1,4 +1,4 @@
-package org.highfive.backend.user.mapper;
+package org.highfive.backend.user.dto.mapper;
 
 import org.highfive.backend.auth.client.dto.response.KakaoUserResponseDto;
 import org.highfive.backend.user.entity.Role;

@@ -2,7 +2,7 @@ package org.highfive.backend.content.controller;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.highfive.backend.content.dto.OnboardingInitContentsResponseDto;
+import org.highfive.backend.content.dto.response.OnboardingInitContentsResponseDto;
 import org.highfive.backend.content.dto.response.ContentDetailResponseDto;
 import org.highfive.backend.content.service.ContentService;
 import org.highfive.backend.global.code.SuccessCode;
