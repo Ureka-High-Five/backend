@@ -1,6 +1,7 @@
 package org.highfive.backend.global.exception.handler;
 
 import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
 import org.highfive.backend.global.code.ErrorCode;
 import org.highfive.backend.global.exception.ErrorResponseDto;
 import org.springframework.core.Ordered;
@@ -12,8 +13,9 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import static org.highfive.backend.global.code.GlobalErrorCode.INTERNAL_SERVER_ERROR;
+import static org.highfive.backend.global.code.GlobalErrorCode.BAD_REQUEST;
 
+@Slf4j
 @RestControllerAdvice
 public class ValidationExceptionHandler {
 
@@ -24,8 +26,9 @@ public class ValidationExceptionHandler {
             HttpMessageNotReadableException.class
     })
     @Order(Ordered.HIGHEST_PRECEDENCE)
-    public ResponseEntity<ErrorResponseDto> handleValidation() {
-        final ErrorCode errorCode = INTERNAL_SERVER_ERROR;
+    public ResponseEntity<ErrorResponseDto> handleValidation(Exception exception) {
+        log.error("{}", exception.getMessage(), exception);
+        final ErrorCode errorCode = BAD_REQUEST;
         return ResponseEntity.status(errorCode.getHttpStatus()).body(new ErrorResponseDto(errorCode));
     }
 }
