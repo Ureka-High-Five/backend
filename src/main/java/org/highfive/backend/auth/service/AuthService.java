@@ -85,11 +85,11 @@ public class AuthService {
     }
 
     private Response<TokenResponseDto> tokenResponse(final String accessToken, final String refreshToken) {
-        final TokenResponseDto tokens = new TokenResponseDto(accessToken, refreshToken);
+        final TokenResponseDto tokens = new TokenResponseDto(accessToken, refreshToken, false);
         return new Response<>(OK.getCode(), tokens, OK.getMessage());
     }
 
     private Response<OnboardingResponseDto> onboardingResponse(final long userId, final String nickname) {
-        return new Response<>(OK.getCode(), new OnboardingResponseDto(userId, nickname), OK.getMessage());
+        return new Response<>(OK.getCode(), new OnboardingResponseDto(userId, nickname, true), OK.getMessage());
     }
 }
