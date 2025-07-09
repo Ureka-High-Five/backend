@@ -33,7 +33,7 @@ public class FastApiClient {
      * @param contentIds // 온보딩 화면에서 선택한 컨텐츠 id
      * @return // 가중치와 벡터 저장 성공 시 true 아니면 false
      */
-    public FastApiOnboardingResponseDto onboarding(final List<Long> contentIds) {
+    public FastApiOnboardingResponseDto onboardingSubmit(final List<Long> contentIds) {
         String url = genUrl("/user/preferences");
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<List<Long>> request = new HttpEntity<>(contentIds, headers);
@@ -50,7 +50,7 @@ public class FastApiClient {
      * @param userId // 사용자 아이디
      * @return // 추천할 컨텐츠 아이디
      */
-    public List<RecommendContentsResponseDto> getContentsByUserId(final long userId) {
+    public List<RecommendContentsResponseDto> recommendContentsForUser(final long userId) {
         final String url = genUrl("/contents");
         headers.setContentType(MediaType.APPLICATION_JSON);
         final HttpEntity<Long> request = new HttpEntity<>(userId, headers);
@@ -64,6 +64,8 @@ public class FastApiClient {
                 ).getBody()
         );
     }
+
+
 
     private <T> T executeWithFastApiHandling(final FastApiCall<T> apiCall) {
         try {

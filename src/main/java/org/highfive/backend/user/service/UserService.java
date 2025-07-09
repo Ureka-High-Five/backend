@@ -68,7 +68,7 @@ public class UserService {
 
     private void initVector(final SubmitOnboardingRequestDto request, final User user) {
         List<Long> contentIds = request.selectedContentIds();
-        FastApiOnboardingResponseDto response = fastApiClient.onboarding(contentIds);
+        FastApiOnboardingResponseDto response = fastApiClient.onboardingSubmit(contentIds);
 
         // 벡터 저장
         String vector = response.vector();
