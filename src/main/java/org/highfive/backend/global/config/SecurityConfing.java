@@ -1,5 +1,6 @@
 package org.highfive.backend.global.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.auth.jwt.JwtAuthenticationFilter;
 import org.highfive.backend.auth.service.TokenService;
@@ -17,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfing {
 
     private final TokenService tokenService;
+    private final ObjectMapper objectMapper;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -28,14 +30,14 @@ public class SecurityConfing {
                         .requestMatchers(
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
-                                "/auth",
+                                "/auth/login",
                                 "/user/userInfo",
                                 "/auth/reissue",
                                 "/auth/logout"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(new JwtAuthenticationFilter(tokenService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthenticationFilter(objectMapper, tokenService), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 }
