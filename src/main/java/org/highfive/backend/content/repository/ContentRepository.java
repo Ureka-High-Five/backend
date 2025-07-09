@@ -59,4 +59,20 @@ public interface ContentRepository extends JpaRepository<Content,Long> {
             @Param("genres") List<String> genres,
             @Param("genreCount") long genreCount
     );
+
+    @Query("""
+    SELECT new org.highfive.backend.content.dto.response.OnboardingContentDto(
+        c.id, c.postUrl, c.title, c.openDate
+    )
+    FROM Content c
+    JOIN MetaInfoContents mic ON c.id = mic.content.id
+    JOIN MetaInfo m ON mic.metaInfo.id = m.id
+    WHERE m.type = 'GENRE'
+    GROUP BY c.id, c.postUrl, c.title, c.openDate
+    HAVING COUNT(DISTINCT m.name) = 1 AND MAX(m.name) = :genre
+""")
+    List<OnboardingContentDto> findContentsWithOnlyOneGenre(
+            @Param("genre") String genre
+    );
+
 }
