@@ -47,13 +47,13 @@ public class FastApiClient {
      * 사용자 아이디를 FastAPI 서버에 전달합니다.
      * FastAPI 서버는 사용자에게 추천할 컨텐츠를 반환합니다.
      *
-     * @param userId // 사용자 아이디
+     * @param vector // 사용자 벡터
      * @return // 추천할 컨텐츠 아이디
      */
-    public List<RecommendContentsResponseDto> getContentsByUserId(final long userId) {
+    public List<RecommendContentsResponseDto> getContentsByUserVector(final String vector) {
         final String url = genUrl("/contents");
         headers.setContentType(MediaType.APPLICATION_JSON);
-        final HttpEntity<Long> request = new HttpEntity<>(userId, headers);
+        final HttpEntity<String> request = new HttpEntity<>(vector, headers);
 
         return executeWithFastApiHandling(() ->
                 restTemplate.exchange(
