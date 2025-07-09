@@ -37,14 +37,11 @@ public class OnboardingController {
 
     @PostMapping("/content/recommend")
     public Response<List<OnboardingSelectContentResponseDto>> selectContent(@RequestBody final OnboardingSelectContentRequestDto request) {
-        final List<Content> contents = onboardingService.getContentBySelectedContent(request);
-        final List<Content> filteredContents = onboardingService.duplicateFilter(contents, request);
-        final List<OnboardingSelectContentResponseDto> responseContent = filteredContents.stream().map(ContentMapper::toOnboardingSelectContentResponseDto).toList();
+        final List<OnboardingSelectContentResponseDto> contents = onboardingService.getContentBySelectedContent(request);
 
-        if (filteredContents.isEmpty()) {
-            return new Response<>(SuccessCode.NO_CONTENT.getCode(), responseContent, null);
+        if (contents.isEmpty()) {
+            return new Response<>(SuccessCode.NO_CONTENT.getCode(), contents, null);
         }
-
-        return new Response<>(SuccessCode.OK.getCode(), responseContent, null);
+        return new Response<>(SuccessCode.OK.getCode(), contents, null);
     }
 }
