@@ -4,8 +4,10 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.highfive.backend.content.dto.OnboardingInitContentsResponseDto;
+import org.highfive.backend.content.dto.mapper.ContentMapper;
 import org.highfive.backend.content.dto.request.OnboardingSelectContentRequestDto;
 import org.highfive.backend.content.dto.response.OnboardingSelectContentResponseDto;
+import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.content.service.ContentService;
 import org.highfive.backend.content.service.OnboardingService;
 import org.highfive.backend.global.code.SuccessCode;
@@ -34,8 +36,15 @@ public class OnboardingController {
     }
 
     @PostMapping("/content/recommend")
-    public Response<List<OnboardingSelectContentResponseDto>> selectContent(@RequestBody OnboardingSelectContentRequestDto request) {
-        List<OnboardingSelectContentResponseDto> contents = onboardingService.getContentBySelectedContent(request);
-        return new Response<>(SuccessCode.OK.getCode(), contents, null);
+    public Response<List<OnboardingSelectContentResponseDto>> selectContent(@RequestBody final OnboardingSelectContentRequestDto request) {
+        final List<Content> contents = onboardingService.getContentBySelectedContent(request);
+        final List<Content> filteredContents = onboardingService.duplicateFilter(contents, request);
+        final List<OnboardingSelectContentResponseDto> responseContent = filteredContents.stream().map(ContentMapper::toOnboardingSelectContentResponseDto).toList();
+
+        if (filteredContents.isEmpty()) {
+            return new Response<>(SuccessCode.NO_CONTENT.getCode(), responseContent, null);
+        }
+
+        return new Response<>(SuccessCode.OK.getCode(), responseContent, null);
     }
 }
