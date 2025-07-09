@@ -1,16 +1,15 @@
-package org.highfive.backend.user;
+package org.highfive.backend.user.service;
 
-import java.time.Year;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.highfive.backend.auth.dto.response.TokenResponseDto;
+import org.highfive.backend.auth.service.TokenService;
 import org.highfive.backend.content.entity.metadata.MetaInfo;
 import org.highfive.backend.content.entity.repository.MetaInfoRepository;
 import org.highfive.backend.content.exception.MetaInfoErrorCode;
 import org.highfive.backend.content.repository.ContentRepository;
 import org.highfive.backend.global.client.fastapi.FastApiClient;
 import org.highfive.backend.global.client.fastapi.dto.FastApiOnboardingResponseDto;
+import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.global.util.WeightManager;
 import org.highfive.backend.user.code.UserErrorCode;
@@ -23,6 +22,13 @@ import org.highfive.backend.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Year;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.highfive.backend.global.code.SuccessCode.OK;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -33,15 +39,24 @@ public class UserService {
     private final ContentRepository contentRepository;
     private final MetaInfoRepository metaInfoRepository;
     private final PreferMetaInfoRepository preferMetaInfoRepository;
-
+    private final TokenService tokenService;
 
     @Transactional
-    public void initUser(final SubmitOnboardingRequestDto request) {
+    public Response<TokenResponseDto> initUser(final SubmitOnboardingRequestDto request) {
         long userId = request.userId();
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND_ERROR));
         initBasic(request, user);
-        initVector(request, user);
+        //initVector(request, user);
+
+        final String kakaoUserId = user.getKakaoUserId();
+        return new Response<>(OK.getCode(), createToken(kakaoUserId, List.of(user.getRole().toString())), OK.getMessage());
+    }
+
+    private TokenResponseDto createToken(final String kakaoUserId, final List<String> roles) {
+        final String accessToken = tokenService.generateAccessToken(kakaoUserId, roles);
+        final String refreshToken = tokenService.generateRefreshToken(kakaoUserId, roles);
+        return new TokenResponseDto(accessToken, refreshToken);
     }
 
     private void initBasic(final SubmitOnboardingRequestDto request, final User user) {
