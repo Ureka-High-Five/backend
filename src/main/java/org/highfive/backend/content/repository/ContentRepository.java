@@ -3,6 +3,7 @@ package org.highfive.backend.content.repository;
 import java.util.List;
 import java.util.Map;
 import org.highfive.backend.content.dto.TopContentByGenreDto;
+import org.highfive.backend.content.dto.response.OnboardingContentDto;
 import org.highfive.backend.content.entity.Content;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -41,4 +42,21 @@ public interface ContentRepository extends JpaRepository<Content,Long> {
             "JOIN mic.content c " +
             "WHERE m.type = 'GENRE' AND c.id IN :contentIds")
     List<Map<String, Object>> findContentGenresByContentIds(@Param("contentIds") List<Long> contentIds);
+
+    @Query("""
+    SELECT new org.highfive.backend.content.dto.response.OnboardingContentDto(
+        c.id, c.postUrl, c.title, c.openDate
+    )
+    FROM Content c
+    JOIN MetaInfoContents mic ON c.id = mic.content.id
+    JOIN MetaInfo m ON mic.metaInfo.id = m.id
+    WHERE m.type = 'GENRE'
+      AND m.name IN :genres
+    GROUP BY c.id, c.postUrl, c.title, c.openDate
+    HAVING COUNT(DISTINCT m.name) = :genreCount
+    """)
+    List<OnboardingContentDto> findContentsByGenres(
+            @Param("genres") List<String> genres,
+            @Param("genreCount") long genreCount
+    );
 }
