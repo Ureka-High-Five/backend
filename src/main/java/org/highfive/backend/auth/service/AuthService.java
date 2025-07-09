@@ -15,6 +15,7 @@ import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.user.entity.Role;
 import org.highfive.backend.user.entity.User;
+import org.highfive.backend.user.mapper.UserMapper;
 import org.highfive.backend.user.repository.UserRepository;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
@@ -77,7 +78,7 @@ public class AuthService {
     }
 
     private Long saveUser(final KakaoUserResponseDto userInfo) {
-        final User user = User.from(userInfo);
+        final User user = UserMapper.from(userInfo);
         final User savedUser = userRepository.save(user);
         return savedUser.getId();
     }

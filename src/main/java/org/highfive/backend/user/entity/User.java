@@ -80,16 +80,6 @@ public class User {
     @CreatedDate
     private LocalDateTime createdAt;
 
-    public static User from(final KakaoUserResponseDto response) {
-        final KakaoUserResponseDto.KakaoProfile profile = response.kakaoAccount().profile();
-        return User.builder()
-                .kakaoUserId(response.id())
-                .name(profile.nickname())
-                .profileUrl(profile.profileImageUrl())
-                .role(Role.USER)
-                .build();
-    }
-
     public void updateBasicInfo(String name, int age, Gender gender) {
         this.name = name;
         this.age = age;
