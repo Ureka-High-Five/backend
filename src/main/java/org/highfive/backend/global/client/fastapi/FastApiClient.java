@@ -2,6 +2,7 @@ package org.highfive.backend.global.client.fastapi;
 
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.highfive.backend.global.RecommendType;
 import org.highfive.backend.global.client.fastapi.dto.FastApiOnboardingResponseDto;
 import org.highfive.backend.global.client.fastapi.dto.RecommendContentsResponseDto;
 import org.highfive.backend.global.client.fastapi.exception.FastApiErrorCode;
@@ -35,6 +36,7 @@ public class FastApiClient {
      */
     public FastApiOnboardingResponseDto onboardingSubmit(final List<Long> contentIds) {
         String url = genUrl("/user/preferences");
+
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<List<Long>> request = new HttpEntity<>(contentIds, headers);
 
@@ -52,6 +54,7 @@ public class FastApiClient {
      */
     public List<RecommendContentsResponseDto> recommendContentsForUser(final long userId) {
         final String url = genUrl("/contents");
+
         headers.setContentType(MediaType.APPLICATION_JSON);
         final HttpEntity<Long> request = new HttpEntity<>(userId, headers);
 
@@ -65,7 +68,21 @@ public class FastApiClient {
         );
     }
 
+    public List<Long> recommendContentsByContent(final long selectedContentId, final RecommendType recommendType) {
+        final String url = genUrl("/contents/" + selectedContentId);
 
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        final HttpEntity<RecommendType> request = new HttpEntity<>(recommendType, headers);
+
+        return executeWithFastApiHandling(() ->
+                restTemplate.exchange(
+                        url,
+                        HttpMethod.GET,
+                        request,
+                        new ParameterizedTypeReference<List<Long>>() {}
+                ).getBody()
+        );
+    }
 
     private <T> T executeWithFastApiHandling(final FastApiCall<T> apiCall) {
         try {
@@ -86,7 +103,6 @@ public class FastApiClient {
             throw new BusinessException(FastApiErrorCode.FAST_API_ERROR);
         }
     }
-
 
     private String genUrl(final String endPoint) {
         return fastApiUrl + endPoint;
