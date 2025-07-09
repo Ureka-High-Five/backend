@@ -23,7 +23,7 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final String AUTH_LOGIN = "/auth/login";
-    private final String SWAGGER = "/auth/swagger";
+    private final String SWAGGER = "/swagger-ui";
     private final String V3 = "/v3";
     private final String USER_INFO = "/user/info";
 
