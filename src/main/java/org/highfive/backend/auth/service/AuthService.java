@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static org.highfive.backend.auth.service.TokenType.*;
 import static org.highfive.backend.global.code.SuccessCode.OK;
 
 @Service
@@ -54,10 +55,10 @@ public class AuthService {
     public Response<TokenResponseDto> reissue(final ReissueRequestDto reissueRequestDto) {
 
         final String refreshToken = reissueRequestDto.refreshToken();
-        final UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) tokenService.getAuthentication(refreshToken);
+        final UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) tokenService.getAuthentication(refreshToken, REFRESHTOKEN);
         final User user = (User) authentication.getPrincipal();
 
-        tokenService.validateToken(refreshToken);
+        tokenService.validateToken(refreshToken, REFRESHTOKEN);
         if(!tokenRedisRepository.isRefreshTokenValid(user.getKakaoUserId(), refreshToken)) {
             throw new BusinessException(AuthErrorCode.TOKEN_MISMATCH_ERROR);
         }
