@@ -13,9 +13,8 @@ public class ContentMapper {
 
 
     public static ContentDetailResponseDto toContentDetailResponseDto(Content content, String director,
-                                                                      List<String> actors, List<String> genres,
-                                                                      Integer rating, String review) {
+                                                                      List<String> actors, List<String> genres) {
         return new ContentDetailResponseDto(content.getTitle(), genres, content.getRunningTime(), content.getGrade(),
-                rating, review, content.getPostUrl(), actors, director, content.getOpenDate().toString());
+                content.getPostUrl(), actors, director, content.getOpenDate().toString());
     }
 }
