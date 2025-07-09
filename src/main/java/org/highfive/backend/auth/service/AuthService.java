@@ -7,6 +7,7 @@ import org.highfive.backend.auth.client.KakaoOAuthClient;
 import org.highfive.backend.auth.client.dto.response.KakaoUserResponseDto;
 import org.highfive.backend.auth.dto.request.OAuthRequestDto;
 import org.highfive.backend.auth.dto.request.ReissueRequestDto;
+import org.highfive.backend.auth.dto.response.OnboardingResponseDto;
 import org.highfive.backend.auth.dto.response.TokenResponseDto;
 import org.highfive.backend.auth.exception.AuthErrorCode;
 import org.highfive.backend.auth.repository.redis.TokenRedisRepository;
@@ -40,9 +41,9 @@ public class AuthService {
         final String kakaoUserId = userInfo.id();
 
         if (!userRepository.existsByKakaoUserId(kakaoUserId)) {
-            saveUser(userInfo);
+            Long userId = saveUser(userInfo);
             final String nickname = userInfo.kakaoAccount().profile().nickname();
-            return nicknameResponse(nickname);
+            return onboardingResponse(userId, nickname);
         }
 
         final List<String> roles = List.of(Role.USER.toString());
@@ -75,9 +76,10 @@ public class AuthService {
         return new Response<>(OK.getCode(), null, OK.getMessage());
     }
 
-    private void saveUser(final KakaoUserResponseDto userInfo) {
+    private Long saveUser(final KakaoUserResponseDto userInfo) {
         final User user = User.from(userInfo);
-        userRepository.save(user);
+        final User savedUser = userRepository.save(user);
+        return savedUser.getId();
     }
 
     private Response<TokenResponseDto> tokenResponse(final String accessToken, final String refreshToken) {
@@ -85,7 +87,7 @@ public class AuthService {
         return new Response<>(OK.getCode(), tokens, OK.getMessage());
     }
 
-    private Response<String> nicknameResponse(final String nickname) {
-        return new Response<>(OK.getCode(), nickname, OK.getMessage());
+    private Response<OnboardingResponseDto> onboardingResponse(final long userId, final String nickname) {
+        return new Response<>(OK.getCode(), new OnboardingResponseDto(userId, nickname), OK.getMessage());
     }
 }
