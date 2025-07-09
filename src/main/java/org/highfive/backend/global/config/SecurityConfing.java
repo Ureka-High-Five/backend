@@ -28,12 +28,11 @@ public class SecurityConfing {
                         .requestMatchers(
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
-                                "/auth/login",
-                                "/auth/login/kakao",
-                                "/auth/reissue",
                                 "/auth",
-                                "/auth/logout")
-                        .permitAll()
+                                "/user/userInfo",
+                                "/auth/reissue",
+                                "/auth/logout"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(tokenService), UsernamePasswordAuthenticationFilter.class)
