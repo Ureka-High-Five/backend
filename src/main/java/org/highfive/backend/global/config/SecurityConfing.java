@@ -33,7 +33,8 @@ public class SecurityConfing {
                                 "/auth/login",
                                 "/user/userInfo",
                                 "/auth/reissue",
-                                "/auth/logout"
+                                "/auth/logout",
+                                "/user/info"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
