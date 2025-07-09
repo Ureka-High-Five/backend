@@ -1,5 +1,6 @@
 package org.highfive.backend.auth.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.auth.dto.request.OAuthRequestDto;
@@ -18,7 +19,7 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping
+    @PostMapping("/login")
     public Response<?> login(@RequestBody final OAuthRequestDto OAuthRequestDto) {
         return authService.login(OAuthRequestDto);
     }
