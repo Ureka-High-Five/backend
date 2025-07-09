@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.content.dto.request.CreateReviewRequestDto;
 import org.highfive.backend.content.dto.request.UpdateReviewRequestDto;
+import org.highfive.backend.content.dto.response.ContentMyReviewResponseDto;
 import org.highfive.backend.content.dto.response.ReviewSimpleResponseDto;
 import org.highfive.backend.content.service.ReviewService;
 import org.highfive.backend.global.dto.CursorPageResponse;
@@ -69,4 +70,8 @@ public class ReviewController {
         return new Response<>(OK.getCode(), response, null);
     }
 
+    @GetMapping("/{contentId}/me")
+    public Response<ContentMyReviewResponseDto> getMyReviewByContent(final @PathVariable Long contentId, @AuthenticationPrincipal final User user) {
+        return reviewService.getMyReviewByContent(contentId, user);
+    }
 }
