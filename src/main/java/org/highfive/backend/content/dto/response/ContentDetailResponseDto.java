@@ -7,8 +7,6 @@ public record ContentDetailResponseDto(
         List<String> contentGenres,
         int contentRunningTime,
         int contentGrade,
-        int userRating,
-        String userReview,
         String posterUrl,
         List<String> actors,
         String director,
