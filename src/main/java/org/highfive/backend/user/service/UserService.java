@@ -71,7 +71,7 @@ public class UserService {
         FastApiOnboardingResponseDto response = fastApiClient.onboarding(contentIds);
 
         // 벡터 저장
-        String vector = response.vector();
+        String vector = response.userVector();
         user.updateEmbedding(vector);
 
         // 가중치 저장

@@ -50,7 +50,7 @@ public class FastApiClient {
      * @param vector // 사용자 벡터
      * @return // 추천할 컨텐츠 아이디
      */
-    public List<FastApiRecommendResponseDto> getContentsByUserVector(final String vector, final int count) {
+    public List<FastApiRecommendResponseDto> getContentsByVector(final String vector, final int count) {
         final String url = genUrl("/contents?count=" + count);
         headers.setContentType(MediaType.APPLICATION_JSON);
         final HttpEntity<String> request = new HttpEntity<>(vector, headers);

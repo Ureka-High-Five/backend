@@ -5,10 +5,10 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.content.dto.response.HomeContentsResponseDto;
 import org.highfive.backend.content.dto.response.HomeContentsResponseDto.GenreContentDto;
+import org.highfive.backend.content.dto.response.HomeContentsResponseDto.MainRecommendDto;
+import org.highfive.backend.content.dto.response.HomeContentsResponseDto.PersonalRecommendDto;
 import org.highfive.backend.content.dto.response.OnboardingInitContentsResponseDto;
 import org.highfive.backend.content.dto.response.ContentDetailResponseDto;
-import org.highfive.backend.content.dto.response.home.RecommendContentDto;
-import org.highfive.backend.content.dto.response.home.RecommendGenreContentDto;
 import org.highfive.backend.content.service.ContentService;
 import org.highfive.backend.global.code.SuccessCode;
 import org.highfive.backend.global.dto.Response;
@@ -45,13 +45,11 @@ public class ContentController {
 
     @GetMapping("/recommend")
     public Response<HomeContentsResponseDto> homeContents(@AuthenticationPrincipal final User user) {
-        HomeContentsResponseDto.MainRecommendDto mainRecommend = contentService.recommendMainContentsByUser(user);
-        List<HomeContentsResponseDto.PersonalRecommendDto> personalRecommends = contentService.recommendContentsByUser(user, 4);
-        Map<String, List<HomeContentsResponseDto.GenreContentDto>> genreRecommends = contentService.recommendContentsByUserGenre(user, 2);
+        MainRecommendDto mainRecommend = contentService.recommendMainContentsByUser(user);
+        List<PersonalRecommendDto> personalRecommends = contentService.recommendContentsByUser(user, 4);
+        Map<String, List<GenreContentDto>> genreRecommends = contentService.recommendContentsByUserGenre(user, 2);
 
-        // todo 사용자가 가장 선호하는 장르 기반 큐레이션 조회(1차 MVP 이후)
-
-        // todo 사용자가 두번째로 선호하는 장르 기반 큐레이션 조회(1차 MVP 이후)
+        // todo 사용자가 선호하는 장르 기반 큐레이션 조회(1차 MVP 이후)
 
         HomeContentsResponseDto result = new HomeContentsResponseDto(mainRecommend, personalRecommends, genreRecommends, null);
         return new Response<>(SuccessCode.OK.getCode(), result, null);
