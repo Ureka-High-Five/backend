@@ -99,5 +99,14 @@ public class ContentService {
         }
         return result;
     }
+
+    public MainRecommendDto recommendMainContentsByUser(User user) {
+        List<FastApiRecommendResponseDto> contentsByUserVector = fastApiClient.getContentsByUserVector(
+                user.getEmbedding(), 1);
+        Content content = contentRepository.findById(contentsByUserVector.getFirst().id())
+                .orElseThrow(() -> new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND));
+        List<String> genres = getGenres(content);
+        return new MainRecommendDto(content.getPostUrl(), content.getDescription(), genres);
+    }
     }
 }
