@@ -1,8 +1,10 @@
 package org.highfive.backend.content.controller;
 
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.content.dto.response.HomeContentsResponseDto;
+import org.highfive.backend.content.dto.response.HomeContentsResponseDto.GenreContentDto;
 import org.highfive.backend.content.dto.response.OnboardingInitContentsResponseDto;
 import org.highfive.backend.content.dto.response.ContentDetailResponseDto;
 import org.highfive.backend.content.dto.response.home.RecommendContentDto;
@@ -43,18 +45,15 @@ public class ContentController {
 
     @GetMapping("/recommend")
     public Response<HomeContentsResponseDto> homeContents(@AuthenticationPrincipal final User user) {
-        List<RecommendContentDto> contentsByUser = contentService.getContentsByUser(user);
-        RecommendGenreContentDto contentsByTopGenre = contentService.getContentsByUserGenre(user, 1);
+        HomeContentsResponseDto.MainRecommendDto mainRecommend = contentService.recommendMainContentsByUser(user);
+        List<HomeContentsResponseDto.PersonalRecommendDto> personalRecommends = contentService.recommendContentsByUser(user, 4);
+        Map<String, List<HomeContentsResponseDto.GenreContentDto>> genreRecommends = contentService.recommendContentsByUserGenre(user, 2);
 
         // todo 사용자가 가장 선호하는 장르 기반 큐레이션 조회(1차 MVP 이후)
 
-        RecommendGenreContentDto contentsBySecondGenre = contentService.getContentsByUserGenre(user, 2);
-
         // todo 사용자가 두번째로 선호하는 장르 기반 큐레이션 조회(1차 MVP 이후)
 
-        RecommendContentDto randomContent = contentService.getRandomContent();
-
-        HomeContentsResponseDto result = new HomeContentsResponseDto(contentsByUser, contentsByTopGenre, contentsBySecondGenre, null, null, randomContent);
+        HomeContentsResponseDto result = new HomeContentsResponseDto(mainRecommend, personalRecommends, genreRecommends, null);
         return new Response<>(SuccessCode.OK.getCode(), result, null);
     }
 }
