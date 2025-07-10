@@ -108,5 +108,17 @@ public class ContentService {
         List<String> genres = getGenres(content);
         return new MainRecommendDto(content.getPostUrl(), content.getDescription(), genres);
     }
+
+    private List<String> getGenres(Content content) {
+        List<Map<String, Object>> contentGenresByContentIds = contentRepository.findContentGenresByContentIds(
+                List.of(content.getId()));
+        List<String> genres = new ArrayList<>();
+        for (Map<String, Object> genreInfo : contentGenresByContentIds) {
+            String genreName = (String) genreInfo.get(content.getId());
+            genres.add(genreName);
+        }
+        return genres;
+    }
+
     }
 }
