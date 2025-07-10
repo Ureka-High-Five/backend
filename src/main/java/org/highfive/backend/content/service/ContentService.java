@@ -120,5 +120,13 @@ public class ContentService {
         return genres;
     }
 
+    public Map<String, List<GenreContentDto>> recommendContentsByUserGenre(User user, int count) {
+        List<String> preferGenresByUser = preferMetaInfoRepository.findPreferGenresByUser(user.getId(), 2);
+        Map<String, List<GenreContentDto>> result = new HashMap<>();
+        for (String genre : preferGenresByUser) {
+            List<PopularContentsByGenreDto> topContentsByGenre = contentRepository.findTopContentsByGenre(genre, 5);
+            result.put(genre, topContentsByGenre.stream().map(tc -> new GenreContentDto(tc.contentId(), tc.thumbnailUrl())).toList());
+        }
+        return result;
     }
 }
