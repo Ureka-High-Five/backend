@@ -20,14 +20,6 @@ import java.util.List;
 public class ContentController {
 
     private final ContentService contentService;
-  
-    /**
-     * 온보딩 초기 6개의 작품을 띄웁니다.
-     */
-    @GetMapping("/init")
-    public Response<List<OnboardingInitContentsResponseDto>> onboardingInitContents() {
-        return new Response<>(SuccessCode.OK.getCode(), contentService.getDistinctGenreTopContents(), null);
-    }
 
     @GetMapping("{contentId}/detail")
     public Response<ContentDetailResponseDto> getContentDetail(
