@@ -20,7 +20,7 @@ import java.util.List;
 public class ContentController {
 
     private final ContentService contentService;
-
+  
     /**
      * 온보딩 초기 6개의 작품을 띄웁니다.
      */

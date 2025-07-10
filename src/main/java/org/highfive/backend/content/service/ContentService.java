@@ -37,8 +37,10 @@ public class ContentService {
     private final MetaInfoContentsRepository metaInfoContentsRepository;
 
     public List<OnboardingInitContentsResponseDto> getDistinctGenreTopContents() {
+
         final List<TopContentByGenreDto> topContents = contentRepository.findTopContentPerGenre(INIT_CONTENT_CNT);
 
+        List<TopContentByGenreDto> topContents = contentRepository.findTopContentPerGenre(INIT_CONTENT_CNT);
         return topContents.stream()
                 .map(dto -> new OnboardingInitContentsResponseDto(dto.getId(), dto.getThumbnailUrl(), dto.getTitle()))
                 .toList();
