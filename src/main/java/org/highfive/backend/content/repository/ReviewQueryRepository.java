@@ -5,5 +5,5 @@ import org.highfive.backend.global.dto.CursorPageResponse;
 
 public interface ReviewQueryRepository {
 
-    public CursorPageResponse<ReviewSimpleResponseDto> findReviewsByCursor(Long contentId, String cursor, int size);
+    CursorPageResponse<ReviewSimpleResponseDto> findReviewsByCursor(Long contentId, String cursor, int size);
 }

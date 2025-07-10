@@ -63,6 +63,4 @@ public class ReviewQueryRepositoryImpl implements ReviewQueryRepository {
 
         return String.valueOf(items.getLast().reviewId());
     }
-
-
 }
