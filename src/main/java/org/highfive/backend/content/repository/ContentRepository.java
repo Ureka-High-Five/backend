@@ -16,7 +16,7 @@ public interface ContentRepository extends JpaRepository<Content,Long> {
         FROM (
           SELECT c.id, c.title, c.popularity, m.name,
               ROW_NUMBER() OVER (PARTITION BY m.name ORDER BY c.popularity DESC) AS rn
-          FROM content c
+          FROM contents c
           JOIN meta_info_contents mic ON mic.content_id = c.id
           JOIN meta_info m ON m.id = mic.meta_info_id
           WHERE m.type = 'GENRE'
@@ -42,37 +42,5 @@ public interface ContentRepository extends JpaRepository<Content,Long> {
             "JOIN mic.content c " +
             "WHERE m.type = 'GENRE' AND c.id IN :contentIds")
     List<Map<String, Object>> findContentGenresByContentIds(@Param("contentIds") List<Long> contentIds);
-
-    @Query("""
-    SELECT new org.highfive.backend.content.dto.response.OnboardingContentDto(
-        c.id, c.postUrl, c.title, c.openDate
-    )
-    FROM Content c
-    JOIN MetaInfoContents mic ON c.id = mic.content.id
-    JOIN MetaInfo m ON mic.metaInfo.id = m.id
-    WHERE m.type = 'GENRE'
-      AND m.name IN :genres
-    GROUP BY c.id, c.postUrl, c.title, c.openDate
-    HAVING COUNT(DISTINCT m.name) = :genreCount
-    """)
-    List<OnboardingContentDto> findContentsByGenres(
-            @Param("genres") List<String> genres,
-            @Param("genreCount") long genreCount
-    );
-
-    @Query("""
-    SELECT new org.highfive.backend.content.dto.response.OnboardingContentDto(
-        c.id, c.postUrl, c.title, c.openDate
-    )
-    FROM Content c
-    JOIN MetaInfoContents mic ON c.id = mic.content.id
-    JOIN MetaInfo m ON mic.metaInfo.id = m.id
-    WHERE m.type = 'GENRE'
-    GROUP BY c.id, c.postUrl, c.title, c.openDate
-    HAVING COUNT(DISTINCT m.name) = 1 AND MAX(m.name) = :genre
-""")
-    List<OnboardingContentDto> findContentsWithOnlyOneGenre(
-            @Param("genre") String genre
-    );
 
 }

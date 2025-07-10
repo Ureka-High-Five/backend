@@ -1,5 +1,6 @@
 package org.highfive.backend.content.controller;
 
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +35,7 @@ public class OnboardingController {
     }
 
     @PostMapping("/content/recommend")
-    public Response<List<OnboardingSelectContentResponseDto>> selectContent(@RequestBody final OnboardingSelectContentRequestDto request) {
+    public Response<List<OnboardingSelectContentResponseDto>> selectContent(@Valid @RequestBody final OnboardingSelectContentRequestDto request) {
         final List<OnboardingSelectContentResponseDto> contents = onboardingService.getContentBySelectedContent(request);
 
         if (contents.isEmpty()) {

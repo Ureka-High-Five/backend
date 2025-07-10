@@ -8,10 +8,12 @@ import java.util.Map.Entry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.highfive.backend.content.dto.request.OnboardingSelectContentRequestDto;
+import org.highfive.backend.content.dto.response.GenreCountDto;
 import org.highfive.backend.content.dto.response.OnboardingContentDto;
 import org.highfive.backend.content.dto.response.OnboardingSelectContentResponseDto;
 import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.content.repository.ContentRepository;
+import org.highfive.backend.content.repository.QueryDslContentRepository;
 import org.highfive.backend.global.client.fastapi.FastApiClient;
 import org.springframework.stereotype.Service;
 
@@ -23,20 +25,12 @@ public class OnboardingService {
     private static final int RESULT_CONTENT_COUNT = 3;
 
     private final FastApiClient fastApiClient;
-    private final ContentRepository contentRepository;
+    private final QueryDslContentRepository queryDslContentRepository;
 
     public List<OnboardingSelectContentResponseDto> getContentBySelectedContent(
             final OnboardingSelectContentRequestDto request) {
-        final List<Long> selectedContentIds = request.selectedContentIds();
-        List<Map<String, Object>> contentGenresByContentIds = contentRepository.findContentGenresByContentIds(selectedContentIds);
-
-        List<Entry<String, Integer>> sortedGenres = countGenre(contentGenresByContentIds);
-        List<String> topGenres = sortedGenres.stream()
-                .limit(2)
-                .map(Map.Entry::getKey)
-                .toList();
-
-        return getOnboardingSelectContentResponseDtos(topGenres);
+        List<GenreCountDto> topGenresByContentIds = queryDslContentRepository.findTopGenresByContentIds(request.selectedContentIds());
+        return getOnboardingSelectContentResponseDtos(topGenresByContentIds.stream().map((GenreCountDto::genre)).toList(), request);
 
         // 추후 유사도 계산 도입할 때 사용
 //        final List<Long> contentIds = fastApiClient.recommendContentsByContent(selectedContentIds.getLast(), RecommendType.GENRE);
@@ -45,7 +39,7 @@ public class OnboardingService {
 //        return result.stream().map(ContentMapper::toOnboardingSelectContentResponseDto).toList();
     }
 
-    private static List<Entry<String, Integer>> countGenre(List<Map<String, Object>> contentGenresByContentIds) {
+    private List<Entry<String, Integer>> countGenre(List<Map<String, Object>> contentGenresByContentIds) {
         Map<String, Integer> genreCount = new HashMap<>();
         for (Map<String, Object> map : contentGenresByContentIds) {
             for (Object genreObj : map.values()) {
@@ -60,24 +54,18 @@ public class OnboardingService {
         return sortedGenres;
     }
 
-    private List<OnboardingSelectContentResponseDto> getOnboardingSelectContentResponseDtos(List<String> topGenres) {
-        List<OnboardingContentDto> result = contentRepository.findContentsByGenres(topGenres, topGenres.size());
-        for (String genre : topGenres) {
-            if (result.size() == RESULT_CONTENT_COUNT) {
-                return result.stream().map(c -> new OnboardingSelectContentResponseDto(c.id(), c.postUrl(), c.title(),
-                        c.openDate().getYear())).toList();
-            }
-            result.addAll(contentRepository.findContentsWithOnlyOneGenre(genre));
-        }
-
-        return result.stream().map(c -> new OnboardingSelectContentResponseDto(c.id(), c.postUrl(), c.title(),
-                c.openDate().getYear())).toList();
+    private List<OnboardingSelectContentResponseDto> getOnboardingSelectContentResponseDtos(List<String> topGenres, OnboardingSelectContentRequestDto request) {
+        List<OnboardingContentDto> result = queryDslContentRepository.findContentsByGenresOrderByMatchCountDesc(topGenres);
+        result = duplicateFilter(result, request);
+        return result.stream().map(
+                c -> new OnboardingSelectContentResponseDto(c.id(), c.postUrl(), c.title(), c.openDate().getYear()))
+                .toList();
     }
 
-    private List<Content> duplicateFilter(final List<Content> contents, final OnboardingSelectContentRequestDto request) {
-        final List<Content> result = new ArrayList<>();
-        for (Content content : contents) {
-            if (request.selectedContentIds().contains(content.getId())) {
+    private List<OnboardingContentDto> duplicateFilter(final List<OnboardingContentDto> contents, final OnboardingSelectContentRequestDto request) {
+        final List<OnboardingContentDto> result = new ArrayList<>();
+        for (OnboardingContentDto content : contents) {
+            if (request.selectedContentIds().contains(content.id())) {
                 continue;
             }
             result.add(content);

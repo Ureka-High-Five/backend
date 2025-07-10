@@ -6,6 +6,7 @@ public record OnboardingContentDto(
         Long id,
         String postUrl,
         String title,
-        LocalDateTime openDate
+        LocalDateTime openDate,
+        Long genreMatchCount
 ) {
 }
