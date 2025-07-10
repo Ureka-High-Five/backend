@@ -3,7 +3,7 @@ package org.highfive.backend.global.client.fastapi;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.highfive.backend.global.client.fastapi.dto.FastApiOnboardingResponseDto;
-import org.highfive.backend.global.client.fastapi.dto.RecommendContentsResponseDto;
+import org.highfive.backend.global.client.fastapi.dto.FastApiRecommendResponseDto;
 import org.highfive.backend.global.client.fastapi.exception.FastApiErrorCode;
 import org.highfive.backend.global.exception.BusinessException;
 import org.springframework.core.ParameterizedTypeReference;
@@ -50,17 +50,17 @@ public class FastApiClient {
      * @param vector // 사용자 벡터
      * @return // 추천할 컨텐츠 아이디
      */
-    public List<RecommendContentsResponseDto> getContentsByUserVector(final String vector) {
-        final String url = genUrl("/contents");
+    public List<FastApiRecommendResponseDto> getContentsByUserVector(final String vector, final int count) {
+        final String url = genUrl("/contents?count=" + count);
         headers.setContentType(MediaType.APPLICATION_JSON);
         final HttpEntity<String> request = new HttpEntity<>(vector, headers);
 
         return executeWithFastApiHandling(() ->
                 restTemplate.exchange(
                         url,
-                        HttpMethod.GET,
+                        HttpMethod.POST,
                         request,
-                        new ParameterizedTypeReference<List<RecommendContentsResponseDto>>() {}
+                        new ParameterizedTypeReference<List<FastApiRecommendResponseDto>>() {}
                 ).getBody()
         );
     }
