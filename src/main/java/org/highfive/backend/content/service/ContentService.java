@@ -8,19 +8,22 @@ import org.highfive.backend.content.dto.response.OnboardingInitContentsResponseD
 import org.highfive.backend.content.dto.TopContentByGenreDto;
 import org.highfive.backend.content.dto.mapper.ContentMapper;
 import org.highfive.backend.content.dto.response.ContentDetailResponseDto;
+import org.highfive.backend.content.dto.response.home.RecommendContentDto;
 import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.content.entity.metadata.MetaInfo;
 import org.highfive.backend.content.entity.metadata.MetaInfoContents;
 import org.highfive.backend.content.entity.metadata.MetaType;
 import org.highfive.backend.content.entity.repository.MetaInfoContentsRepository;
-import org.highfive.backend.content.entity.review.Review;
 import org.highfive.backend.content.exception.ContentErrorCode;
 import org.highfive.backend.content.repository.ContentRepository;
 import org.highfive.backend.content.repository.ReviewRepository;
+import org.highfive.backend.global.client.fastapi.FastApiClient;
+import org.highfive.backend.global.client.fastapi.dto.RecommendContentsResponseDto;
 import org.highfive.backend.global.code.SuccessCode;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.user.entity.User;
+import org.highfive.backend.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -32,6 +35,8 @@ public class ContentService {
     private final ContentRepository contentRepository;
     private final MetaInfoContentsRepository metaInfoContentsRepository;
     private final ReviewRepository reviewRepository;
+    private final FastApiClient fastApiClient;
+    private final UserRepository userRepository;
 
     public List<OnboardingInitContentsResponseDto> getDistinctGenreTopContents() {
         List<TopContentByGenreDto> topContents = contentRepository.findTopContentPerGenre(INIT_CONTENT_CNT);
@@ -68,5 +73,11 @@ public class ContentService {
                 genres);
 
         return new Response<>(SuccessCode.OK.getCode(), response, null);
+    }
+
+    public List<RecommendContentDto> getContentsByUser(User user) {
+        List<RecommendContentsResponseDto> contentsByUserVector = fastApiClient.getContentsByUserVector(
+                user.getEmbedding());
+        return null;
     }
 }

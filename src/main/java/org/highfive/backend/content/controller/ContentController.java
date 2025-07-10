@@ -2,7 +2,7 @@ package org.highfive.backend.content.controller;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.highfive.backend.content.dto.response.home.HomeContentsResponseDto;
+import org.highfive.backend.content.dto.response.HomeContentsResponseDto;
 import org.highfive.backend.content.dto.response.OnboardingInitContentsResponseDto;
 import org.highfive.backend.content.dto.response.ContentDetailResponseDto;
 import org.highfive.backend.content.dto.response.home.RecommendContentDto;
@@ -41,6 +41,7 @@ public class ContentController {
         return contentService.getContentDetail(contentId, user);
     }
 
+    @GetMapping("/recommend")
     public Response<HomeContentsResponseDto> homeContents(@AuthenticationPrincipal final User user) {
         List<RecommendContentDto> contentsByUser = contentService.getContentsByUser(user);
         RecommendGenreContentDto contentsByTopGenre = contentService.getContentsByUserGenre(user, 1);
