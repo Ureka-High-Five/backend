@@ -2,15 +2,15 @@ package org.highfive.backend.content.repository;
 
 import java.util.List;
 import java.util.Map;
-import org.highfive.backend.content.dto.response.PopularContentsByGenreDto;
 import org.highfive.backend.content.dto.response.MostPopularContentPerGenreDto;
 import org.highfive.backend.content.dto.response.TopContentsByGenreDto;
 import org.highfive.backend.content.entity.Content;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface ContentRepository extends JpaRepository<Content,Long> {
+public interface ContentRepository extends JpaRepository<Content, Long> {
 
     @Query(value = """
         SELECT *
@@ -26,16 +26,6 @@ public interface ContentRepository extends JpaRepository<Content,Long> {
         LIMIT :limit
         """, nativeQuery = true)
     List<MostPopularContentPerGenreDto> findTopContentPerGenre(@Param("limit") int limit);
-
-    @Query(value = """
-        SELECT m.name
-        FROM meta_info_content mic
-        JOIN meta_info m ON mic.meta_info_id = m.id
-        WHERE mic.content_id = :contentId
-          AND m.type = 'GENRE'
-        """, nativeQuery = true)
-    List<String> findGenreNamesByContentId(@Param("contentId") Long contentId); // 컨텐츠 아이디로 장르 조회
-
 
     @Query("SELECT new map(c.id as contentId, m.name as genreName) " +
             "FROM MetaInfoContents mic " +
@@ -57,5 +47,17 @@ public interface ContentRepository extends JpaRepository<Content,Long> {
     List<TopContentsByGenreDto> findTopContentsByGenre(
             @Param("genre") String genre,
             @Param("limit") int limit
+    );
+
+    @Query(value = """
+        SELECT * FROM contents
+        WHERE title LIKE :input
+          AND (:cursor IS NULL OR id < :cursor)
+        ORDER BY id DESC
+    """, nativeQuery = true)
+    List<Content> searchByInput(
+            @Param("input") String input,
+            @Param("cursor") String cursor,
+            Pageable pageable
     );
 }

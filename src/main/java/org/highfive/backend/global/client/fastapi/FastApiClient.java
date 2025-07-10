@@ -44,8 +44,9 @@ public class FastApiClient {
      * @param genreCount // 온보딩 화면에서 선택한 컨텐츠 id
      * @return // 가중치와 벡터 저장 성공 시 true 아니면 false
      */
-    public FastApiOnboardingResponseDto onboarding(final Map<String, Integer> genreCount) {
+    public FastApiOnboardingResponseDto onboardingSubmit(final Map<String, Integer> genreCount) {
         String url = genUrl("/user/preferences");
+
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Map<String, Integer>> request = new HttpEntity<>(genreCount, headers);
 
@@ -103,7 +104,6 @@ public class FastApiClient {
             throw new BusinessException(FastApiErrorCode.FAST_API_ERROR);
         }
     }
-
 
     private String genUrl(final String endPoint) {
         return fastApiHost + fastApiPort + endPoint;
