@@ -2,7 +2,6 @@ package org.highfive.backend.content.dto.mapper;
 
 import org.highfive.backend.content.dto.response.ContentDetailResponseDto;
 import org.highfive.backend.content.dto.response.SearchContentResponseDto;
-import org.highfive.backend.content.dto.response.OnboardingSelectContentResponseDto;
 import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.global.dto.CursorPageResponse;
 
@@ -25,9 +24,6 @@ public class ContentMapper {
                 .map(ContentMapper::toSearchContentResponseDto)
                 .toList();
         return new CursorPageResponse<>(results, String.valueOf(nextCursor));
-    
-    
-    public static OnboardingSelectContentResponseDto toOnboardingSelectContentResponseDto(Content content) {
-        return new OnboardingSelectContentResponseDto(content.getId(), content.getPostUrl(), content.getTitle(), content.getOpenDate().getYear());
+
     }
 }
