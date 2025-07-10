@@ -2,7 +2,8 @@ package org.highfive.backend.content.repository;
 
 import java.util.List;
 import java.util.Map;
-import org.highfive.backend.content.dto.TopContentByGenreDto;
+import org.highfive.backend.content.dto.response.PopularContentsByGenreDto;
+import org.highfive.backend.content.dto.response.MostPopularContentPerGenreDto;
 import org.highfive.backend.content.entity.Content;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -23,7 +24,7 @@ public interface ContentRepository extends JpaRepository<Content,Long> {
         WHERE rn = 1
         LIMIT :limit
         """, nativeQuery = true)
-    List<TopContentByGenreDto> findTopContentPerGenre(@Param("limit") int limit);
+    List<MostPopularContentPerGenreDto> findTopContentPerGenre(@Param("limit") int limit);
 
     @Query(value = """
         SELECT m.name
@@ -41,4 +42,19 @@ public interface ContentRepository extends JpaRepository<Content,Long> {
             "JOIN mic.content c " +
             "WHERE m.type = 'GENRE' AND c.id IN :contentIds")
     List<Map<String, Object>> findContentGenresByContentIds(@Param("contentIds") List<Long> contentIds);
+
+    @Query(value = """
+    SELECT c.id, c.title, c.popularity, m.name
+    FROM content c
+    JOIN meta_info_contents mic ON mic.content_id = c.id
+    JOIN meta_info m ON m.id = mic.meta_info_id
+    WHERE m.type = 'GENRE'
+      AND m.name = :genre
+    ORDER BY c.popularity DESC
+    LIMIT :limit
+    """, nativeQuery = true)
+    List<PopularContentsByGenreDto> findTopContentsByGenre(
+            @Param("genre") String genre,
+            @Param("limit") int limit
+    );
 }
