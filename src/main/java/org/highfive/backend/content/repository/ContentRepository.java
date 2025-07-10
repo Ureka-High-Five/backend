@@ -16,7 +16,7 @@ public interface ContentRepository extends JpaRepository<Content,Long> {
         FROM (
           SELECT c.id, c.title, c.popularity, m.name,
               ROW_NUMBER() OVER (PARTITION BY m.name ORDER BY c.popularity DESC) AS rn
-          FROM content c
+          FROM contents c
           JOIN meta_info_contents mic ON mic.content_id = c.id
           JOIN meta_info m ON m.id = mic.meta_info_id
           WHERE m.type = 'GENRE'
@@ -45,7 +45,7 @@ public interface ContentRepository extends JpaRepository<Content,Long> {
 
     @Query(value = """
     SELECT c.id, c.title, c.popularity, m.name
-    FROM content c
+    FROM contents c
     JOIN meta_info_contents mic ON mic.content_id = c.id
     JOIN meta_info m ON m.id = mic.meta_info_id
     WHERE m.type = 'GENRE'

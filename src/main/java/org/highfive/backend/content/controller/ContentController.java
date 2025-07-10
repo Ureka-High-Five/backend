@@ -2,6 +2,7 @@ package org.highfive.backend.content.controller;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.content.dto.response.HomeContentsResponseDto;
 import org.highfive.backend.content.dto.response.HomeContentsResponseDto.GenreContentDto;
@@ -13,6 +14,7 @@ import org.highfive.backend.content.service.ContentService;
 import org.highfive.backend.global.code.SuccessCode;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.user.entity.User;
+import org.highfive.backend.user.repository.UserRepository;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ContentController {
 
     private final ContentService contentService;
+    private final UserRepository userRepository;
 
     /**
      * 온보딩 초기 6개의 작품을 띄웁니다.
@@ -44,7 +47,9 @@ public class ContentController {
     }
 
     @GetMapping("/recommend")
-    public Response<HomeContentsResponseDto> homeContents(@AuthenticationPrincipal final User user) {
+//    public Response<HomeContentsResponseDto> homeContents(@AuthenticationPrincipal final User user) {
+        public Response<HomeContentsResponseDto> homeContents() {
+        User user = userRepository.findById(1l).orElseThrow(RuntimeException::new);
         MainRecommendDto mainRecommend = contentService.recommendMainContentsByUser(user);
         List<PersonalRecommendDto> personalRecommends = contentService.recommendContentsByUser(user, 4);
         Map<String, List<GenreContentDto>> genreRecommends = contentService.recommendContentsByUserGenre(user, 2);
