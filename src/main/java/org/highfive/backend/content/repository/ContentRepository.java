@@ -15,7 +15,7 @@ public interface ContentRepository extends JpaRepository<Content,Long> {
         FROM (
           SELECT c.id, c.title, c.popularity, m.name,
               ROW_NUMBER() OVER (PARTITION BY m.name ORDER BY c.popularity DESC) AS rn
-          FROM content c
+          FROM contents c
           JOIN meta_info_contents mic ON mic.content_id = c.id
           JOIN meta_info m ON m.id = mic.meta_info_id
           WHERE m.type = 'GENRE'
@@ -24,21 +24,4 @@ public interface ContentRepository extends JpaRepository<Content,Long> {
         LIMIT :limit
         """, nativeQuery = true)
     List<TopContentByGenreDto> findTopContentPerGenre(@Param("limit") int limit);
-
-    @Query(value = """
-        SELECT m.name
-        FROM meta_info_content mic
-        JOIN meta_info m ON mic.meta_info_id = m.id
-        WHERE mic.content_id = :contentId
-          AND m.type = 'GENRE'
-        """, nativeQuery = true)
-    List<String> findGenreNamesByContentId(@Param("contentId") Long contentId); // 컨텐츠 아이디로 장르 조회
-
-
-    @Query("SELECT new map(c.id as contentId, m.name as genreName) " +
-            "FROM MetaInfoContents mic " +
-            "JOIN mic.metaInfo m " +
-            "JOIN mic.content c " +
-            "WHERE m.type = 'GENRE' AND c.id IN :contentIds")
-    List<Map<String, Object>> findContentGenresByContentIds(@Param("contentIds") List<Long> contentIds);
 }

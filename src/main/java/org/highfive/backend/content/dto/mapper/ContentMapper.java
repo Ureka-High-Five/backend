@@ -3,6 +3,7 @@ package org.highfive.backend.content.dto.mapper;
 import java.util.List;
 import org.highfive.backend.content.dto.response.OnboardingInitContentsResponseDto;
 import org.highfive.backend.content.dto.response.ContentDetailResponseDto;
+import org.highfive.backend.content.dto.response.OnboardingSelectContentResponseDto;
 import org.highfive.backend.content.entity.Content;
 
 public class ContentMapper {
@@ -16,5 +17,9 @@ public class ContentMapper {
                                                                       List<String> actors, List<String> genres) {
         return new ContentDetailResponseDto(content.getTitle(), genres, content.getRunningTime(), content.getGrade(),
                 content.getPostUrl(), actors, director, content.getOpenDate().toString());
+    }
+
+    public static OnboardingSelectContentResponseDto toOnboardingSelectContentResponseDto(Content content) {
+        return new OnboardingSelectContentResponseDto(content.getId(), content.getPostUrl(), content.getTitle(), content.getOpenDate().getYear());
     }
 }
