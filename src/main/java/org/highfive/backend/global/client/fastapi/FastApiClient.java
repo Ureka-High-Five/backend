@@ -1,10 +1,15 @@
 package org.highfive.backend.global.client.fastapi;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
-import org.highfive.backend.global.client.fastapi.dto.FastApiOnboardingResponseDto;
-import org.highfive.backend.global.client.fastapi.dto.FastApiRecommendResponseDto;
+import org.highfive.backend.global.client.fastapi.dto.request.RecommendRequest;
+import org.highfive.backend.global.client.fastapi.dto.response.FastApiOnboardingResponseDto;
+import org.highfive.backend.global.client.fastapi.dto.response.FastApiRecommendResponseDto;
 import org.highfive.backend.global.client.fastapi.exception.FastApiErrorCode;
+import org.highfive.backend.global.code.GlobalErrorCode;
 import org.highfive.backend.global.exception.BusinessException;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -33,10 +38,10 @@ public class FastApiClient {
      * @param contentIds // 온보딩 화면에서 선택한 컨텐츠 id
      * @return // 가중치와 벡터 저장 성공 시 true 아니면 false
      */
-    public FastApiOnboardingResponseDto onboarding(final List<Long> contentIds) {
+    public FastApiOnboardingResponseDto onboarding(final Map<String, Integer> contentIds) {
         String url = genUrl("/user/preferences");
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<List<Long>> request = new HttpEntity<>(contentIds, headers);
+        HttpEntity<Map<String, Integer>> request = new HttpEntity<>(contentIds, headers);
 
         return executeWithFastApiHandling(() ->
                 restTemplate.postForEntity(url, request, FastApiOnboardingResponseDto.class).getBody()
@@ -52,9 +57,17 @@ public class FastApiClient {
      */
     public List<FastApiRecommendResponseDto> getContentsByVector(final String vector, final int count) {
         final String url = genUrl("/contents?count=" + count);
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        final HttpEntity<String> request = new HttpEntity<>(vector, headers);
 
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonBody;
+        try {
+            jsonBody = mapper.writeValueAsString(new RecommendRequest(vector));
+        } catch (JsonProcessingException e) {
+            throw new BusinessException(GlobalErrorCode.JSON_PARSING_ERROR);
+        }
+
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        final HttpEntity<String> request = new HttpEntity<>(jsonBody, headers);
         return executeWithFastApiHandling(() ->
                 restTemplate.exchange(
                         url,
