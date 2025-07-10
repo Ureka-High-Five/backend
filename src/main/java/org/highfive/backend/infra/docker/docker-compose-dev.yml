@@ -4,6 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: spring
+    network_mode: host
     ports:
       - ${SERVER_PORT}:${SERVER_PORT}
     environment:
@@ -22,4 +23,3 @@ services:
       OAUTH_FE_REDIRECT_URI: ${OAUTH_FE_REDIRECT_URI}
       JWT_ACCESS_TOKEN_EXPIRATION: ${JWT_ACCESS_TOKEN_EXPIRATION}
       JWT_REFRESH_TOKEN_EXPIRATION: ${JWT_REFRESH_TOKEN_EXPIRATION}
-    network_mode: host
