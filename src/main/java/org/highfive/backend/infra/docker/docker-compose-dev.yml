@@ -4,6 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: spring
+    network_mode: host
     ports:
       - ${SERVER_PORT}:${SERVER_PORT}
     environment:
