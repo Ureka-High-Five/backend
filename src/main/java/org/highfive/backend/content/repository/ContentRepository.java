@@ -3,7 +3,6 @@ package org.highfive.backend.content.repository;
 import java.util.List;
 import java.util.Map;
 import org.highfive.backend.content.dto.TopContentByGenreDto;
-import org.highfive.backend.content.dto.response.OnboardingContentDto;
 import org.highfive.backend.content.entity.Content;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -25,13 +24,4 @@ public interface ContentRepository extends JpaRepository<Content,Long> {
         LIMIT :limit
         """, nativeQuery = true)
     List<TopContentByGenreDto> findTopContentPerGenre(@Param("limit") int limit);
-
-
-    @Query("SELECT new map(c.id as contentId, m.name as genreName) " +
-            "FROM MetaInfoContents mic " +
-            "JOIN mic.metaInfo m " +
-            "JOIN mic.content c " +
-            "WHERE m.type = 'GENRE' AND c.id IN :contentIds")
-    List<Map<String, Object>> findContentGenresByContentIds(@Param("contentIds") List<Long> contentIds);
-
 }

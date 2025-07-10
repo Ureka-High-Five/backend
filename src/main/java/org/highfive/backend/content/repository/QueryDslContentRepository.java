@@ -3,6 +3,7 @@ package org.highfive.backend.content.repository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.content.dto.response.GenreCountDto;
 import org.highfive.backend.content.dto.response.OnboardingContentDto;
@@ -86,5 +87,27 @@ public class QueryDslContentRepository implements ContentQueryRepository{
                 .groupBy(c.id, c.postUrl, c.title, c.openDate)
                 .orderBy(m.name.countDistinct().desc())
                 .fetch();
+    }@SuppressWarnings("unchecked")
+
+    public List<Map<String, Object>> findContentGenresByContentIds(List<Long> contentIds) {
+        QMetaInfoContents mic = QMetaInfoContents.metaInfoContents;
+        QMetaInfo m = QMetaInfo.metaInfo;
+        QContent c = QContent.content;
+
+        return (List<Map<String, Object>>) (List<?>)
+                queryFactory
+                        .select(Projections.fields(
+                                Map.class,
+                                c.id.as("contentId"),
+                                m.name.as("genreName")
+                        ))
+                        .from(mic)
+                        .join(mic.metaInfo, m)
+                        .join(mic.content, c)
+                        .where(
+                                m.type.eq(MetaType.GENRE),
+                                c.id.in(contentIds)
+                        )
+                        .fetch();
     }
 }
