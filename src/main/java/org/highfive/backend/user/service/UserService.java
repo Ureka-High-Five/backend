@@ -47,7 +47,7 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND_ERROR));
         initBasic(request, user);
-        //initVector(request, user);
+        initVector(request, user);
 
         final String kakaoUserId = user.getKakaoUserId();
         return new Response<>(OK.getCode(), createToken(kakaoUserId, List.of(user.getRole().toString())), OK.getMessage());
@@ -85,13 +85,13 @@ public class UserService {
             final String genreName = entry.getKey();
             final double weight = entry.getValue();
 
-            final MetaInfo metaInfo = metaInfoRepository.findGenreMetaIdByName(genreName)
-                    .orElseThrow(() -> new BusinessException(MetaInfoErrorCode.GENRE_NOT_FOUND));
+            final List<MetaInfo> metaInfo = metaInfoRepository.findGenreMetaIdByName(genreName);
+//                    .orElseThrow(() -> new BusinessException(MetaInfoErrorCode.GENRE_NOT_FOUND));
 
             final PreferMetaInfo prefer = PreferMetaInfo.builder()
                     .user(user)
                     .weight(weight)
-                    .metaInfo(metaInfo)
+                    .metaInfo(metaInfo.get(0))
                     .build();
 
             preferMetaInfoRepository.save(prefer);

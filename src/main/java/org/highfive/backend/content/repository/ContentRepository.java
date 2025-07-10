@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import org.highfive.backend.content.dto.response.PopularContentsByGenreDto;
 import org.highfive.backend.content.dto.response.MostPopularContentPerGenreDto;
+import org.highfive.backend.content.dto.response.TopContentsByGenreDto;
 import org.highfive.backend.content.entity.Content;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -44,7 +45,7 @@ public interface ContentRepository extends JpaRepository<Content,Long> {
     List<Map<String, Object>> findContentGenresByContentIds(@Param("contentIds") List<Long> contentIds);
 
     @Query(value = """
-    SELECT c.id, c.title, c.popularity, m.name
+    SELECT c.id, c.thumbnail_url
     FROM contents c
     JOIN meta_info_contents mic ON mic.content_id = c.id
     JOIN meta_info m ON m.id = mic.meta_info_id
@@ -53,7 +54,7 @@ public interface ContentRepository extends JpaRepository<Content,Long> {
     ORDER BY c.popularity DESC
     LIMIT :limit
     """, nativeQuery = true)
-    List<PopularContentsByGenreDto> findTopContentsByGenre(
+    List<TopContentsByGenreDto> findTopContentsByGenre(
             @Param("genre") String genre,
             @Param("limit") int limit
     );

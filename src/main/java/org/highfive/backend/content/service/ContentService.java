@@ -13,7 +13,7 @@ import org.highfive.backend.content.dto.response.OnboardingInitContentsResponseD
 import org.highfive.backend.content.dto.response.MostPopularContentPerGenreDto;
 import org.highfive.backend.content.dto.mapper.ContentMapper;
 import org.highfive.backend.content.dto.response.ContentDetailResponseDto;
-import org.highfive.backend.content.dto.response.PopularContentsByGenreDto;
+import org.highfive.backend.content.dto.response.TopContentsByGenreDto;
 import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.content.entity.metadata.MetaInfo;
 import org.highfive.backend.content.entity.metadata.MetaInfoContents;
@@ -105,7 +105,7 @@ public class ContentService {
         List<String> preferGenresByUser = preferMetaInfoRepository.findPreferGenresByUser(user.getId(), 2);
         Map<String, List<GenreContentDto>> result = new HashMap<>();
         for (String genre : preferGenresByUser) {
-            List<PopularContentsByGenreDto> topContentsByGenre = contentRepository.findTopContentsByGenre(genre, 5);
+            List<TopContentsByGenreDto> topContentsByGenre = contentRepository.findTopContentsByGenre(genre, 5);
             result.put(genre, topContentsByGenre.stream().map(tc -> new GenreContentDto(tc.contentId(), tc.thumbnailUrl())).toList());
         }
         return result;

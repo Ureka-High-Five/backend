@@ -11,6 +11,7 @@ import org.highfive.backend.global.client.fastapi.dto.response.FastApiRecommendR
 import org.highfive.backend.global.client.fastapi.exception.FastApiErrorCode;
 import org.highfive.backend.global.code.GlobalErrorCode;
 import org.highfive.backend.global.exception.BusinessException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -26,8 +27,13 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class FastApiClient {
 
-    private final String fastApiUrl = "http://localhost:8000";
     private final RestTemplate restTemplate = new RestTemplate();
+
+    @Value("${fastpi.host}")
+    private String fastApiHost;
+
+    @Value("{fastapi.port}")
+    private String fastApiPort;
 
     private HttpHeaders headers = new HttpHeaders();
 
@@ -35,13 +41,13 @@ public class FastApiClient {
      * 온보딩 화면에서 선택한 컨텐츠를 FastAPI 서버에 전달합니다.
      * FastAPI 서버는 사용자의 초기 벡터를 계산하여 반환합니다.
      *
-     * @param contentIds // 온보딩 화면에서 선택한 컨텐츠 id
+     * @param genreCount // 온보딩 화면에서 선택한 컨텐츠 id
      * @return // 가중치와 벡터 저장 성공 시 true 아니면 false
      */
-    public FastApiOnboardingResponseDto onboarding(final Map<String, Integer> contentIds) {
+    public FastApiOnboardingResponseDto onboarding(final Map<String, Integer> genreCount) {
         String url = genUrl("/user/preferences");
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<Map<String, Integer>> request = new HttpEntity<>(contentIds, headers);
+        HttpEntity<Map<String, Integer>> request = new HttpEntity<>(genreCount, headers);
 
         return executeWithFastApiHandling(() ->
                 restTemplate.postForEntity(url, request, FastApiOnboardingResponseDto.class).getBody()
@@ -100,6 +106,6 @@ public class FastApiClient {
 
 
     private String genUrl(final String endPoint) {
-        return fastApiUrl + endPoint;
+        return fastApiHost + fastApiPort + endPoint;
     }
 }
