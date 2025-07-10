@@ -23,8 +23,6 @@ public class ContentController {
 
     /**
      * 온보딩 초기 6개의 작품을 띄웁니다.
-     *
-     * @return
      */
     @GetMapping("/init")
     public Response<List<OnboardingInitContentsResponseDto>> onboardingInitContents() {
