@@ -42,17 +42,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        try {
-            final String token = tokenService.resolveToken(request);
-            tokenService.validateToken(token, ACCESSTOKEN);
-            Authentication authentication = tokenService.getAuthentication(token, ACCESSTOKEN);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        } catch (JwtException | IllegalArgumentException | BusinessException e) {
-            log.error("JWT 인증 실패 : {}", e.getMessage(), e);
-            errorResponse(response);
-            return;
-        }
+//        try {
+//            final String token = tokenService.resolveToken(request);
+//            tokenService.validateToken(token, ACCESSTOKEN);
+//            Authentication authentication = tokenService.getAuthentication(token, ACCESSTOKEN);
+//            SecurityContextHolder.getContext().setAuthentication(authentication);
+//
+//        } catch (JwtException | IllegalArgumentException | BusinessException e) {
+//            log.error("JWT 인증 실패 : {}", e.getMessage(), e);
+//            errorResponse(response);
+//            return;
+//        }
 
         filterChain.doFilter(request, response);
     }
