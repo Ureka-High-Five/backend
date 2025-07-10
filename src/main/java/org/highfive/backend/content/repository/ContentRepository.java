@@ -26,15 +26,6 @@ public interface ContentRepository extends JpaRepository<Content,Long> {
         """, nativeQuery = true)
     List<TopContentByGenreDto> findTopContentPerGenre(@Param("limit") int limit);
 
-    @Query(value = """
-        SELECT m.name
-        FROM meta_info_content mic
-        JOIN meta_info m ON mic.meta_info_id = m.id
-        WHERE mic.content_id = :contentId
-          AND m.type = 'GENRE'
-        """, nativeQuery = true)
-    List<String> findGenreNamesByContentId(@Param("contentId") Long contentId); // 컨텐츠 아이디로 장르 조회
-
 
     @Query("SELECT new map(c.id as contentId, m.name as genreName) " +
             "FROM MetaInfoContents mic " +
