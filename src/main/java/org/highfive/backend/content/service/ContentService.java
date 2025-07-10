@@ -1,28 +1,36 @@
 package org.highfive.backend.content.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.highfive.backend.content.dto.response.HomeContentsResponseDto;
+import org.highfive.backend.content.dto.response.HomeContentsResponseDto.GenreContentDto;
+import org.highfive.backend.content.dto.response.HomeContentsResponseDto.MainRecommendDto;
+import org.highfive.backend.content.dto.response.HomeContentsResponseDto.PersonalRecommendDto;
 import org.highfive.backend.content.dto.response.OnboardingInitContentsResponseDto;
-import org.highfive.backend.content.dto.TopContentByGenreDto;
+import org.highfive.backend.content.dto.response.MostPopularContentPerGenreDto;
 import org.highfive.backend.content.dto.mapper.ContentMapper;
 import org.highfive.backend.content.dto.response.ContentDetailResponseDto;
-import org.highfive.backend.content.dto.response.home.RecommendContentDto;
+import org.highfive.backend.content.dto.response.PopularContentsByGenreDto;
 import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.content.entity.metadata.MetaInfo;
 import org.highfive.backend.content.entity.metadata.MetaInfoContents;
 import org.highfive.backend.content.entity.metadata.MetaType;
 import org.highfive.backend.content.entity.repository.MetaInfoContentsRepository;
+import org.highfive.backend.content.entity.repository.MetaInfoRepository;
 import org.highfive.backend.content.exception.ContentErrorCode;
 import org.highfive.backend.content.repository.ContentRepository;
 import org.highfive.backend.content.repository.ReviewRepository;
 import org.highfive.backend.global.client.fastapi.FastApiClient;
-import org.highfive.backend.global.client.fastapi.dto.RecommendContentsResponseDto;
+import org.highfive.backend.global.client.fastapi.dto.FastApiRecommendResponseDto;
 import org.highfive.backend.global.code.SuccessCode;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.user.entity.User;
+import org.highfive.backend.user.entity.preference.PreferMetaInfoRepository;
 import org.highfive.backend.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -37,9 +45,11 @@ public class ContentService {
     private final ReviewRepository reviewRepository;
     private final FastApiClient fastApiClient;
     private final UserRepository userRepository;
+    private final PreferMetaInfoRepository preferMetaInfoRepository;
+    private final MetaInfoRepository metaInfoRepository;
 
     public List<OnboardingInitContentsResponseDto> getDistinctGenreTopContents() {
-        List<TopContentByGenreDto> topContents = contentRepository.findTopContentPerGenre(INIT_CONTENT_CNT);
+        List<MostPopularContentPerGenreDto> topContents = contentRepository.findTopContentPerGenre(INIT_CONTENT_CNT);
 
         return topContents.stream()
                 .map(dto -> new OnboardingInitContentsResponseDto(dto.getId(), dto.getThumbnailUrl(), dto.getTitle()))
@@ -75,9 +85,19 @@ public class ContentService {
         return new Response<>(SuccessCode.OK.getCode(), response, null);
     }
 
-    public List<RecommendContentDto> getContentsByUser(User user) {
-        List<RecommendContentsResponseDto> contentsByUserVector = fastApiClient.getContentsByUserVector(
-                user.getEmbedding());
-        return null;
+    public List<PersonalRecommendDto> recommendContentsByUser(User user, int count) {
+        List<FastApiRecommendResponseDto> contentsByUserVector = fastApiClient.getContentsByUserVector(
+                user.getEmbedding(), count);
+        List<PersonalRecommendDto> result = new ArrayList<>();
+        for (FastApiRecommendResponseDto dto : contentsByUserVector) {
+            long contentId = dto.id();
+            Content content = contentRepository.findById(contentId)
+                    .orElseThrow(() -> new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND));
+            String thumbnailUrl = content.getThumbnailUrl();
+            PersonalRecommendDto resultDto = new PersonalRecommendDto(contentId, thumbnailUrl);
+            result.add(resultDto);
+        }
+        return result;
+    }
     }
 }
