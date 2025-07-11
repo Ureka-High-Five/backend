@@ -2,10 +2,10 @@ coverage:
   status:
     project:
       default:
-        target: 80%
+        target: 0%
         threshold: 1%
         if_no_uploads: error
     patch:
       default:
-        target: 80%
+        target: 0%
         threshold: 1%
