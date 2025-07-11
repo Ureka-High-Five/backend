@@ -5,4 +5,7 @@ coverage:
         target: 80%
         threshold: 1%
         if_no_uploads: error
-        informational: false
+    patch:
+      default:
+        target: 80%
+        threshold: 1%
