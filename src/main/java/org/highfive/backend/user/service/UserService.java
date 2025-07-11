@@ -1,7 +1,6 @@
 package org.highfive.backend.user.service;
 
 import lombok.RequiredArgsConstructor;
-import org.antlr.v4.runtime.Token;
 import org.highfive.backend.auth.dto.response.TokenResponseDto;
 import org.highfive.backend.auth.service.TokenService;
 import org.highfive.backend.content.entity.metadata.MetaInfo;
@@ -16,8 +15,8 @@ import org.highfive.backend.global.util.WeightManager;
 import org.highfive.backend.user.code.UserErrorCode;
 import org.highfive.backend.user.dto.request.SubmitOnboardingRequestDto;
 import org.highfive.backend.user.entity.Gender;
-import org.highfive.backend.user.entity.UserRole;
 import org.highfive.backend.user.entity.User;
+import org.highfive.backend.user.entity.UserRole;
 import org.highfive.backend.user.entity.preference.PreferMetaInfo;
 import org.highfive.backend.user.entity.preference.PreferMetaInfoRepository;
 import org.highfive.backend.user.repository.UserRepository;
@@ -49,7 +48,7 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND_ERROR));
         initBasic(request, user);
-        //initVector(request, user);
+        initVector(request, user);
 
         final String kakaoUserId = user.getKakaoUserId();
         return tokenResponse(kakaoUserId, List.of(user.getUserRole()));
