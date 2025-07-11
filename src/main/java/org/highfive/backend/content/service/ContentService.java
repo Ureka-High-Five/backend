@@ -124,8 +124,11 @@ public class ContentService {
             long contentId = dto.id();
             Content content = contentRepository.findById(contentId)
                     .orElseThrow(() -> new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND));
-            String thumbnailUrl = content.getThumbnailUrl();
-            PersonalRecommendDto resultDto = new PersonalRecommendDto(contentId, thumbnailUrl);
+            // 썸네일 url이 아직 없기 때문에 포스터 url 임시로 전달
+//            String thumbnailUrl = content.getThumbnailUrl();
+            String postUrl = content.getPostUrl();
+//            PersonalRecommendDto resultDto = new PersonalRecommendDto(contentId, thumbnailUrl);
+            PersonalRecommendDto resultDto = new PersonalRecommendDto(contentId, postUrl);
             result.add(resultDto);
         }
         return result;
