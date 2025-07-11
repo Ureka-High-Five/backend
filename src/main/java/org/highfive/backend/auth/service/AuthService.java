@@ -13,16 +13,16 @@ import org.highfive.backend.auth.exception.AuthErrorCode;
 import org.highfive.backend.auth.repository.redis.TokenRedisRepository;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
-import org.highfive.backend.user.entity.Role;
-import org.highfive.backend.user.entity.User;
 import org.highfive.backend.user.dto.mapper.UserMapper;
+import org.highfive.backend.user.entity.User;
+import org.highfive.backend.user.entity.UserRole;
 import org.highfive.backend.user.repository.UserRepository;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static org.highfive.backend.auth.service.TokenType.*;
+import static org.highfive.backend.auth.service.TokenType.REFRESHTOKEN;
 import static org.highfive.backend.global.code.SuccessCode.OK;
 
 @Service
@@ -42,14 +42,23 @@ public class AuthService {
         final KakaoUserResponseDto userInfo = kakaoOAuthClient.requestUser(token);
         final String kakaoUserId = userInfo.id();
 
-        if (!userRepository.existsByKakaoUserId(kakaoUserId)) {
-            Long userId = saveUser(userInfo);
-            final String nickname = userInfo.kakaoAccount().profile().nickname();
-            return onboardingResponse(userId, nickname);
+        User user = userRepository.findByKakaoUserId(kakaoUserId).orElse(null);
+
+        if (user == null) {
+            user = saveUser(userInfo, UserRole.TEMP_USER);
+            String nickname = userInfo.kakaoAccount().profile().nickname();
+            return onboardingResponse(user.getId(), nickname);
         }
 
-        final List<String> roles = List.of(Role.USER.toString());
-        return tokenResponse(tokenService.generateAccessToken(kakaoUserId, roles), tokenService.generateRefreshToken(kakaoUserId, roles));
+        if (isTempUser(user.getUserRole())) {
+            return onboardingResponse(user.getId(), user.getName());
+        }
+
+        final List<String> roles = List.of(user.getUserRole().toString());
+        return tokenResponse(
+                tokenService.generateAccessToken(kakaoUserId, roles),
+                tokenService.generateRefreshToken(kakaoUserId, roles)
+        );
     }
 
     public Response<TokenResponseDto> reissue(final ReissueRequestDto reissueRequestDto) {
@@ -63,7 +72,7 @@ public class AuthService {
             throw new BusinessException(AuthErrorCode.TOKEN_MISMATCH_ERROR);
         }
 
-        final String renewAccessToken = tokenService.generateAccessToken(user.getKakaoUserId(), List.of(user.getRole().toString()));
+        final String renewAccessToken = tokenService.generateAccessToken(user.getKakaoUserId(), List.of(user.getUserRole().toString()));
         return tokenResponse(renewAccessToken, refreshToken);
     }
 
@@ -78,10 +87,9 @@ public class AuthService {
         return new Response<>(OK.getCode(), null, OK.getMessage());
     }
 
-    private Long saveUser(final KakaoUserResponseDto userInfo) {
-        final User user = UserMapper.from(userInfo);
-        final User savedUser = userRepository.save(user);
-        return savedUser.getId();
+    private User saveUser(final KakaoUserResponseDto userInfo, final UserRole role) {
+        final User user = UserMapper.from(userInfo, role);
+        return userRepository.save(user);
     }
 
     private Response<TokenResponseDto> tokenResponse(final String accessToken, final String refreshToken) {
@@ -91,5 +99,9 @@ public class AuthService {
 
     private Response<OnboardingResponseDto> onboardingResponse(final long userId, final String nickname) {
         return new Response<>(OK.getCode(), new OnboardingResponseDto(userId, nickname, true), OK.getMessage());
+    }
+
+    private boolean isTempUser(final UserRole role) {
+        return UserRole.TEMP_USER.equals(role);
     }
 }
