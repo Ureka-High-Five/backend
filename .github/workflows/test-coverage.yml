@@ -29,5 +29,6 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: Ureka-High-Five/backend
           files: build/reports/jacoco/test/jacocoTestReport.xml
+          config: .codecov.yml
           fail_ci_if_error: true
           verbose: true
