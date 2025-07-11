@@ -4,15 +4,11 @@ import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.content.dto.response.ContentDetailResponseDto;
-import org.highfive.backend.content.dto.response.OnboardingInitContentsResponseDto;
 import org.highfive.backend.content.dto.response.SearchContentResponseDto;
 import org.highfive.backend.content.service.ContentService;
-import org.highfive.backend.global.code.SuccessCode;
 import org.highfive.backend.global.dto.CursorPageResponse;
 import org.highfive.backend.global.dto.Response;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/content")
