@@ -1,4 +1,4 @@
-package org.highfive.backend.content.controller;
+package org.highfive.backend.content.integration;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -27,7 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-public class ContentControllerTest {
+public class ContentIntegrationTest {
 
     @Autowired
     private ContentRepository contentRepository;
