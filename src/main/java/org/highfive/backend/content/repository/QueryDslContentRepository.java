@@ -117,8 +117,8 @@ public class QueryDslContentRepository implements ContentQueryRepository{
         return dtoList.stream()
                 .map(dto -> {
                     Map<String, Object> map = new HashMap<>();
-                    map.put("contentId", dto.contentId());
-                    map.put("genreName", dto.genreName());
+                    map.put("contentId", dto.getContentId());
+                    map.put("genreName", dto.getGenreName());
                     return map;
                 })
                 .toList();
