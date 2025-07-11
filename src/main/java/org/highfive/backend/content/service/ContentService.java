@@ -150,7 +150,7 @@ public class ContentService {
                 List.of(content.getId()));
         List<String> genres = new ArrayList<>();
         for (Map<String, Object> genreInfo : contentGenresByContentIds) {
-            String genreName = (String) genreInfo.get(content.getId());
+            String genreName = (String) genreInfo.get("genreName");
             genres.add(genreName);
         }
         return genres;

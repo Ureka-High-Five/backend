@@ -29,10 +29,10 @@ public class FastApiClient {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    @Value("${fastpi.host}")
+    @Value("${fastapi.host}")
     private String fastApiHost;
 
-    @Value("{fastapi.port}")
+    @Value("${fastapi.port}")
     private String fastApiPort;
 
     private HttpHeaders headers = new HttpHeaders();
@@ -106,6 +106,6 @@ public class FastApiClient {
     }
 
     private String genUrl(final String endPoint) {
-        return fastApiHost + fastApiPort + endPoint;
+        return fastApiHost + ":" + fastApiPort + endPoint;
     }
 }
