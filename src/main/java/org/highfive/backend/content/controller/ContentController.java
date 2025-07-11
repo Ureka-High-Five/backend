@@ -12,16 +12,9 @@ import org.highfive.backend.content.dto.response.HomeContentsResponseDto.Persona
 import org.highfive.backend.content.dto.response.ContentDetailResponseDto;
 import org.highfive.backend.content.dto.response.SearchContentResponseDto;
 import org.highfive.backend.content.service.ContentService;
-import org.highfive.backend.global.code.SuccessCode;
 import org.highfive.backend.global.dto.CursorPageResponse;
 import org.highfive.backend.global.dto.Response;
-import org.highfive.backend.user.entity.User;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/content")
