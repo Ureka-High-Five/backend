@@ -1,28 +1,13 @@
 package org.highfive.backend.user.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.highfive.backend.auth.client.dto.response.KakaoUserResponseDto;
+import jakarta.persistence.*;
+import lombok.*;
 import org.highfive.backend.content.entity.shorts.ShortsComment;
 import org.highfive.backend.content.entity.shorts.log.ShortsLikeTimeLog;
 import org.highfive.backend.user.entity.preference.PreferMetaInfo;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +34,7 @@ public class User {
     private Gender gender;
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private UserRole userRole;
 
     @Column(nullable = false)
     private String profileUrl;
@@ -80,13 +65,14 @@ public class User {
     @CreatedDate
     private LocalDateTime createdAt;
 
-    public void updateBasicInfo(String name, int age, Gender gender) {
+    public void updateBasicInfo(final String name, final int age, final Gender gender, final UserRole userRole) {
         this.name = name;
         this.age = age;
         this.gender = gender;
+        this.userRole = userRole;
     }
 
-    public void updateEmbedding(String embedding) {
+    public void updateEmbedding(final String embedding) {
         this.embedding = embedding;
     }
 

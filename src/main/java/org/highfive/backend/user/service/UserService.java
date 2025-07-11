@@ -6,7 +6,6 @@ import org.highfive.backend.auth.service.TokenService;
 import org.highfive.backend.content.entity.metadata.MetaInfo;
 import org.highfive.backend.content.entity.repository.MetaInfoRepository;
 import org.highfive.backend.content.exception.MetaInfoErrorCode;
-import org.highfive.backend.content.repository.ContentRepository;
 import org.highfive.backend.content.repository.QueryDslContentRepository;
 import org.highfive.backend.global.client.fastapi.FastApiClient;
 import org.highfive.backend.global.client.fastapi.dto.response.FastApiOnboardingResponseDto;
@@ -17,6 +16,7 @@ import org.highfive.backend.user.code.UserErrorCode;
 import org.highfive.backend.user.dto.request.SubmitOnboardingRequestDto;
 import org.highfive.backend.user.entity.Gender;
 import org.highfive.backend.user.entity.User;
+import org.highfive.backend.user.entity.UserRole;
 import org.highfive.backend.user.entity.preference.PreferMetaInfo;
 import org.highfive.backend.user.entity.preference.PreferMetaInfoRepository;
 import org.highfive.backend.user.repository.UserRepository;
@@ -51,7 +51,12 @@ public class UserService {
         initVector(request, user);
 
         final String kakaoUserId = user.getKakaoUserId();
-        return new Response<>(OK.getCode(), createToken(kakaoUserId, List.of(user.getRole().toString())), OK.getMessage());
+        return tokenResponse(kakaoUserId, List.of(user.getUserRole()));
+    }
+
+    private Response<TokenResponseDto> tokenResponse(final String kakaoUserId, final List<UserRole> userRoles) {
+        final TokenResponseDto tokens = createToken(kakaoUserId, userRoles.stream().map(String::valueOf).toList());
+        return new Response<>(OK.getCode(), tokens, OK.getMessage());
     }
 
     private TokenResponseDto createToken(final String kakaoUserId, final List<String> roles) {
@@ -64,7 +69,7 @@ public class UserService {
         int age = Year.now().getValue() - request.year();
         Gender gender = request.gender();
         String name = request.name();
-        user.updateBasicInfo(name, age, gender);
+        user.updateBasicInfo(name, age, gender, UserRole.USER);
     }
 
     private void initVector(final SubmitOnboardingRequestDto request, final User user) {
