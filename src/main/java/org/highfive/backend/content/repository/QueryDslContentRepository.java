@@ -94,19 +94,19 @@ public class QueryDslContentRepository implements ContentQueryRepository{
     public List<Map<String, Object>> findContentGenresByContentIds(List<Long> contentIds) {
 
         QMetaInfoContents mic = QMetaInfoContents.metaInfoContents;
-        QMetaInfo         m   = QMetaInfo.metaInfo;
-        QContent          c   = QContent.content;
+        QMetaInfo m = QMetaInfo.metaInfo;
+        QContent c = QContent.content;
 
         // 1) 먼저 DTO 리스트로 조회
         List<ContentGenreDto> dtoList = queryFactory
                 .select(Projections.fields(
-                        ContentGenreDto.class,            // ✅ DTO 클래스 전달
+                        ContentGenreDto.class,
                         c.id.as("contentId"),
                         m.name.as("genreName")
                 ))
                 .from(mic)
                 .join(mic.metaInfo, m)
-                .join(mic.content,  c)
+                .join(mic.content, c)
                 .where(
                         m.type.eq(MetaType.GENRE),
                         c.id.in(contentIds)
@@ -117,8 +117,8 @@ public class QueryDslContentRepository implements ContentQueryRepository{
         return dtoList.stream()
                 .map(dto -> {
                     Map<String, Object> map = new HashMap<>();
-                    map.put("contentId", dto.getContentId());
-                    map.put("genreName", dto.getGenreName());
+                    map.put("contentId", dto.contentId());
+                    map.put("genreName", dto.genreName());
                     return map;
                 })
                 .toList();

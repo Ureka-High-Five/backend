@@ -51,7 +51,7 @@ public class ContentService {
         List<MostPopularContentPerGenreDto> topContents = contentRepository.findTopContentPerGenre(INIT_CONTENT_CNT);
 
         return topContents.stream()
-                .map(dto -> new OnboardingInitContentsResponseDto(dto.getId(), dto.getThumbnailUrl(), dto.getTitle()))
+                .map(dto -> new OnboardingInitContentsResponseDto(dto.id(), dto.thumbnailUrl(), dto.title()))
                 .toList();
     }
 

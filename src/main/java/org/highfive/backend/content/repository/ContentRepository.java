@@ -45,8 +45,8 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
     LIMIT :limit
     """, nativeQuery = true)
     List<TopContentsByGenreDto> findTopContentsByGenre(
-            @Param("genre") String genre,
-            @Param("limit") int limit
+            String genre,
+            int limit
     );
 
     @Query(value = """

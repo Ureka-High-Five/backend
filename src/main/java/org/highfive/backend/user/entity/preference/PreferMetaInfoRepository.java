@@ -17,6 +17,6 @@ public interface PreferMetaInfoRepository extends JpaRepository<PreferMetaInfo, 
     ORDER BY pmi.weight DESC
     LIMIT :count
 """, nativeQuery = true)
-    List<String> findPreferGenresByUser(@Param("userId") Long userId, @Param("count") int count);
+    List<String> findPreferGenresByUser(Long userId, int count);
 
 }
