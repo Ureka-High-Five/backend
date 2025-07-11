@@ -30,3 +30,16 @@ kakao:
 fastapi:
   host: ${RECOMMEND_SERVER_URL}
   port: ${RECOMMEND_SERVER_PORT}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+  endpoint:
+    prometheus:
+      access: unrestricted
+  prometheus:
+    metrics:
+      export:
+        enabled: true
