@@ -16,7 +16,7 @@ jwt:
   secret: sldjflsjfkldsjslkjlsjfskldjflsdjfldskfskfjdlkfjsfjdksfjksdjfdskljfsjf
   accessToken-expiration: 3600000
   refreshToken-expiration: 1209600000
-  
+
 fastapi:
-  host:
-  post:
+  host: testhost
+  port: testport
