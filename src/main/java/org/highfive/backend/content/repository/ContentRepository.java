@@ -35,7 +35,7 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
     List<Map<String, Object>> findContentGenresByContentIds(@Param("contentIds") List<Long> contentIds);
 
     @Query(value = """
-    SELECT c.id, c.thumbnail_url
+    SELECT c.id, c.post_url
     FROM contents c
     JOIN meta_info_contents mic ON mic.content_id = c.id
     JOIN meta_info m ON m.id = mic.meta_info_id
