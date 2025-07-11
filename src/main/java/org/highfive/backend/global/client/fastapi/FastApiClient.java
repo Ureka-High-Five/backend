@@ -1,12 +1,17 @@
 package org.highfive.backend.global.client.fastapi;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
-import org.highfive.backend.global.RecommendType;
-import org.highfive.backend.global.client.fastapi.dto.FastApiOnboardingResponseDto;
-import org.highfive.backend.global.client.fastapi.dto.RecommendContentsResponseDto;
+import org.highfive.backend.global.client.fastapi.dto.request.RecommendRequest;
+import org.highfive.backend.global.client.fastapi.dto.response.FastApiOnboardingResponseDto;
+import org.highfive.backend.global.client.fastapi.dto.response.FastApiRecommendResponseDto;
 import org.highfive.backend.global.client.fastapi.exception.FastApiErrorCode;
+import org.highfive.backend.global.code.GlobalErrorCode;
 import org.highfive.backend.global.exception.BusinessException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -22,8 +27,13 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class FastApiClient {
 
-    private final String fastApiUrl = "http://localhost:8000";
     private final RestTemplate restTemplate = new RestTemplate();
+
+    @Value("${fastapi.host}")
+    private String fastApiHost;
+
+    @Value("${fastapi.port}")
+    private String fastApiPort;
 
     private HttpHeaders headers = new HttpHeaders();
 
@@ -31,14 +41,14 @@ public class FastApiClient {
      * 온보딩 화면에서 선택한 컨텐츠를 FastAPI 서버에 전달합니다.
      * FastAPI 서버는 사용자의 초기 벡터를 계산하여 반환합니다.
      *
-     * @param contentIds // 온보딩 화면에서 선택한 컨텐츠 id
+     * @param genreCount // 온보딩 화면에서 선택한 컨텐츠 id
      * @return // 가중치와 벡터 저장 성공 시 true 아니면 false
      */
-    public FastApiOnboardingResponseDto onboardingSubmit(final List<Long> contentIds) {
+    public FastApiOnboardingResponseDto onboardingSubmit(final Map<String, Integer> genreCount) {
         String url = genUrl("/user/preferences");
 
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<List<Long>> request = new HttpEntity<>(contentIds, headers);
+        HttpEntity<Map<String, Integer>> request = new HttpEntity<>(genreCount, headers);
 
         return executeWithFastApiHandling(() ->
                 restTemplate.postForEntity(url, request, FastApiOnboardingResponseDto.class).getBody()
@@ -49,37 +59,28 @@ public class FastApiClient {
      * 사용자 아이디를 FastAPI 서버에 전달합니다.
      * FastAPI 서버는 사용자에게 추천할 컨텐츠를 반환합니다.
      *
-     * @param userId // 사용자 아이디
+     * @param vector // 사용자 벡터
      * @return // 추천할 컨텐츠 아이디
      */
-    public List<RecommendContentsResponseDto> recommendContentsForUser(final long userId) {
-        final String url = genUrl("/contents");
+    public List<FastApiRecommendResponseDto> getContentsByVector(final String vector, final int count) {
+        final String url = genUrl("/contents?count=" + count);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonBody;
+        try {
+            jsonBody = mapper.writeValueAsString(new RecommendRequest(vector));
+        } catch (JsonProcessingException e) {
+            throw new BusinessException(GlobalErrorCode.JSON_PARSING_ERROR);
+        }
 
         headers.setContentType(MediaType.APPLICATION_JSON);
-        final HttpEntity<Long> request = new HttpEntity<>(userId, headers);
-
+        final HttpEntity<String> request = new HttpEntity<>(jsonBody, headers);
         return executeWithFastApiHandling(() ->
                 restTemplate.exchange(
                         url,
-                        HttpMethod.GET,
+                        HttpMethod.POST,
                         request,
-                        new ParameterizedTypeReference<List<RecommendContentsResponseDto>>() {}
-                ).getBody()
-        );
-    }
-
-    public List<Long> recommendContentsByContent(final long selectedContentId, final RecommendType recommendType) {
-        final String url = genUrl("/contents/" + selectedContentId);
-
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        final HttpEntity<RecommendType> request = new HttpEntity<>(recommendType, headers);
-
-        return executeWithFastApiHandling(() ->
-                restTemplate.exchange(
-                        url,
-                        HttpMethod.GET,
-                        request,
-                        new ParameterizedTypeReference<List<Long>>() {}
+                        new ParameterizedTypeReference<List<FastApiRecommendResponseDto>>() {}
                 ).getBody()
         );
     }
@@ -105,6 +106,6 @@ public class FastApiClient {
     }
 
     private String genUrl(final String endPoint) {
-        return fastApiUrl + endPoint;
+        return fastApiHost + ":" + fastApiPort + endPoint;
     }
 }

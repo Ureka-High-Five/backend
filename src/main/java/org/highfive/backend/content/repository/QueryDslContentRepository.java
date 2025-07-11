@@ -2,9 +2,11 @@ package org.highfive.backend.content.repository;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.highfive.backend.content.dto.ContentGenreDto;
 import org.highfive.backend.content.dto.response.GenreCountDto;
 import org.highfive.backend.content.dto.response.OnboardingContentDto;
 import org.highfive.backend.content.entity.QContent;
@@ -90,24 +92,36 @@ public class QueryDslContentRepository implements ContentQueryRepository{
     }@SuppressWarnings("unchecked")
 
     public List<Map<String, Object>> findContentGenresByContentIds(List<Long> contentIds) {
+
         QMetaInfoContents mic = QMetaInfoContents.metaInfoContents;
         QMetaInfo m = QMetaInfo.metaInfo;
         QContent c = QContent.content;
 
-        return (List<Map<String, Object>>) (List<?>)
-                queryFactory
-                        .select(Projections.fields(
-                                Map.class,
-                                c.id.as("contentId"),
-                                m.name.as("genreName")
-                        ))
-                        .from(mic)
-                        .join(mic.metaInfo, m)
-                        .join(mic.content, c)
-                        .where(
-                                m.type.eq(MetaType.GENRE),
-                                c.id.in(contentIds)
-                        )
-                        .fetch();
+        // 1) 먼저 DTO 리스트로 조회
+        List<ContentGenreDto> dtoList = queryFactory
+                .select(Projections.fields(
+                        ContentGenreDto.class,
+                        c.id.as("contentId"),
+                        m.name.as("genreName")
+                ))
+                .from(mic)
+                .join(mic.metaInfo, m)
+                .join(mic.content, c)
+                .where(
+                        m.type.eq(MetaType.GENRE),
+                        c.id.in(contentIds)
+                )
+                .fetch();
+
+        // 2) DTO → Map 변환 후 반환
+        return dtoList.stream()
+                .map(dto -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("contentId", dto.contentId());
+                    map.put("genreName", dto.genreName());
+                    return map;
+                })
+                .toList();
     }
+
 }

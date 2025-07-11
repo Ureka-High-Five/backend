@@ -8,7 +8,7 @@ import org.highfive.backend.content.entity.repository.MetaInfoRepository;
 import org.highfive.backend.content.exception.MetaInfoErrorCode;
 import org.highfive.backend.content.repository.QueryDslContentRepository;
 import org.highfive.backend.global.client.fastapi.FastApiClient;
-import org.highfive.backend.global.client.fastapi.dto.FastApiOnboardingResponseDto;
+import org.highfive.backend.global.client.fastapi.dto.response.FastApiOnboardingResponseDto;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.global.util.WeightManager;
@@ -74,14 +74,14 @@ public class UserService {
 
     private void initVector(final SubmitOnboardingRequestDto request, final User user) {
         List<Long> contentIds = request.selectedContentIds();
-        FastApiOnboardingResponseDto response = fastApiClient.onboardingSubmit(contentIds);
+        Map<String, Integer> genreCount = countGenre(contentIds);
+        FastApiOnboardingResponseDto response = fastApiClient.onboardingSubmit(genreCount);
 
         // 벡터 저장
-        String vector = response.vector();
+        String vector = response.userVector();
         user.updateEmbedding(vector);
 
         // 가중치 저장
-        Map<String, Integer> genreCount = countGenre(contentIds);
         Map<String, Double> genreWeights = weightManager.calcWeight(genreCount);
         saveUserWeight(user, genreWeights);
     }
@@ -91,13 +91,12 @@ public class UserService {
             final String genreName = entry.getKey();
             final double weight = entry.getValue();
 
-            final MetaInfo metaInfo = metaInfoRepository.findGenreMetaIdByName(genreName)
-                    .orElseThrow(() -> new BusinessException(MetaInfoErrorCode.GENRE_NOT_FOUND));
+            final List<MetaInfo> metaInfo = metaInfoRepository.findGenreMetaIdByName(genreName);
 
             final PreferMetaInfo prefer = PreferMetaInfo.builder()
                     .user(user)
                     .weight(weight)
-                    .metaInfo(metaInfo)
+                    .metaInfo(metaInfo.get(0))
                     .build();
 
             preferMetaInfoRepository.save(prefer);
@@ -112,7 +111,6 @@ public class UserService {
         for (Map<String, Object> row : results) {
             String genreName = (String) row.get("genreName");
             genreCount.put(genreName, genreCount.getOrDefault(genreName, 0) + 1);
-
         }
         return genreCount;
     }
