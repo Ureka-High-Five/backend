@@ -15,7 +15,7 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
     @Query(value = """
         SELECT *
         FROM (
-          SELECT c.id, c.title, c.popularity, m.name,
+          SELECT c.id, c.post_url, c.title, m.name,
               ROW_NUMBER() OVER (PARTITION BY m.name ORDER BY c.popularity DESC) AS rn
           FROM contents c
           JOIN meta_info_contents mic ON mic.content_id = c.id
