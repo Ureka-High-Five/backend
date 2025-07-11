@@ -29,6 +29,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final String V3 = "/v3";
     private final String USER_INFO = "/user/info";
     private final String REISSUE = "/auth/reissue";
+    private final String ONBOARDING_INIT = "/content/init";
+    private final String ONBOARDING_SELECT = "/content/recommend";
 
     private final ObjectMapper objectMapper;
     private final TokenService tokenService;
@@ -37,7 +39,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain) throws ServletException, IOException {
 
         final String requestURI = request.getRequestURI();
-        if (requestURI.startsWith(AUTH_LOGIN) || requestURI.startsWith(SWAGGER) || requestURI.startsWith(V3) || requestURI.equals(USER_INFO) || requestURI.equals(REISSUE)) {
+
+        if (requestURI.startsWith(AUTH_LOGIN)
+                || requestURI.startsWith(SWAGGER)
+                || requestURI.startsWith(V3)
+                || requestURI.equals(USER_INFO)
+                || requestURI.equals(REISSUE)
+                || requestURI.equals(ONBOARDING_INIT)
+                || isOnboardingSelect(request, requestURI)) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -71,5 +80,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String json = objectMapper.writeValueAsString(errorResponse);
         response.getWriter().write(json);
+    }
+
+    private boolean isOnboardingSelect(HttpServletRequest request, String requestURI) {
+        return requestURI.startsWith(ONBOARDING_SELECT) && request.getMethod().equalsIgnoreCase("POST");
     }
 }

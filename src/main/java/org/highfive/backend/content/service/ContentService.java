@@ -107,7 +107,6 @@ public class ContentService {
                 .orElse(null);
     }
 
-
     public MainRecommendDto recommendMainContentsByUser(User user) {
         List<FastApiRecommendResponseDto> contentsByUserVector = fastApiVectorRecommend(
                 user.getEmbedding(), 1);
