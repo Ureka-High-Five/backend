@@ -94,6 +94,24 @@ public class ContentServiceTest {
                 fastApiClient, preferMetaInfoRepository);
     }
 
+    @Test
+    @DisplayName("온보딩 초기 화면 - 장르별 인기있는 작품 리스트가 빈 리스트인 경우 결과도 빈 리스트가 된다")
+    void getDistinctGenreTopContents_emptyResult() {
+        // given
+        when(contentRepository.findTopContentPerGenre(6)) // 빈 리스트 스텁
+                .thenReturn(List.of());
+
+        // when
+        List<OnboardingInitContentsResponseDto> result =
+                contentService.getDistinctGenreTopContents();
+
+        // then
+        assertThat(result).isEmpty();                 // 결과가 비어 있는지 확인
+        verify(contentRepository).findTopContentPerGenre(6);
+        verifyNoMoreInteractions(contentRepository, metaInfoContentsRepository,
+                fastApiClient, preferMetaInfoRepository);
+    }
+
 
     @Test
     @DisplayName("존재하는 content일 경우 content의 상세 정보를 반환한다")
