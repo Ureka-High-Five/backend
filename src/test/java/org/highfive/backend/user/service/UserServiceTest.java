@@ -1,8 +1,10 @@
 package org.highfive.backend.user.service;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -19,7 +21,9 @@ import org.highfive.backend.content.entity.repository.MetaInfoRepository;
 import org.highfive.backend.content.repository.QueryDslContentRepository;
 import org.highfive.backend.global.client.fastapi.FastApiClient;
 import org.highfive.backend.global.client.fastapi.dto.response.FastApiOnboardingResponseDto;
+import org.highfive.backend.global.client.fastapi.exception.FastApiErrorCode;
 import org.highfive.backend.global.dto.Response;
+import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.global.util.WeightManager;
 import org.highfive.backend.user.dto.request.SubmitOnboardingRequestDto;
 import org.highfive.backend.user.entity.Gender;
@@ -102,5 +106,40 @@ class UserServiceTest {
         assertThat(user.getEmbedding()).isEqualTo("[0.1,0.2,0.3]");
 
         verify(preferRepo, times(2)).save(any(PreferMetaInfo.class));
+    }
+
+    @Test
+    @DisplayName("온보딩 제출 - FastAPI 오류 시 BusinessException이 발생한다")
+    void initUser_fastApiFailure_throwsBusinessException() {
+        // given
+        User user = User.builder()
+                .id(1L)
+                .kakaoUserId("kakao123")
+                .build();
+        SubmitOnboardingRequestDto req =
+                new SubmitOnboardingRequestDto(1L, List.of(10L, 11L), 1998, Gender.MALE, "홍길동");
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+
+        when(qdslRepo.findContentGenresByContentIds(List.of(10L,11L)))
+                .thenReturn(List.of(
+                        Map.of("contentId",10L,"genreName","Action"),
+                        Map.of("contentId",11L,"genreName","Action")
+                ));
+
+        when(fastApiClient.onboardingSubmit(Map.of("Action",2)))
+                .thenThrow(new BusinessException(FastApiErrorCode.FAST_API_RESPONSE_ERROR));
+
+        // when, then
+        assertThatThrownBy(() -> userService.initUser(req))
+                .isInstanceOf(BusinessException.class)
+                .satisfies(ex -> {
+                    BusinessException be = (BusinessException) ex;
+                    assertThat(be.getErrorCode())
+                            .isEqualTo(FastApiErrorCode.FAST_API_RESPONSE_ERROR);
+                });
+
+        verify(weightManager, times(0)).calcWeight(anyMap());
+        verify(preferRepo,   times(0)).save(any(PreferMetaInfo.class));
     }
 }
