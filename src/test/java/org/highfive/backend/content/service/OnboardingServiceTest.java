@@ -21,9 +21,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class OnboardingServiceTest {
 
-    @Mock QueryDslContentRepository queryDslRepo;
+    @Mock
+    QueryDslContentRepository queryDslRepo;
 
-    @InjectMocks OnboardingService onboardingService;
+    @InjectMocks 
+    OnboardingService onboardingService;
 
     @Test
     @DisplayName("온보딩 선택 - 선택한 콘텐츠 ID들을 기반으로 중복을 제외한 3개 이하의 추천 콘텐츠를 반환한다")
