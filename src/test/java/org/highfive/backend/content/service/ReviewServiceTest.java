@@ -2,6 +2,7 @@ package org.highfive.backend.content.service;
 
 import static com.mysema.commons.lang.Assert.assertThat;
 import static org.highfive.backend.content.exception.ContentErrorCode.CONTENT_NOT_FOUND;
+import static org.highfive.backend.content.exception.ReviewErrorCode.MY_REVIEW_NOT_FOUND;
 import static org.highfive.backend.content.exception.ReviewErrorCode.REVIEW_FORBIDDEN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -15,6 +16,7 @@ import org.highfive.backend.common.fixture.ReviewFixture;
 import org.highfive.backend.common.fixture.UserFixture;
 import org.highfive.backend.content.dto.request.CreateReviewRequestDto;
 import org.highfive.backend.content.dto.request.UpdateReviewRequestDto;
+import org.highfive.backend.content.dto.response.ContentMyReviewResponseDto;
 import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.content.entity.review.Review;
 import org.highfive.backend.content.repository.ContentRepository;
@@ -42,13 +44,14 @@ public class ReviewServiceTest {
     @InjectMocks
     private ReviewService reviewService;
 
-    private User user;
+    private User user,anotherUser;
     private Content content;
     private Review review;
 
     @BeforeEach
     void setUp() {
         user = UserFixture.createUser(1L);
+        anotherUser = UserFixture.createUser(999L);
         content = ContentFixture.createContent(2L);
         review = ReviewFixture.createReview(3L, user, content);
     }
@@ -106,7 +109,6 @@ public class ReviewServiceTest {
     @DisplayName("다른 유저의 리뷰를 수정 하려고하면 예외가 발생한다")
     void updateReview_fail_forbiddenUser() {
         // given
-        User anotherUser = UserFixture.createUser(999L);
         when(reviewRepository.findById(3L)).thenReturn(Optional.of(review));
 
         // when
@@ -118,15 +120,63 @@ public class ReviewServiceTest {
         assertEquals(REVIEW_FORBIDDEN, exception.getErrorCode());
     }
 
+    @Test
+    @DisplayName("리뷰 삭제에 성공하면 200 코드를 반환한다")
+    void deleteReview_success() {
+        // given
+        when(reviewRepository.findById(3L)).thenReturn(Optional.of(review));
 
+        // when
+        Response<?> response = reviewService.deleteReview(3L, user);
 
+        // then
+        assertEquals(20000, response.code());
+        verify(reviewRepository).delete(review);
+    }
 
+    @Test
+    @DisplayName("다른 유저가 리뷰를 삭제하려고 하면 예외가 발생한다")
+    void deleteReview_fail_forbiddenUser() {
+        // given
+        when(reviewRepository.findById(3L)).thenReturn(Optional.of(review));
 
+        // when
+        BusinessException exception = assertThrows(BusinessException.class, () -> {
+            reviewService.deleteReview(3L, anotherUser);
+        });
 
+        // then
+        assertEquals(REVIEW_FORBIDDEN, exception.getErrorCode());
+    }
 
+    @Test
+    @DisplayName("내가 작성한 콘텐츠 리뷰가 있다면 해당 내용을 반환한다")
+    void getMyReviewByContent_success() {
+        // given
+        when(reviewRepository.findByUserIdAndContentId(user.getId(), content.getId())).thenReturn(Optional.of(review));
 
+        // when
+        Response<ContentMyReviewResponseDto> response = reviewService.getMyReviewByContent(content.getId(), user);
 
+        // then
+        assertEquals(20000, response.code());
+        assertEquals(review.getReviewText(),response.content().review());
+        assertEquals(review.getRating(),response.content().rating());
+    }
 
+    @Test
+    @DisplayName("내가 작성한 리뷰가 없다면 예외가 발생한다")
+    void getMyReviewByContent_fail_reviewNotFound() {
+        // given
+        when(reviewRepository.findByUserIdAndContentId(user.getId(), content.getId())).thenReturn(Optional.empty());
 
+        // when
+        BusinessException exception = assertThrows(BusinessException.class, () -> {
+            reviewService.getMyReviewByContent(content.getId(), user);
+        });
+
+        // then
+        assertEquals(MY_REVIEW_NOT_FOUND, exception.getErrorCode());
+    }
 
 }
