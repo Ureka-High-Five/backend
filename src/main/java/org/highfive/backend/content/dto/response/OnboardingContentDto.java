@@ -1,12 +1,12 @@
 package org.highfive.backend.content.dto.response;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public record OnboardingContentDto(
         Long id,
         String postUrl,
         String title,
-        LocalDateTime openDate,
+        LocalDate openDate,
         Long genreMatchCount
 ) {
 }
