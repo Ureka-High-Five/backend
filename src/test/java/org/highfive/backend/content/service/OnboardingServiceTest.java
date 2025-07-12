@@ -1,11 +1,9 @@
 package org.highfive.backend.content.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.highfive.backend.content.dto.request.OnboardingSelectContentRequestDto;
@@ -13,7 +11,6 @@ import org.highfive.backend.content.dto.response.GenreCountDto;
 import org.highfive.backend.content.dto.response.OnboardingContentDto;
 import org.highfive.backend.content.dto.response.OnboardingSelectContentResponseDto;
 import org.highfive.backend.content.repository.QueryDslContentRepository;
-import org.highfive.backend.global.client.fastapi.FastApiClient;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +26,7 @@ class OnboardingServiceTest {
     @InjectMocks OnboardingService onboardingService;
 
     @Test
-    @DisplayName("선택한 콘텐츠 ID들을 기반으로 중복을 제외한 3개 이하의 추천 콘텐츠를 반환한다")
+    @DisplayName("온보딩 선택 - 선택한 콘텐츠 ID들을 기반으로 중복을 제외한 3개 이하의 추천 콘텐츠를 반환한다")
     void getContentBySelectedContent_returnsThreeDistinctRecommendations() {
         // given
         List<Long> selectedIds = List.of(1L, 2L);

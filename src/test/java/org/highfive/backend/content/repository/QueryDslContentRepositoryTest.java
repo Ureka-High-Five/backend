@@ -86,7 +86,7 @@ class QueryDslContentRepositoryTest {
     }
 
     @Test
-    @DisplayName("장르 일치 개수 내림차순으로 콘텐츠를 조회한다")
+    @DisplayName("온보딩 컨텐츠 선택 - 장르 일치 개수 내림차순으로 콘텐츠를 조회한다")
     void findContentsByGenresOrderByMatchCountDesc() {
         // given
         MetaInfo action = new MetaInfo(null, "Action", MetaType.GENRE, null);

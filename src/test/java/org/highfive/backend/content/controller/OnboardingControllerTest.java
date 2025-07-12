@@ -82,17 +82,17 @@ class OnboardingControllerTest {
         given(contentService.getDistinctGenreTopContents())
                 .willThrow(new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND));
 
-        // when - then
+        // when, then
         mockMvc.perform(get("/content/init"))
-                .andExpect(status().isNotFound())                                   // HTTP 404
+                .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.code")
-                        .value(ContentErrorCode.CONTENT_NOT_FOUND.getCode()))    // 예: 40401
+                        .value(ContentErrorCode.CONTENT_NOT_FOUND.getCode()))
                 .andExpect(jsonPath("$.message")
                         .value(ContentErrorCode.CONTENT_NOT_FOUND.getMessage()));
     }
 
     @Test
-    @DisplayName("추천 결과가 있을 때 20000 와 리스트를 반환한다")
+    @DisplayName("온보딩 컨텐츠 선택 - 결과가 있을 때 20000 와 리스트를 반환한다")
     void recommend_returnsOkWithContent() throws Exception {
         // given
         OnboardingSelectContentRequestDto req = new OnboardingSelectContentRequestDto(List.of(1L, 2L, 3L));
@@ -103,7 +103,7 @@ class OnboardingControllerTest {
         given(onboardingService.getContentBySelectedContent(any()))
                 .willReturn(dtoList);
 
-        // when & then
+        // when, then
         mockMvc.perform(post("/content/recommend")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJson(req)))
@@ -117,14 +117,14 @@ class OnboardingControllerTest {
     }
 
     @Test
-    @DisplayName("추천 결과가 없을 때 20400 No Content와 빈 배열을 반환한다")
+    @DisplayName("온보딩 컨텐츠 선택 - 결과가 없을 때 20400 No Content와 빈 배열을 반환한다")
     void recommend_returnsNoContent() throws Exception {
         // given
         var req = new OnboardingSelectContentRequestDto(List.of(5L, 6L));
         given(onboardingService.getContentBySelectedContent(any()))
                 .willReturn(List.of());
 
-        // when & then
+        // when, then
         mockMvc.perform(post("/content/recommend")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJson(req)))
