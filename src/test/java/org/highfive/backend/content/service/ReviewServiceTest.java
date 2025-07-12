@@ -2,6 +2,7 @@ package org.highfive.backend.content.service;
 
 import static com.mysema.commons.lang.Assert.assertThat;
 import static org.highfive.backend.content.exception.ContentErrorCode.CONTENT_NOT_FOUND;
+import static org.highfive.backend.content.exception.ReviewErrorCode.REVIEW_FORBIDDEN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -84,6 +85,44 @@ public class ReviewServiceTest {
         // then
         assertEquals(CONTENT_NOT_FOUND, exception.getErrorCode());
     }
+
+    @Test
+    @DisplayName("리뷰 수정에 성공하면 200 성공 코드를 반환한다")
+    void updateReview_success(){
+        //given
+        UpdateReviewRequestDto dto = new UpdateReviewRequestDto("리뷰 수정합니다",3);
+        when(reviewRepository.findById(3L)).thenReturn(Optional.of(review));
+
+        // when
+        Response<?> response = reviewService.updateReview(3L, dto, user);
+
+        //then
+        assertEquals(20000, response.code());
+        assertEquals("리뷰 수정합니다", review.getReviewText());
+        assertEquals(3, review.getRating());
+    }
+
+    @Test
+    @DisplayName("다른 유저의 리뷰를 수정 하려고하면 예외가 발생한다")
+    void updateReview_fail_forbiddenUser() {
+        // given
+        User anotherUser = UserFixture.createUser(999L);
+        when(reviewRepository.findById(3L)).thenReturn(Optional.of(review));
+
+        // when
+        BusinessException exception = assertThrows(BusinessException.class, () -> {
+            reviewService.updateReview(3L,new UpdateReviewRequestDto("남의 리뷰 수정 시도",1), anotherUser);
+        });
+
+        //then
+        assertEquals(REVIEW_FORBIDDEN, exception.getErrorCode());
+    }
+
+
+
+
+
+
 
 
 
