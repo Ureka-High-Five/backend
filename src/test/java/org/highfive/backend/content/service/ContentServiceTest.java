@@ -60,8 +60,8 @@ public class ContentServiceTest {
     @BeforeEach
     void setUp() {
         stubData = List.of(
-                new MostPopularContentPerGenreDto(1L, "s3://1", "A의 모험", 10, "장르1", 1L),
-                new MostPopularContentPerGenreDto(2L, "s3://2", "B의 비밀", 10, "장르2", 2L)
+                new MostPopularContentPerGenreDto(1L, "s3://1", "A의 모험", 10, "장르1", 1L, 2024),
+                new MostPopularContentPerGenreDto(2L, "s3://2", "B의 비밀", 10, "장르2", 2L, 2024)
         );
     }
 
@@ -81,7 +81,7 @@ public class ContentServiceTest {
                 // 1) 결과 크기
                 .hasSize(2)
                 // 2) 각 필드별 값 추출 후 정확히 일치 여부 확인
-                .extracting("id", "thumbnailUrl", "title")
+                .extracting("contentId", "thumbnailUrl", "title")
                 .containsExactly(
                         tuple(1L, "s3://1", "A의 모험"),
                         tuple(2L, "s3://2", "B의 비밀")
