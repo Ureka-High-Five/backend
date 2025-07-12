@@ -6,7 +6,7 @@ import org.highfive.backend.content.entity.ContentType;
 
 public class ContentFixture {
 
-    public static Content creatContent(Long contentId) {
+    public static Content createContent(Long contentId) {
         return Content.builder()
                 .id(contentId)
                 .title("테스트 제목")
