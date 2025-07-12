@@ -51,7 +51,7 @@ public class ContentService {
         List<MostPopularContentPerGenreDto> topContents = contentRepository.findTopContentPerGenre(INIT_CONTENT_CNT);
 
         return topContents.stream()
-                .map(dto -> new OnboardingInitContentsResponseDto(dto.id(), dto.thumbnailUrl(), dto.title()))
+                .map(dto -> new OnboardingInitContentsResponseDto(dto.id(), dto.thumbnailUrl(), dto.title(), dto.openYear()))
                 .toList();
     }
 
@@ -106,7 +106,6 @@ public class ContentService {
                 .findFirst()
                 .orElse(null);
     }
-
 
     public MainRecommendDto recommendMainContentsByUser(User user) {
         List<FastApiRecommendResponseDto> contentsByUserVector = fastApiVectorRecommend(

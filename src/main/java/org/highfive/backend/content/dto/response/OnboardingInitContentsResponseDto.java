@@ -1,8 +1,9 @@
 package org.highfive.backend.content.dto.response;
 
 public record OnboardingInitContentsResponseDto(
-        long id,
+        long contentId,
         String thumbnailUrl,
-        String title
+        String title,
+        int openYear
 ) {
 }
