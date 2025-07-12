@@ -9,6 +9,7 @@ public class UserFixture {
                 .id(id)
                 .name("황지연")
                 .profileUrl("s3://profileUrl")
+                .kakaoUserId("test-kakaoUserId")
                 .build();
     }
 }
