@@ -41,6 +41,7 @@ public class OnboardingController {
         if (contents.isEmpty()) {
             return new Response<>(SuccessCode.NO_CONTENT.getCode(), contents, null);
         }
+
         return new Response<>(SuccessCode.OK.getCode(), contents, null);
     }
 }

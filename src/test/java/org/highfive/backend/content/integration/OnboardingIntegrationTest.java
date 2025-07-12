@@ -1,8 +1,12 @@
 package org.highfive.backend.content.integration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.EntityManager;
 import org.highfive.backend.BackendApplication;
 import org.highfive.backend.common.fixture.ContentFixture;
+import org.highfive.backend.content.dto.request.OnboardingSelectContentRequestDto;
 import org.highfive.backend.content.dto.response.OnboardingInitContentsResponseDto;
+import org.highfive.backend.content.dto.response.OnboardingSelectContentResponseDto;
 import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.content.entity.metadata.MetaInfo;
 import org.highfive.backend.content.entity.metadata.MetaInfoContents;
@@ -17,9 +21,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -34,6 +47,8 @@ class OnboardingIntegrationTest {
     int port;
 
     @Autowired
+    private EntityManager em;
+    @Autowired
     private ContentRepository contentRepo;
     @Autowired
     private MetaInfoRepository metaRepo;
@@ -46,7 +61,7 @@ class OnboardingIntegrationTest {
     @DisplayName("온보딩 초기 - 성공 통합 테스트")
     void onboardingInitContents() {
         //given
-        insertSampleContents();
+        insertInitSampleContents();
 
         // when
         String url = "http://localhost:" + port + "/content/init";
@@ -78,6 +93,32 @@ class OnboardingIntegrationTest {
     }
 
     private void insertSampleContents() {
+    @Test
+    @DisplayName("온보딩 선택 - 성공 통합 테스트")
+    void onboardingSelectContents_Success() {
+        SampleIds ids = insertSelectSampleContents();
+
+        OnboardingSelectContentRequestDto req = new OnboardingSelectContentRequestDto(ids.selectedIds());
+
+        String url = "http://localhost:" + port + "/content/recommend";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<OnboardingSelectContentRequestDto> entity = new HttpEntity<>(req, headers);
+
+        ResponseEntity<Response<List<OnboardingSelectContentResponseDto>>> response =
+                restTemplate.exchange(
+                        url,
+                        HttpMethod.POST,
+                        entity,
+                        new ParameterizedTypeReference<>() {}
+                );
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        Response<List<OnboardingSelectContentResponseDto>> body = response.getBody();
+        assertThat(body.content()).hasSize(3);
+        assertThat(body.code()).isEqualTo(20000);
+    }
         MetaInfo action   = metaRepo.save(new MetaInfo(null, "Action",   MetaType.GENRE, null));
         MetaInfo comedy   = metaRepo.save(new MetaInfo(null, "Comedy",   MetaType.GENRE, null));
         MetaInfo thriller = metaRepo.save(new MetaInfo(null, "Thriller", MetaType.GENRE, null));
