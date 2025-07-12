@@ -77,7 +77,7 @@ public class QueryDslContentRepository implements ContentQueryRepository{
                         c.postUrl,
                         c.title,
                         c.openDate,
-                        m.name.countDistinct()  // genreMatchCount
+                        m.name.countDistinct()
                 ))
                 .from(c)
                 .join(mic).on(mic.content.id.eq(c.id))

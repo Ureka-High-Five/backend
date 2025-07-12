@@ -43,11 +43,11 @@ class OnboardingServiceTest {
                 ));
 
         List<OnboardingContentDto> repoReturn = List.of(
-                new OnboardingContentDto(1L, "url1", "title1", LocalDate.of(2024,1,1), 2L), // 중복 → 제외
-                new OnboardingContentDto(2L, "url2", "title2", LocalDate.of(2023,5,5), 2L), // 중복 → 제외
-                new OnboardingContentDto(3L, "url3", "title3", LocalDate.of(2022,3,3), 2L),
-                new OnboardingContentDto(4L, "url4", "title4", LocalDate.of(2021,2,2), 2L),
-                new OnboardingContentDto(5L, "url5", "title5", LocalDate.of(2020,1,1), 2L)
+                new OnboardingContentDto(1L, "url1", "title1", LocalDateTime.of(2024,1,1,1,1,1), 2L),
+                new OnboardingContentDto(2L, "url2", "title2", LocalDateTime.of(2023,5,5,1,1,1), 2L),
+                new OnboardingContentDto(3L, "url3", "title3", LocalDateTime.of(2022,3,3,1,1,1), 2L),
+                new OnboardingContentDto(4L, "url4", "title4", LocalDateTime.of(2021,2,2,1,1,1), 2L),
+                new OnboardingContentDto(5L, "url5", "title5", LocalDateTime.of(2020,1,1,1,1,1), 2L)
         );
         when(queryDslRepo.findContentsByGenresOrderByMatchCountDesc(
                 eq(List.of("Action", "Drama"))))
