@@ -27,8 +27,7 @@ public class OnboardingService {
     private final FastApiClient fastApiClient;
     private final QueryDslContentRepository queryDslContentRepository;
 
-    public List<OnboardingSelectContentResponseDto> getContentBySelectedContent(
-            final OnboardingSelectContentRequestDto request) {
+    public List<OnboardingSelectContentResponseDto> getContentBySelectedContent(final OnboardingSelectContentRequestDto request) {
         List<GenreCountDto> topGenresByContentIds = queryDslContentRepository.findTopGenresByContentIds(request.selectedContentIds());
         return getOnboardingSelectContentResponseDtos(topGenresByContentIds.stream().map((GenreCountDto::genre)).toList(), request);
 
@@ -37,21 +36,6 @@ public class OnboardingService {
 //        List<Content> contents = contentRepository.findAllById(contentIds);
 //        List<Content> result = duplicateFilter(contents, request);
 //        return result.stream().map(ContentMapper::toOnboardingSelectContentResponseDto).toList();
-    }
-
-    private List<Entry<String, Integer>> countGenre(List<Map<String, Object>> contentGenresByContentIds) {
-        Map<String, Integer> genreCount = new HashMap<>();
-        for (Map<String, Object> map : contentGenresByContentIds) {
-            for (Object genreObj : map.values()) {
-                String genre = genreObj.toString();
-                genreCount.put(genre, genreCount.getOrDefault(genre, 0) + 1);
-            }
-        }
-
-        List<Entry<String, Integer>> sortedGenres = new ArrayList<>(genreCount.entrySet());
-
-        sortedGenres.sort((e1, e2) -> Integer.compare(e2.getValue(), e1.getValue()));
-        return sortedGenres;
     }
 
     private List<OnboardingSelectContentResponseDto> getOnboardingSelectContentResponseDtos(List<String> topGenres, OnboardingSelectContentRequestDto request) {
