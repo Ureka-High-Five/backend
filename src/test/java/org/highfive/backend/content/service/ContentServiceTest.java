@@ -89,7 +89,7 @@ public class ContentServiceTest {
     }
 
     @Test
-    @DisplayName("온보딩 초기 - 장르별 인기있는 작품 리스트가 빈 리스트인 경우 결과도 빈 리스트가 된다")
+    @DisplayName("온보딩 초기 - 장르별 인기있는 작품 리스트가 빈 리스트인 경우 예외가 발생한다")
     void getDistinctGenreTopContents_emptyResult() {
         // given
         when(contentRepository.findTopContentPerGenre(6))
