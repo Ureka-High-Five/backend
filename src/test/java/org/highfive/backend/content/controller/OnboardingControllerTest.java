@@ -1,9 +1,13 @@
 package org.highfive.backend.content.controller;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
+import org.highfive.backend.content.dto.request.OnboardingSelectContentRequestDto;
 import org.highfive.backend.content.dto.response.OnboardingInitContentsResponseDto;
+import org.highfive.backend.content.dto.response.OnboardingSelectContentResponseDto;
 import org.highfive.backend.content.exception.ContentErrorCode;
 import org.highfive.backend.content.service.ContentService;
 import org.highfive.backend.content.service.OnboardingService;
@@ -15,9 +19,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.hamcrest.Matchers.hasSize;
@@ -30,11 +37,18 @@ class OnboardingControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    ObjectMapper objectMapper;
+
     @MockitoBean
     private ContentService contentService;
 
     @MockitoBean
     private OnboardingService onboardingService;
+
+    private String asJson(Object obj) throws Exception {
+        return objectMapper.writeValueAsString(obj);
+    }
 
     @Test
     @DisplayName("온보딩 초기 화면 - 컨트롤러가 올바른 응답을 보냅니다.")
@@ -68,12 +82,54 @@ class OnboardingControllerTest {
         given(contentService.getDistinctGenreTopContents())
                 .willThrow(new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND));
 
-        // when - then
+        // when, then
         mockMvc.perform(get("/content/init"))
-                .andExpect(status().isNotFound())                                   // HTTP 404
+                .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.code")
-                        .value(ContentErrorCode.CONTENT_NOT_FOUND.getCode()))    // 예: 40401
+                        .value(ContentErrorCode.CONTENT_NOT_FOUND.getCode()))
                 .andExpect(jsonPath("$.message")
                         .value(ContentErrorCode.CONTENT_NOT_FOUND.getMessage()));
+    }
+
+    @Test
+    @DisplayName("온보딩 컨텐츠 선택 - 결과가 있을 때 20000 와 리스트를 반환한다")
+    void recommend_returnsOkWithContent() throws Exception {
+        // given
+        OnboardingSelectContentRequestDto req = new OnboardingSelectContentRequestDto(List.of(1L, 2L, 3L));
+        List<OnboardingSelectContentResponseDto> dtoList = List.of(
+                new OnboardingSelectContentResponseDto(10L, "url1", "title1", 2024),
+                new OnboardingSelectContentResponseDto(11L, "url2", "title2", 2023)
+        );
+        given(onboardingService.getContentBySelectedContent(any()))
+                .willReturn(dtoList);
+
+        // when, then
+        mockMvc.perform(post("/content/recommend")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJson(req)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(20000))
+                .andExpect(jsonPath("$.content", hasSize(dtoList.size())))
+                .andExpect(jsonPath("$.content[0].contentId").value(10L))
+                .andExpect(jsonPath("$.content[0].posterUrl").value("url1"))
+                .andExpect(jsonPath("$.content[0].title").value("title1"))
+                .andExpect(jsonPath("$.content[0].openYear").value(2024));
+    }
+
+    @Test
+    @DisplayName("온보딩 컨텐츠 선택 - 결과가 없을 때 20400 No Content와 빈 배열을 반환한다")
+    void recommend_returnsNoContent() throws Exception {
+        // given
+        var req = new OnboardingSelectContentRequestDto(List.of(5L, 6L));
+        given(onboardingService.getContentBySelectedContent(any()))
+                .willReturn(List.of());
+
+        // when, then
+        mockMvc.perform(post("/content/recommend")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJson(req)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(20400))
+                .andExpect(jsonPath("$.content", hasSize(0)));
     }
 }

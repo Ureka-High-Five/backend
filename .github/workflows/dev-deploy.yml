@@ -14,7 +14,7 @@ jobs:
           ref: ${{ github.event.workflow_run.head_sha }}
 
       - name: 스프링 빌드 .jar 파일 생성
-        run: ./gradlew clean build -x test
+        run: ./gradlew clean build
 
       - name: Debug SSH Key
         run: echo "${{ secrets.DEV_SSH_KEY }}" | wc -l
