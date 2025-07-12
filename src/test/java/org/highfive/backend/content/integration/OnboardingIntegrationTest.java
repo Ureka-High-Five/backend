@@ -92,7 +92,6 @@ class OnboardingIntegrationTest {
         assertThat(body.message()).isEqualTo("존재하지 않는 컨텐츠입니다.");
     }
 
-    private void insertSampleContents() {
     @Test
     @DisplayName("온보딩 선택 - 성공 통합 테스트")
     void onboardingSelectContents_Success() {
@@ -119,6 +118,71 @@ class OnboardingIntegrationTest {
         assertThat(body.content()).hasSize(3);
         assertThat(body.code()).isEqualTo(20000);
     }
+
+    @Test
+    @DisplayName("온보딩 선택 - 빈 리스트 통합 테스트")
+    void onboardingSelectContents_Empty() {
+        SampleIds ids = insertSelectSampleContents();
+
+        OnboardingSelectContentRequestDto req = new OnboardingSelectContentRequestDto(List.of());
+
+        String url = "http://localhost:" + port + "/content/recommend";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<OnboardingSelectContentRequestDto> entity = new HttpEntity<>(req, headers);
+
+        ResponseEntity<Response<List<OnboardingSelectContentResponseDto>>> response =
+                restTemplate.exchange(
+                        url,
+                        HttpMethod.POST,
+                        entity,
+                        new ParameterizedTypeReference<>() {}
+                );
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        Response<List<OnboardingSelectContentResponseDto>> body = response.getBody();
+        assertThat(body.content()).hasSize(0);
+        assertThat(body.code()).isEqualTo(20400);
+    }
+
+    private SampleIds insertSelectSampleContents() {
+        MetaInfo action = metaRepo.save(new MetaInfo(null, "Action", MetaType.GENRE, null));
+        MetaInfo drama  = metaRepo.save(new MetaInfo(null, "Drama",  MetaType.GENRE, null));
+        metaRepo.save(action);
+        metaRepo.save(drama);
+
+        Content cSel1 = contentRepo.save(ContentFixture.createContent(null));
+        Content cSel2 = contentRepo.save(ContentFixture.createContent(null));
+        Content cSel3 = contentRepo.save(ContentFixture.createContent(null));
+
+        micRepo.saveAll(List.of(
+                new MetaInfoContents(null, action, cSel1),
+                new MetaInfoContents(null, drama,  cSel1),
+                new MetaInfoContents(null, action, cSel2),
+                new MetaInfoContents(null, drama,  cSel3)
+        ));
+
+        Content cRec1 = contentRepo.save(ContentFixture.createContent(null));
+        Content cRec2 = contentRepo.save(ContentFixture.createContent(null));
+        Content cRec3 = contentRepo.save(ContentFixture.createContent(null));
+
+        micRepo.saveAll(List.of(
+                new MetaInfoContents(null, action, cRec1),
+                new MetaInfoContents(null, drama , cRec1),
+                new MetaInfoContents(null, action, cRec2),
+                new MetaInfoContents(null, drama , cRec3)
+        ));
+
+        return new SampleIds(
+                List.of(cSel1.getId(), cSel2.getId(), cSel3.getId()),
+                List.of(cRec1.getId(), cRec2.getId(), cRec3.getId())
+        );
+    }
+
+    private record SampleIds(List<Long> selectedIds, List<Long> recommendedIds) {}
+
+    private void insertInitSampleContents() {
         MetaInfo action   = metaRepo.save(new MetaInfo(null, "Action",   MetaType.GENRE, null));
         MetaInfo comedy   = metaRepo.save(new MetaInfo(null, "Comedy",   MetaType.GENRE, null));
         MetaInfo thriller = metaRepo.save(new MetaInfo(null, "Thriller", MetaType.GENRE, null));
