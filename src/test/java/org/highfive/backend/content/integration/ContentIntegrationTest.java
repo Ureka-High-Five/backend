@@ -47,7 +47,7 @@ public class ContentIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        Content content = ContentFixture.creatContent(null);
+        Content content = ContentFixture.createContent(null);
         savedContent = contentRepository.save(content);
 
         MetaInfo director = metaInfoRepository.save(MetaInfoFixture.createMetaInfo("감독", MetaType.DIRECTOR));

@@ -15,7 +15,7 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
     @Query(value = """
         SELECT *
         FROM (
-          SELECT c.id, c.post_url, c.title, m.name,
+          SELECT c.id, c.post_url, c.title, c.popularity, m.name,
               ROW_NUMBER() OVER (PARTITION BY m.name ORDER BY c.popularity DESC) AS rn, YEAR(c.open_date)
           FROM contents c
           JOIN meta_info_contents mic ON mic.content_id = c.id
@@ -23,6 +23,7 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
           WHERE m.type = 'GENRE'
         ) ranked
         WHERE rn = 1
+        ORDER BY popularity DESC
         LIMIT :limit
         """, nativeQuery = true)
     List<MostPopularContentPerGenreDto> findTopContentPerGenre(@Param("limit") int limit);
