@@ -112,6 +112,23 @@ public class ContentServiceTest {
                 fastApiClient, preferMetaInfoRepository);
     }
 
+    @Test
+    @DisplayName("온보딩 초기 화면 - ContentRepository가 예외를 던지면 서비스도 예외를 전파한다")
+    void getDistinctGenreTopContents_repositoryThrows() {
+        // given
+        when(contentRepository.findTopContentPerGenre(6))
+                .thenThrow(new IllegalStateException("DB 오류"));
+
+        // when & then
+        assertThatThrownBy(() -> contentService.getDistinctGenreTopContents())
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("DB 오류");
+
+        verify(contentRepository).findTopContentPerGenre(6);
+        verifyNoMoreInteractions(contentRepository, metaInfoContentsRepository,
+                fastApiClient, preferMetaInfoRepository);
+    }
+
 
     @Test
     @DisplayName("존재하는 content일 경우 content의 상세 정보를 반환한다")
