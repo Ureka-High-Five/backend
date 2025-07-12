@@ -5,9 +5,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
+import java.time.LocalDate;
 import java.util.List;
 import org.highfive.backend.common.fixture.ContentFixture;
 import org.highfive.backend.content.dto.response.GenreCountDto;
+import org.highfive.backend.content.dto.response.OnboardingContentDto;
 import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.content.entity.metadata.MetaInfo;
 import org.highfive.backend.content.entity.metadata.MetaInfoContents;
@@ -81,5 +83,41 @@ class QueryDslContentRepositoryTest {
 
         assertThat(second.genre()).isEqualTo("Drama");
         assertThat(second.cnt()).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("장르 일치 개수 내림차순으로 콘텐츠를 조회한다")
+    void findContentsByGenresOrderByMatchCountDesc() {
+        // given
+        MetaInfo action = new MetaInfo(null, "Action", MetaType.GENRE, null);
+        MetaInfo drama  = new MetaInfo(null, "Drama",  MetaType.GENRE, null);
+        MetaInfo comedy = new MetaInfo(null, "Comedy", MetaType.GENRE, null);
+        em.persist(action); em.persist(drama); em.persist(comedy);
+
+        Content c1 = ContentFixture.createContent(null); em.persist(c1);
+        Content c2 = ContentFixture.createContent(null); em.persist(c2);
+        Content c3 = ContentFixture.createContent(null); em.persist(c3);
+
+        em.persist(new MetaInfoContents(null, action, c1));
+        em.persist(new MetaInfoContents(null, drama,  c1));
+        em.persist(new MetaInfoContents(null, action, c2));
+        em.persist(new MetaInfoContents(null, drama,  c3));
+
+        em.flush(); em.clear();
+
+        // when
+        List<OnboardingContentDto> result =
+                queryDslContentRepository.findContentsByGenresOrderByMatchCountDesc(List.of("Action", "Drama"));
+
+        // then
+        assertThat(result).hasSize(3);
+
+        OnboardingContentDto first = result.getFirst();
+        assertThat(first.id()).isEqualTo(c1.getId());
+        assertThat(first.genreMatchCount()).isEqualTo(2);
+
+        assertThat(result.subList(1, 3))
+                .extracting(OnboardingContentDto::genreMatchCount)
+                .allMatch(cnt -> cnt == 1);
     }
 }
