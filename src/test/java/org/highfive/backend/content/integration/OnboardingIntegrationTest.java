@@ -30,11 +30,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 class OnboardingIntegrationTest {
 
-    @Autowired
-    TestRestTemplate restTemplate;
-
     @LocalServerPort
     int port;
+
+    @Autowired
+    private ContentRepository contentRepo;
+    @Autowired
+    private MetaInfoRepository metaRepo;
+    @Autowired
+    private MetaInfoContentsRepository micRepo;
+    @Autowired
+    TestRestTemplate restTemplate;
 
     @Test
     @DisplayName("온보딩 초기 - 성공 통합 테스트")
@@ -70,13 +76,6 @@ class OnboardingIntegrationTest {
         assertThat(body.code()).isEqualTo(40402);
         assertThat(body.message()).isEqualTo("존재하지 않는 컨텐츠입니다.");
     }
-
-    @Autowired
-    private ContentRepository contentRepo;
-    @Autowired
-    private MetaInfoRepository metaRepo;
-    @Autowired
-    private MetaInfoContentsRepository micRepo;
 
     private void insertSampleContents() {
         MetaInfo action   = metaRepo.save(new MetaInfo(null, "Action",   MetaType.GENRE, null));

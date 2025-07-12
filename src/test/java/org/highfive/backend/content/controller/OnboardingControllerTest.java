@@ -4,8 +4,10 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.List;
 import org.highfive.backend.content.dto.response.OnboardingInitContentsResponseDto;
+import org.highfive.backend.content.exception.ContentErrorCode;
 import org.highfive.backend.content.service.ContentService;
 import org.highfive.backend.content.service.OnboardingService;
+import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.global.exception.handler.GlobalExceptionHandler;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -57,5 +59,21 @@ class OnboardingControllerTest {
                 .andExpect(jsonPath("$.content[1].thumbnailUrl").value("url2"))
                 .andExpect(jsonPath("$.content[1].title").value("title2"))
                 .andExpect(jsonPath("$.content[1].openYear").value(2024));;
+    }
+
+    @Test
+    @DisplayName("온보딩 초기 화면 - 작품이 없으면 에러 코드 CONTENT_NOT_FOUND를 반환한다")
+    void onboardingInitContents_whenNoContents_thenReturnsNotFound() throws Exception {
+        // given
+        given(contentService.getDistinctGenreTopContents())
+                .willThrow(new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND));
+
+        // when - then
+        mockMvc.perform(get("/content/init"))
+                .andExpect(status().isNotFound())                                   // HTTP 404
+                .andExpect(jsonPath("$.code")
+                        .value(ContentErrorCode.CONTENT_NOT_FOUND.getCode()))    // 예: 40401
+                .andExpect(jsonPath("$.message")
+                        .value(ContentErrorCode.CONTENT_NOT_FOUND.getMessage()));
     }
 }
