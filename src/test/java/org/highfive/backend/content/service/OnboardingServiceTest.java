@@ -24,7 +24,7 @@ class OnboardingServiceTest {
     @Mock
     QueryDslContentRepository queryDslRepo;
 
-    @InjectMocks 
+    @InjectMocks
     OnboardingService onboardingService;
 
     @Test

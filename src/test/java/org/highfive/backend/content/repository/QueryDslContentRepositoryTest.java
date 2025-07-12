@@ -1,11 +1,9 @@
 package org.highfive.backend.content.repository;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
-import java.time.LocalDate;
 import java.util.List;
 import org.highfive.backend.common.fixture.ContentFixture;
 import org.highfive.backend.content.dto.response.GenreCountDto;
