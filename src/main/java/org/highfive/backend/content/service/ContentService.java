@@ -50,6 +50,9 @@ public class ContentService {
     public List<OnboardingInitContentsResponseDto> getDistinctGenreTopContents() {
         List<MostPopularContentPerGenreDto> topContents = contentRepository.findTopContentPerGenre(INIT_CONTENT_CNT);
 
+        if (topContents.isEmpty()) {
+            throw new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND);
+        }
         return topContents.stream()
                 .map(dto -> new OnboardingInitContentsResponseDto(dto.id(), dto.thumbnailUrl(), dto.title(), dto.openYear()))
                 .toList();

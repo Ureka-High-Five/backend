@@ -96,11 +96,14 @@ public class ContentServiceTest {
                 .thenReturn(List.of());
 
         // when
-        List<OnboardingInitContentsResponseDto> result =
-                contentService.getDistinctGenreTopContents();
+        assertThatThrownBy(() -> contentService.getDistinctGenreTopContents())
+                .isInstanceOf(BusinessException.class)
+                .satisfies(ex -> {
+                    BusinessException be = (BusinessException) ex;
+                    assertThat(be.getErrorCode()).isEqualTo(ContentErrorCode.CONTENT_NOT_FOUND);
+                });
 
         // then
-        assertThat(result).isEmpty();
         verify(contentRepository).findTopContentPerGenre(6);
         verifyNoMoreInteractions(contentRepository, metaInfoContentsRepository,
                 fastApiClient, preferMetaInfoRepository);
