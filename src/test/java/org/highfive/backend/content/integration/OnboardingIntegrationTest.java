@@ -82,6 +82,5 @@ class OnboardingIntegrationTest {
         micRepo.save(new MetaInfoContents(null, drama, c6));
         Content c7 = contentRepo.save(ContentFixture.createContentByPopularity(null, "c7", 70));
         micRepo.save(new MetaInfoContents(null, kids, c7));
-
     }
 }
