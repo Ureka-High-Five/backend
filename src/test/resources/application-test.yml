@@ -4,14 +4,15 @@ spring:
       host: localhost
       port: 6379
 
-datasource:
-  url: jdbc:h2:mem:testdb;MODE=MYSQL;DB_CLOSE_DELAY=-1
-  driver-class-name: org.h2.Driver
-  username: sa
-  password:
-jpa:
-  hibernate:
-    ddl-auto: create-drop
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=MYSQL;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
 
 kakao:
   client-id: abcdefghijklmnob
