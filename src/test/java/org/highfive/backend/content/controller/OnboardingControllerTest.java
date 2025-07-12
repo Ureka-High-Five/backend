@@ -115,4 +115,21 @@ class OnboardingControllerTest {
                 .andExpect(jsonPath("$.content[0].title").value("title1"))
                 .andExpect(jsonPath("$.content[0].openYear").value(2024));
     }
+
+    @Test
+    @DisplayName("추천 결과가 없을 때 20400 No Content와 빈 배열을 반환한다")
+    void recommend_returnsNoContent() throws Exception {
+        // given
+        var req = new OnboardingSelectContentRequestDto(List.of(5L, 6L));
+        given(onboardingService.getContentBySelectedContent(any()))
+                .willReturn(List.of());
+
+        // when & then
+        mockMvc.perform(post("/content/recommend")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJson(req)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(20400))
+                .andExpect(jsonPath("$.content", hasSize(0)));
+    }
 }
