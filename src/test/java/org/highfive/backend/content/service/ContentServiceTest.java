@@ -69,27 +69,21 @@ public class ContentServiceTest {
     @Test
     void getDistinctGenreTopContents_success() {
         // given
-        // contentRepository가 호출되면 stubData 반환하도록 stubbing
         when(contentRepository.findTopContentPerGenre(6)).thenReturn(stubData);
 
         // when
-        // 실제 메서드 호출
         List<OnboardingInitContentsResponseDto> result = contentService.getDistinctGenreTopContents();
 
         // then
         assertThat(result)
-                // 1) 결과 크기
                 .hasSize(2)
-                // 2) 각 필드별 값 추출 후 정확히 일치 여부 확인
                 .extracting("contentId", "thumbnailUrl", "title")
                 .containsExactly(
                         tuple(1L, "s3://1", "A의 모험"),
                         tuple(2L, "s3://2", "B의 비밀")
                 );
 
-        // 3) Repository가 정확히 한 번 호출됐는지 검증
         verify(contentRepository).findTopContentPerGenre(6);
-        // 4) 나머지 의존성은 추가 호출이 없어야 함
         verifyNoMoreInteractions(contentRepository, metaInfoContentsRepository,
                 fastApiClient, preferMetaInfoRepository);
     }
@@ -98,7 +92,7 @@ public class ContentServiceTest {
     @DisplayName("온보딩 초기 화면 - 장르별 인기있는 작품 리스트가 빈 리스트인 경우 결과도 빈 리스트가 된다")
     void getDistinctGenreTopContents_emptyResult() {
         // given
-        when(contentRepository.findTopContentPerGenre(6)) // 빈 리스트 스텁
+        when(contentRepository.findTopContentPerGenre(6))
                 .thenReturn(List.of());
 
         // when
@@ -106,7 +100,7 @@ public class ContentServiceTest {
                 contentService.getDistinctGenreTopContents();
 
         // then
-        assertThat(result).isEmpty();                 // 결과가 비어 있는지 확인
+        assertThat(result).isEmpty();
         verify(contentRepository).findTopContentPerGenre(6);
         verifyNoMoreInteractions(contentRepository, metaInfoContentsRepository,
                 fastApiClient, preferMetaInfoRepository);
@@ -119,7 +113,7 @@ public class ContentServiceTest {
         when(contentRepository.findTopContentPerGenre(6))
                 .thenThrow(new IllegalStateException("DB 오류"));
 
-        // when & then
+        // when, then
         assertThatThrownBy(() -> contentService.getDistinctGenreTopContents())
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("DB 오류");

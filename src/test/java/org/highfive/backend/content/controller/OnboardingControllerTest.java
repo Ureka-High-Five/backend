@@ -37,7 +37,6 @@ class OnboardingControllerTest {
         List<OnboardingInitContentsResponseDto> dtoList = List.of(
                 new OnboardingInitContentsResponseDto(1L, "url1", "title1", 2024),
                 new OnboardingInitContentsResponseDto(2L, "url2", "title2", 2024)
-                // …최대 6개
         );
         given(contentService.getDistinctGenreTopContents()).willReturn(dtoList);
 

@@ -33,9 +33,8 @@ public class ContentRepositoryTest {
 
     @DisplayName("장르별 인기 1위 콘텐츠 6개 조회")
     @Test
-    void findTopContentPerGenre_h2() {
-        /* ---------- GIVEN ---------- */
-        // 1) 장르 메타
+    void findTopContentPerGenreTest() {
+        // given
         MetaInfo action = metaInfoRepository.save(new MetaInfo(null, "Action", MetaType.GENRE, null));
         MetaInfo comedy = metaInfoRepository.save(new MetaInfo(null, "Comedy", MetaType.GENRE, null));
         MetaInfo thriller = metaInfoRepository.save(new MetaInfo(null, "Thriller", MetaType.GENRE, null));
@@ -44,7 +43,6 @@ public class ContentRepositoryTest {
         MetaInfo drama = metaInfoRepository.save(new MetaInfo(null, "DRAMA", MetaType.GENRE, null));
         MetaInfo kids = metaInfoRepository.save(new MetaInfo(null, "KIDS", MetaType.GENRE, null));
 
-        // 2) 콘텐츠
         Content c1 = contentRepository.save(ContentFixture.createContentByPopularity(null, "c1", 10));
         Content c2 = contentRepository.save(ContentFixture.createContentByPopularity(null, "c2",20));
         Content c3 = contentRepository.save(ContentFixture.createContentByPopularity(null, "c3",30));
@@ -56,7 +54,6 @@ public class ContentRepositoryTest {
         Content c9 = contentRepository.save(ContentFixture.createContentByPopularity(null, "c9",90));
         Content c10 = contentRepository.save(ContentFixture.createContentByPopularity(null, "c10",100));
 
-        // 3) 연결 테이블
         micRepository.save(new MetaInfoContents(null, action, c1));
         micRepository.save(new MetaInfoContents(null, action, c2));
         micRepository.save(new MetaInfoContents(null, comedy, c3));
