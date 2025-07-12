@@ -5,6 +5,7 @@ import static org.mockito.BDDMockito.given;
 import java.util.List;
 import org.highfive.backend.content.dto.response.OnboardingInitContentsResponseDto;
 import org.highfive.backend.content.service.ContentService;
+import org.highfive.backend.content.service.OnboardingService;
 import org.highfive.backend.global.exception.handler.GlobalExceptionHandler;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,9 @@ class OnboardingControllerTest {
 
     @MockitoBean
     private ContentService contentService;
+
+    @MockitoBean
+    private OnboardingService onboardingService;
 
     @Test
     @DisplayName("온보딩 초기 화면 - 컨트롤러가 올바른 응답을 보냅니다.")
