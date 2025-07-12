@@ -104,9 +104,4 @@ public class AuthService {
     private boolean isTempUser(final UserRole role) {
         return UserRole.TEMP_USER.equals(role);
     }
-
-
-    public void jacocoTest() {
-
-    }
 }

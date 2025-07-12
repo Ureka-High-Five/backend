@@ -2,7 +2,6 @@ package org.highfive.backend.user.code;
 
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.global.code.ErrorCode;
-import org.highfive.backend.global.code.GlobalErrorCode;
 import org.springframework.http.HttpStatus;
 
 @RequiredArgsConstructor
