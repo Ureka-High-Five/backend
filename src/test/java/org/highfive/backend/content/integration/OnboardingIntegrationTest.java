@@ -37,8 +37,8 @@ class OnboardingIntegrationTest {
     int port;
 
     @Test
-    @DisplayName("온보딩 초기 콘텐츠 6개 – H2 통합 테스트")
-    void onboardingInitContentsTest() {
+    @DisplayName("온보딩 초기 - 성공 통합 테스트")
+    void onboardingInitContents() {
         //given
         insertSampleContents();
 

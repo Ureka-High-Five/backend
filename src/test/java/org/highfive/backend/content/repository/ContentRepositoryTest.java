@@ -31,9 +31,9 @@ public class ContentRepositoryTest {
     @Autowired
     private MetaInfoContentsRepository micRepository;
 
-    @DisplayName("장르별 인기 1위 콘텐츠 6개 조회")
+    @DisplayName("온보딩 초기 - 장르별 인기 1위 콘텐츠 6개 조회")
     @Test
-    void findTopContentPerGenreTest() {
+    void findTopContentPerGenre() {
         // given
         MetaInfo action = metaInfoRepository.save(new MetaInfo(null, "Action", MetaType.GENRE, null));
         MetaInfo comedy = metaInfoRepository.save(new MetaInfo(null, "Comedy", MetaType.GENRE, null));
@@ -74,12 +74,12 @@ public class ContentRepositoryTest {
                 .hasSize(6)
                 .extracting("id", "title")
                 .containsExactlyInAnyOrder(
-                        tuple(c4.getId(), "c4"),   // comedy 1위
+                        tuple(c4.getId(), "c4"),    // comedy 1위
                         tuple(c6.getId(), "c6"),    // thriller 1위
                         tuple(c7.getId(), "c7"),    // horror 1위
-                        tuple(c8.getId(), "c8"),   // sf 1위
-                        tuple(c9.getId(), "c9"),  // drama 1위
-                        tuple(c10.getId(), "c10")    // kids 1위
+                        tuple(c8.getId(), "c8"),    // sf 1위
+                        tuple(c9.getId(), "c9"),    // drama 1위
+                        tuple(c10.getId(), "c10")   // kids 1위
                 );
     }
 

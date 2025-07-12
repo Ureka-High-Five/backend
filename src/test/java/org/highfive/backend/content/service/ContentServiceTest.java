@@ -65,7 +65,7 @@ public class ContentServiceTest {
         );
     }
 
-    @DisplayName("온보딩 초기 화면 - ContentRepository의 리턴 타입이 ContentService의 리턴 타입으로 잘 매핑된다")
+    @DisplayName("온보딩 초기 - ContentRepository의 리턴 타입이 ContentService의 리턴 타입으로 잘 매핑된다")
     @Test
     void getDistinctGenreTopContents_success() {
         // given
@@ -89,7 +89,7 @@ public class ContentServiceTest {
     }
 
     @Test
-    @DisplayName("온보딩 초기 화면 - 장르별 인기있는 작품 리스트가 빈 리스트인 경우 결과도 빈 리스트가 된다")
+    @DisplayName("온보딩 초기 - 장르별 인기있는 작품 리스트가 빈 리스트인 경우 결과도 빈 리스트가 된다")
     void getDistinctGenreTopContents_emptyResult() {
         // given
         when(contentRepository.findTopContentPerGenre(6))
@@ -107,7 +107,7 @@ public class ContentServiceTest {
     }
 
     @Test
-    @DisplayName("온보딩 초기 화면 - ContentRepository가 예외를 던지면 서비스도 예외를 전파한다")
+    @DisplayName("온보딩 초기 - ContentRepository가 예외를 던지면 서비스도 예외를 전파한다")
     void getDistinctGenreTopContents_repositoryThrows() {
         // given
         when(contentRepository.findTopContentPerGenre(6))
