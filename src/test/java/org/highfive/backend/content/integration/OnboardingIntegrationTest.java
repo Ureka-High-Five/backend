@@ -52,6 +52,25 @@ class OnboardingIntegrationTest {
         assertThat(data).hasSize(6);
     }
 
+    @Test
+    @DisplayName("온보딩 초기 - 컨텐츠가 없는 경우 에러 반환")
+    void onboardingInitContents_noData_returns404() {
+        // given: DB에 아무 데이터도 넣지 않음
+
+        // when
+        String url = "http://localhost:" + port + "/content/init";
+        var responseEntity =
+                restTemplate.getForEntity(url, Response.class);
+
+        // then
+        assertThat(responseEntity.getStatusCode().value()).isEqualTo(404);
+
+        Response<?> body = responseEntity.getBody();
+        assertThat(body).isNotNull();
+        assertThat(body.code()).isEqualTo(40402);
+        assertThat(body.message()).isEqualTo("존재하지 않는 컨텐츠입니다.");
+    }
+
     @Autowired
     private ContentRepository contentRepo;
     @Autowired
