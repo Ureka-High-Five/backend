@@ -1,47 +1,27 @@
 package org.highfive.backend.content.service;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.assertj.core.api.AssertionsForClassTypes.tuple;
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import org.highfive.backend.common.fixture.ContentFixture;
 import org.highfive.backend.common.fixture.MetaInfoContentsFixture;
 import org.highfive.backend.common.fixture.MetaInfoFixture;
-import org.highfive.backend.common.fixture.UserFixture;
 import org.highfive.backend.content.dto.response.ContentDetailResponseDto;
-import org.highfive.backend.content.dto.response.HomeContentsResponseDto.MainRecommendDto;
-import org.highfive.backend.content.dto.response.HomeContentsResponseDto.PersonalRecommendDto;
-import org.highfive.backend.content.dto.response.MostPopularContentPerGenreDto;
-import org.highfive.backend.content.dto.response.OnboardingInitContentsResponseDto;
 import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.content.entity.metadata.MetaInfo;
 import org.highfive.backend.content.entity.metadata.MetaInfoContents;
 import org.highfive.backend.content.entity.metadata.MetaType;
-import org.highfive.backend.content.entity.repository.MetaInfoContentsRepository;
 import org.highfive.backend.content.exception.ContentErrorCode;
 import org.highfive.backend.content.repository.ContentRepository;
 import org.highfive.backend.content.repository.QueryDslContentRepository;
-import org.highfive.backend.global.client.fastapi.FastApiClient;
-import org.highfive.backend.global.client.fastapi.dto.response.FastApiRecommendResponseDto;
 import org.highfive.backend.global.code.SuccessCode;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
-import org.highfive.backend.user.entity.preference.PreferMetaInfoRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -52,10 +32,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class ContentServiceTest {
 
     @Mock
-    private ContentRepository contentRepository;
-
-    @Mock
-    private MetaInfoContentsRepository metaInfoContentsRepository;
+    private QueryDslContentRepository queryDslContentRepository;
 
     @InjectMocks
     private ContentService contentService;
