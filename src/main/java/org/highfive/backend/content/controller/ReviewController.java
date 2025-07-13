@@ -60,14 +60,7 @@ public class ReviewController {
             @RequestParam(required = false) final String cursor,
             @RequestParam(defaultValue = "3") final int size
     ) {
-        CursorPageResponse<ReviewSimpleResponseDto> response = reviewService.getReviewsByCursor(contentId, cursor,
-                size);
-
-        if (response.items() == null || response.items().isEmpty()) {
-            return new Response<>(NO_CONTENT.getCode(), null, null);
-        }
-
-        return new Response<>(OK.getCode(), response, null);
+        return reviewService.getReviewsByCursor(contentId, cursor, size);
     }
 
     @GetMapping("/{contentId}/me")
