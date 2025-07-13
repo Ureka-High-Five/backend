@@ -29,7 +29,7 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final ContentRepository contentRepository;
 
-    public Response<?> createReview(final CreateReviewRequestDto requestDto, User user) {
+    public Response<Void> createReview(final CreateReviewRequestDto requestDto, User user) {
 
         // TODO: review에 대한 금칙어 처리 추가 필요
 
@@ -43,7 +43,7 @@ public class ReviewService {
 
     }
 
-    public Response<?> updateReview(final Long reviewId, final UpdateReviewRequestDto requestDto, final User user) {
+    public Response<Void> updateReview(final Long reviewId, final UpdateReviewRequestDto requestDto, final User user) {
         // TODO: review에 대한 금칙어 처리 추가 필요
 
         Review existedReview = reviewRepository.findById(reviewId)
@@ -58,7 +58,7 @@ public class ReviewService {
 
     }
 
-    public Response<?> deleteReview(final Long reviewId, final User user) {
+    public Response<Void> deleteReview(final Long reviewId, final User user) {
 
         Review existedReview = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new BusinessException(ReviewErrorCode.REVIEW_NOT_FOUND));

@@ -32,13 +32,13 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @PostMapping
-    public Response<?> createReview(@Valid @RequestBody final CreateReviewRequestDto requestDto,
+    public Response<Void> createReview(@Valid @RequestBody final CreateReviewRequestDto requestDto,
                                     @AuthenticationPrincipal final User user) {
         return reviewService.createReview(requestDto, user);
     }
 
     @PatchMapping("/{reviewId}")
-    public Response<?> updateReview(
+    public Response<Void> updateReview(
             @PathVariable final Long reviewId,
             @Valid @RequestBody final UpdateReviewRequestDto requestDto,
             @AuthenticationPrincipal final User user) {
@@ -47,7 +47,7 @@ public class ReviewController {
     }
 
     @DeleteMapping("/{reviewId}")
-    public Response<?> deleteReview(
+    public Response<Void> deleteReview(
             @PathVariable final Long reviewId,
             @AuthenticationPrincipal final User user) {
 
