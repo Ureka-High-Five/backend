@@ -187,7 +187,7 @@ class OnboardingServiceTest {
     }
 
     @Test
-    @DisplayName("initUser() – 기본정보/벡터 저장 & 토큰 발급 성공")
+    @DisplayName("온보딩 제출 - 온보딩 제출 후 사용자 정보 저장에 성공한다")
     void initUser_success() {
         // given
         User user = UserFixture.createUser(1L);
