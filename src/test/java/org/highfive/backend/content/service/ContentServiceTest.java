@@ -25,6 +25,7 @@ import org.highfive.backend.content.entity.metadata.MetaType;
 import org.highfive.backend.content.entity.repository.MetaInfoContentsRepository;
 import org.highfive.backend.content.exception.ContentErrorCode;
 import org.highfive.backend.content.repository.ContentRepository;
+import org.highfive.backend.content.repository.QueryDslContentRepository;
 import org.highfive.backend.global.client.fastapi.FastApiClient;
 import org.highfive.backend.global.code.SuccessCode;
 import org.highfive.backend.global.dto.Response;
@@ -52,8 +53,12 @@ public class ContentServiceTest {
 
     @InjectMocks
     private ContentService contentService;
+
     @Mock
     private PreferMetaInfoRepository preferMetaInfoRepository;
+
+    @Mock
+    QueryDslContentRepository queryDslContentRepository;
 
     private List<MostPopularContentPerGenreDto> stubData;
 
@@ -147,8 +152,9 @@ public class ContentServiceTest {
                 MetaInfoContentsFixture.createMetaInfoContents(genreInfo, content)
         );
 
-        when(contentRepository.findById(contentId)).thenReturn(Optional.of(content));
-        when(metaInfoContentsRepository.findByContentId(contentId)).thenReturn(metaInfoContents);
+        Content contentWithMeta = ContentFixture.createContentWithMetaInfo(content, metaInfoContents);
+
+        when(queryDslContentRepository.findWithMetaInfoById(contentId)).thenReturn(Optional.of(contentWithMeta));
 
         //when
         Response<ContentDetailResponseDto> response = contentService.getContentDetail(contentId);
@@ -171,7 +177,7 @@ public class ContentServiceTest {
     public void getContentDetail_noContentId() {
         //given
         Long contentId = 93498579L;
-        when(contentRepository.findById(contentId)).thenReturn(Optional.empty());
+        when(queryDslContentRepository.findWithMetaInfoById(contentId)).thenReturn(Optional.empty());
 
         //when
         BusinessException exception = assertThrows(BusinessException.class, () -> {

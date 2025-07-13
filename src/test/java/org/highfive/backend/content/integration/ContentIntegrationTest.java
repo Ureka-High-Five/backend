@@ -10,6 +10,7 @@ import org.highfive.backend.common.fixture.MetaInfoContentsFixture;
 import org.highfive.backend.common.fixture.MetaInfoFixture;
 import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.content.entity.metadata.MetaInfo;
+import org.highfive.backend.content.entity.metadata.MetaInfoContents;
 import org.highfive.backend.content.entity.metadata.MetaType;
 import org.highfive.backend.content.entity.repository.MetaInfoContentsRepository;
 import org.highfive.backend.content.entity.repository.MetaInfoRepository;
@@ -56,13 +57,18 @@ public class ContentIntegrationTest {
         MetaInfo actor1 = metaInfoRepository.save(MetaInfoFixture.createMetaInfo("이도현", MetaType.ACTOR));
         MetaInfo actor2 = metaInfoRepository.save(MetaInfoFixture.createMetaInfo("황민현", MetaType.ACTOR));
 
-        metaInfoContentsRepository.saveAll(List.of(
-                MetaInfoContentsFixture.createMetaInfoContents(director, content),
-                MetaInfoContentsFixture.createMetaInfoContents(genre1, content),
-                MetaInfoContentsFixture.createMetaInfoContents(genre2, content),
-                MetaInfoContentsFixture.createMetaInfoContents(actor1, content),
-                MetaInfoContentsFixture.createMetaInfoContents(actor2, content)
-        ));
+        List<MetaInfoContents> metaInfoContents = List.of(
+                MetaInfoContentsFixture.createMetaInfoContents(director, savedContent),
+                MetaInfoContentsFixture.createMetaInfoContents(genre1, savedContent),
+                MetaInfoContentsFixture.createMetaInfoContents(genre2, savedContent),
+                MetaInfoContentsFixture.createMetaInfoContents(actor1, savedContent),
+                MetaInfoContentsFixture.createMetaInfoContents(actor2, savedContent)
+        );
+
+        metaInfoContentsRepository.saveAll(metaInfoContents);
+
+        Content contentWithMeta = ContentFixture.createContentWithMetaInfo(savedContent, metaInfoContents);
+        savedContent = contentRepository.save(contentWithMeta);
 
     }
 
