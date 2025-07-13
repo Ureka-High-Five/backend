@@ -38,19 +38,6 @@ class ContentControllerTest {
     @MockitoBean
     ContentService contentService;
 
-    private static RequestPostProcessor withUser(User principal) {
-        return req -> {
-            Authentication auth = new UsernamePasswordAuthenticationToken(
-                    principal, null,
-                    List.of(new SimpleGrantedAuthority("ROLE_USER"))
-            );
-            SecurityContextHolder.clearContext();
-            SecurityContextHolder.getContext().setAuthentication(auth);
-            req.setUserPrincipal(auth);
-            return req;
-        };
-    }
-
     @Test
     @DisplayName("홈 화면 컨텐츠 추천 – 올바른 dto가 생성됩니다")
     void homeContents_success() throws Exception {
