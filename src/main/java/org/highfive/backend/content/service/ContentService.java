@@ -19,9 +19,9 @@ import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.content.entity.metadata.MetaInfo;
 import org.highfive.backend.content.entity.metadata.MetaInfoContents;
 import org.highfive.backend.content.entity.metadata.MetaType;
-import org.highfive.backend.content.entity.repository.MetaInfoContentsRepository;
 import org.highfive.backend.content.exception.ContentErrorCode;
 import org.highfive.backend.content.repository.ContentRepository;
+import org.highfive.backend.content.repository.QueryDslContentRepository;
 import org.highfive.backend.global.client.fastapi.FastApiClient;
 import org.highfive.backend.global.client.fastapi.dto.response.FastApiRecommendResponseDto;
 import org.highfive.backend.global.dto.CursorPageResponse;
@@ -44,12 +44,14 @@ public class ContentService {
     private final ContentRepository contentRepository;
     private final MetaInfoContentsRepository metaInfoContentsRepository;
     private final PreferMetaInfoRepository preferMetaInfoRepository;
+    private final QueryDslContentRepository queryDslContentRepository;
 
     public Response<ContentDetailResponseDto> getContentDetail(final Long contentId) {
 
-        final Content content = getContentOrThrow(contentId);
-        final Map<MetaType, List<String>> metaMap = getMetaInfoMap(contentId);
+        final Content content = queryDslContentRepository.findWithMetaInfoById(contentId)
+                .orElseThrow(() -> new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND));
 
+        final Map<MetaType, List<String>> metaMap = extractMetaInfoMap(content);
         final String director = extractDirector(metaMap);
         final List<String> actors = metaMap.getOrDefault(MetaType.ACTOR, List.of());
         final List<String> genres = metaMap.getOrDefault(MetaType.GENRE, List.of());
@@ -72,22 +74,6 @@ public class ContentService {
 
         final Long nextCursor = contents.get(contents.size() - 1).getId();
         return new Response<>(OK.getCode(), toSearchContentResponseDto(contents, nextCursor), OK.getMessage());
-    }
-
-    private Content getContentOrThrow(final Long contentId) {
-        return contentRepository.findById(contentId)
-                .orElseThrow(() -> new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND));
-    }
-
-    private Map<MetaType, List<String>> getMetaInfoMap(final Long contentId) {
-        final List<MetaInfoContents> infoContentsList = metaInfoContentsRepository.findByContentId(contentId);
-
-        return infoContentsList.stream()
-                .map(MetaInfoContents::getMetaInfo)
-                .collect(Collectors.groupingBy(
-                        MetaInfo::getType,
-                        Collectors.mapping(MetaInfo::getName, Collectors.toList())
-                ));
     }
 
     private String extractDirector(final Map<MetaType, List<String>> metaMap) {
