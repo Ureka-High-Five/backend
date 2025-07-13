@@ -37,7 +37,6 @@ import org.highfive.backend.global.client.fastapi.dto.response.FastApiRecommendR
 import org.highfive.backend.global.code.SuccessCode;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
-import org.highfive.backend.user.entity.User;
 import org.highfive.backend.user.entity.preference.PreferMetaInfoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -205,7 +204,7 @@ public class ContentServiceTest {
             given(contentRepository.findById(1L)).willReturn(Optional.of(c));
             given(contentRepository.findContentGenresByContentIds(List.of(1L))).willReturn(List.of(Map.of("genreName", "Action")));
 
-            MainRecommendDto dto = contentService.recommendMainContentsByUser(UserFixture.createUser());
+            MainRecommendDto dto = contentService.recommendMainContentsByUser(UserFixture.createEmbeddingUser());
 
             assertThat(dto.posterUrl()).isEqualTo("poster.jpg");
             assertThat(dto.description()).isEqualTo("desc");
@@ -218,7 +217,7 @@ public class ContentServiceTest {
             given(fastApiClient.getContentsByVector(anyString(), eq(1))).willReturn(List.of(new FastApiRecommendResponseDto(1L)));
             given(contentRepository.findById(1L)).willReturn(java.util.Optional.empty());
 
-            BusinessException ex = assertThrows(BusinessException.class, () -> contentService.recommendMainContentsByUser(UserFixture.createUser()));
+            BusinessException ex = assertThrows(BusinessException.class, () -> contentService.recommendMainContentsByUser(UserFixture.createEmbeddingUser()));
 
             assertThat(ex.getErrorCode()).isEqualTo(ContentErrorCode.CONTENT_NOT_FOUND);
         }
@@ -243,7 +242,7 @@ public class ContentServiceTest {
                 given(contentRepository.findById(id)).willReturn(java.util.Optional.of(c));
             }
 
-            List<PersonalRecommendDto> list = contentService.recommendContentsByUser(UserFixture.createUser(), 3);
+            List<PersonalRecommendDto> list = contentService.recommendContentsByUser(UserFixture.createEmbeddingUser(), 3);
 
             assertThat(list).hasSize(3)
                     .extracting("contentId")
