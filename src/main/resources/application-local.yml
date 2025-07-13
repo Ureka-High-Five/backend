@@ -1,4 +1,6 @@
 spring:
+  main:
+    web-application-type: servlet
   datasource:
     url: jdbc:mysql://localhost:3306/highfive
     username: root
@@ -26,3 +28,17 @@ springdoc:
     path: /swagger-ui.html
     operationsSorter: method
     tagsSorter: alpha
+
+kakao:
+  client-id: affb0cd63ddd7c89859f6efa2f1701d8
+  client-secret: DqVDxauU9aRsesIu1FAG7zwXKUGxSPKz
+  redirect-uri: http://localhost:8080/auth/login/kakao
+
+jwt:
+  secret: asdlkfsdksdljfsdljfskldjfdslkfjslkfjsdlfjskljdslfjkdlfj
+  accessToken-expiration: 36000000
+  refreshToken-expiration: 3600000000000000
+
+fastapi:
+  host: http://localhost
+  port: 8000

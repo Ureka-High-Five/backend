@@ -39,24 +39,11 @@ import static org.highfive.backend.global.code.SuccessCode.OK;
 @RequiredArgsConstructor
 public class ContentService {
 
-    private static final int INIT_CONTENT_CNT = 6;
     private final String LIKE = "%";
 
     private final ContentRepository contentRepository;
     private final MetaInfoContentsRepository metaInfoContentsRepository;
-    private final FastApiClient fastApiClient;
     private final PreferMetaInfoRepository preferMetaInfoRepository;
-
-    public List<OnboardingInitContentsResponseDto> getDistinctGenreTopContents() {
-        List<MostPopularContentPerGenreDto> topContents = contentRepository.findTopContentPerGenre(INIT_CONTENT_CNT);
-
-        if (topContents.isEmpty()) {
-            throw new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND);
-        }
-        return topContents.stream()
-                .map(dto -> new OnboardingInitContentsResponseDto(dto.id(), dto.thumbnailUrl(), dto.title(), dto.openYear()))
-                .toList();
-    }
 
     public Response<ContentDetailResponseDto> getContentDetail(final Long contentId) {
 
@@ -108,56 +95,5 @@ public class ContentService {
                 .stream()
                 .findFirst()
                 .orElse(null);
-    }
-
-    public MainRecommendDto recommendMainContentsByUser(User user) {
-        List<FastApiRecommendResponseDto> contentsByUserVector = fastApiVectorRecommend(
-                user.getEmbedding(), 1);
-        Content content = contentRepository.findById(contentsByUserVector.getFirst().id())
-                .orElseThrow(() -> new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND));
-        List<String> genres = getGenres(content);
-        return new MainRecommendDto(content.getPostUrl(), content.getDescription(), genres);
-    }
-
-    public List<PersonalRecommendDto> recommendContentsByUser(User user, int count) {
-        List<FastApiRecommendResponseDto> contentsByUserVector = fastApiVectorRecommend(user.getEmbedding(), count);
-        List<PersonalRecommendDto> result = new ArrayList<>();
-        for (FastApiRecommendResponseDto dto : contentsByUserVector) {
-            long contentId = dto.id();
-            Content content = contentRepository.findById(contentId)
-                    .orElseThrow(() -> new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND));
-            // 썸네일 url이 아직 없기 때문에 포스터 url 임시로 전달
-//            String thumbnailUrl = content.getThumbnailUrl();
-            String postUrl = content.getPostUrl();
-//            PersonalRecommendDto resultDto = new PersonalRecommendDto(contentId, thumbnailUrl);
-            PersonalRecommendDto resultDto = new PersonalRecommendDto(contentId, postUrl);
-            result.add(resultDto);
-        }
-        return result;
-    }
-
-    public Map<String, List<GenreContentDto>> recommendContentsByUserGenre(User user, int count) {
-        List<String> preferGenresByUser = preferMetaInfoRepository.findPreferGenresByUser(user.getId(), count);
-        Map<String, List<GenreContentDto>> result = new HashMap<>();
-        for (String genre : preferGenresByUser) {
-            List<TopContentsByGenreDto> topContentsByGenre = contentRepository.findTopContentsByGenre(genre, 5);
-            result.put(genre, topContentsByGenre.stream().map(tc -> new GenreContentDto(tc.contentId(), tc.thumbnailUrl())).toList());
-        }
-        return result;
-    }
-
-    private List<FastApiRecommendResponseDto> fastApiVectorRecommend(String vector, int count) {
-        return fastApiClient.getContentsByVector(vector, count);
-    }
-
-    private List<String> getGenres(Content content) {
-        List<Map<String, Object>> contentGenresByContentIds = contentRepository.findContentGenresByContentIds(
-                List.of(content.getId()));
-        List<String> genres = new ArrayList<>();
-        for (Map<String, Object> genreInfo : contentGenresByContentIds) {
-            String genreName = (String) genreInfo.get("genreName");
-            genres.add(genreName);
-        }
-        return genres;
     }
 }
