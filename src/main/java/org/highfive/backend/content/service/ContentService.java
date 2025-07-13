@@ -19,6 +19,7 @@ import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.content.entity.metadata.MetaInfo;
 import org.highfive.backend.content.entity.metadata.MetaInfoContents;
 import org.highfive.backend.content.entity.metadata.MetaType;
+import org.highfive.backend.content.entity.repository.MetaInfoContentsRepository;
 import org.highfive.backend.content.exception.ContentErrorCode;
 import org.highfive.backend.content.repository.ContentRepository;
 import org.highfive.backend.content.repository.QueryDslContentRepository;
@@ -81,5 +82,14 @@ public class ContentService {
                 .stream()
                 .findFirst()
                 .orElse(null);
+    }
+
+    private Map<MetaType, List<String>> extractMetaInfoMap(Content content) {
+        return content.getMetaInfoContents().stream()
+                .map(MetaInfoContents::getMetaInfo)
+                .collect(Collectors.groupingBy(
+                        MetaInfo::getType,
+                        Collectors.mapping(MetaInfo::getName, Collectors.toList())
+                ));
     }
 }
