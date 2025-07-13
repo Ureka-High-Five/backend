@@ -1,6 +1,7 @@
 package org.highfive.backend.content.service;
 
 import static org.highfive.backend.content.exception.ContentErrorCode.*;
+import static org.highfive.backend.content.exception.ReviewErrorCode.MY_REVIEW_NOT_FOUND;
 import static org.highfive.backend.global.code.SuccessCode.CREATED;
 import static org.highfive.backend.global.code.SuccessCode.OK;
 
@@ -80,7 +81,7 @@ public class ReviewService {
     }
 
     public Response<ContentMyReviewResponseDto> getMyReviewByContent(final Long contentId, final User user) {
-        final Review review = reviewRepository.findByUserIdAndContentId(user.getId(), contentId).orElseThrow(() -> new BusinessException(CONTENT_NOT_FOUND));
+        final Review review = reviewRepository.findByUserIdAndContentId(user.getId(), contentId).orElseThrow(() -> new BusinessException(MY_REVIEW_NOT_FOUND));
         final ContentMyReviewResponseDto contentMyReviewResponseDto = new ContentMyReviewResponseDto(review.getRating(), review.getReviewText());
         return new Response<>(OK.getCode(), contentMyReviewResponseDto, OK.getMessage());
     }
