@@ -122,7 +122,7 @@ public class ContentService {
     }
 
     public Map<String, List<GenreContentDto>> recommendContentsByUserGenre(User user, int count) {
-        List<String> preferGenresByUser = preferMetaInfoRepository.findPreferGenresByUser(user.getId(), 2);
+        List<String> preferGenresByUser = preferMetaInfoRepository.findPreferGenresByUser(user.getId(), count);
         Map<String, List<GenreContentDto>> result = new HashMap<>();
         for (String genre : preferGenresByUser) {
             List<TopContentsByGenreDto> topContentsByGenre = contentRepository.findTopContentsByGenre(genre, 5);

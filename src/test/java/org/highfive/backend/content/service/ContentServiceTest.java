@@ -6,16 +6,23 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.highfive.backend.common.fixture.ContentFixture;
 import org.highfive.backend.common.fixture.MetaInfoContentsFixture;
 import org.highfive.backend.common.fixture.MetaInfoFixture;
+import org.highfive.backend.common.fixture.UserFixture;
 import org.highfive.backend.content.dto.response.ContentDetailResponseDto;
+import org.highfive.backend.content.dto.response.HomeContentsResponseDto.MainRecommendDto;
+import org.highfive.backend.content.dto.response.HomeContentsResponseDto.PersonalRecommendDto;
 import org.highfive.backend.content.dto.response.MostPopularContentPerGenreDto;
 import org.highfive.backend.content.dto.response.OnboardingInitContentsResponseDto;
 import org.highfive.backend.content.entity.Content;
@@ -27,12 +34,14 @@ import org.highfive.backend.content.exception.ContentErrorCode;
 import org.highfive.backend.content.repository.ContentRepository;
 import org.highfive.backend.content.repository.QueryDslContentRepository;
 import org.highfive.backend.global.client.fastapi.FastApiClient;
+import org.highfive.backend.global.client.fastapi.dto.response.FastApiRecommendResponseDto;
 import org.highfive.backend.global.code.SuccessCode;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.user.entity.preference.PreferMetaInfoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -186,6 +195,64 @@ public class ContentServiceTest {
 
         //then
         assertEquals(ContentErrorCode.CONTENT_NOT_FOUND, exception.getErrorCode());
+    }
 
+    @Nested
+    @DisplayName("홈 화면 메인 컨텐츠")
+    class RecommendMain {
+
+        @Test
+        @DisplayName("dto 매핑이 정상적으로 이루어집니다")
+        void success() {
+            given(fastApiClient.getContentsByVector(anyString(), eq(1))).willReturn(List.of(new FastApiRecommendResponseDto(1L)));
+
+            Content c = ContentFixture.createHomeMainContent(1L, "poster.jpg", "desc");
+            given(contentRepository.findById(1L)).willReturn(Optional.of(c));
+            given(contentRepository.findContentGenresByContentIds(List.of(1L))).willReturn(List.of(Map.of("genreName", "Action")));
+
+            MainRecommendDto dto = contentService.recommendMainContentsByUser(UserFixture.createEmbeddingUser());
+
+            assertThat(dto.posterUrl()).isEqualTo("poster.jpg");
+            assertThat(dto.description()).isEqualTo("desc");
+            assertThat(dto.genre()).containsExactly("Action");
+        }
+
+        @Test
+        @DisplayName("추천 컨텐츠가 없는 경우 CONTENT_NOT_FOUND 예외를 발생시킵니다")
+        void notFound() {
+            given(fastApiClient.getContentsByVector(anyString(), eq(1))).willReturn(List.of(new FastApiRecommendResponseDto(1L)));
+            given(contentRepository.findById(1L)).willReturn(java.util.Optional.empty());
+
+            BusinessException ex = assertThrows(BusinessException.class, () -> contentService.recommendMainContentsByUser(UserFixture.createEmbeddingUser()));
+
+            assertThat(ex.getErrorCode()).isEqualTo(ContentErrorCode.CONTENT_NOT_FOUND);
+        }
+    }
+
+    @Nested
+    @DisplayName("개인화 추천 컨텐츠 조회")
+    class RecommendPersonal {
+
+        @Test
+        @DisplayName("dto 매핑이 정상적으로 이루어집니다")
+        void success() {
+            List<FastApiRecommendResponseDto> fastDtos = List.of(
+                    new FastApiRecommendResponseDto(200L),
+                    new FastApiRecommendResponseDto(201L),
+                    new FastApiRecommendResponseDto(202L)
+            );
+            given(fastApiClient.getContentsByVector(anyString(), eq(3))).willReturn(fastDtos);
+
+            for (long id : List.of(200L, 201L, 202L)) {
+                Content c = ContentFixture.createContent(id);
+                given(contentRepository.findById(id)).willReturn(java.util.Optional.of(c));
+            }
+
+            List<PersonalRecommendDto> list = contentService.recommendContentsByUser(UserFixture.createEmbeddingUser(), 3);
+
+            assertThat(list).hasSize(3)
+                    .extracting("contentId")
+                    .containsExactly(200L, 201L, 202L);
+        }
     }
 }
