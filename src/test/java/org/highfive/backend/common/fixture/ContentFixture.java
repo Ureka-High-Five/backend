@@ -39,4 +39,21 @@ public class ContentFixture {
                 .popularity(popularity)
                 .build();
     }
+
+    public static Content createHomeMainContent(Long contentId, String postUrl, String description) {
+        return Content.builder()
+                .id(contentId)
+                .title("title")
+                .description(description)
+                .videoUrl("s3://video.mp4")
+                .thumbnailUrl("s3://thumbnail.jpg")
+                .postUrl(postUrl)
+                .openDate(LocalDateTime.of(2025, 7, 10, 0, 0))
+                .runningTime(120)
+                .grade(15)
+                .contentType(ContentType.MOVIE)
+                .embedding("test-embedding")
+                .popularity(100)
+                .build();
+    }
 }
