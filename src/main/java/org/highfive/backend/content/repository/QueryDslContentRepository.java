@@ -5,10 +5,12 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.content.dto.ContentGenreDto;
 import org.highfive.backend.content.dto.response.GenreCountDto;
 import org.highfive.backend.content.dto.response.OnboardingContentDto;
+import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.content.entity.QContent;
 import org.highfive.backend.content.entity.metadata.MetaType;
 import org.highfive.backend.content.entity.metadata.QMetaInfo;
@@ -122,6 +124,22 @@ public class QueryDslContentRepository implements ContentQueryRepository{
                     return map;
                 })
                 .toList();
+    }
+
+    @Override
+    public Optional<Content> findWithMetaInfoById(Long contentId){
+        QContent content = QContent.content;
+        QMetaInfoContents metaInfoContents = QMetaInfoContents.metaInfoContents;
+        QMetaInfo metaInfo = QMetaInfo.metaInfo;
+
+        Content result = queryFactory.selectFrom(content)
+                .leftJoin(content.metaInfoContents,metaInfoContents).fetchJoin()
+                .leftJoin(metaInfoContents.metaInfo, metaInfo).fetchJoin()
+                .where(content.id.eq(contentId))
+                .distinct()
+                .fetchOne();
+
+        return Optional.ofNullable(result);
     }
 
 }
