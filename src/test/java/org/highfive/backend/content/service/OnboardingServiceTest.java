@@ -53,7 +53,6 @@ class OnboardingServiceTest {
 
     @Mock
     QueryDslContentRepository queryDslRepo;
-
     @InjectMocks
     OnboardingService onboardingService;
     @Mock
@@ -64,8 +63,6 @@ class OnboardingServiceTest {
     private ContentRepository contentRepository;
     @Mock
     private FastApiClient fastApiClient;
-    @Mock
-    QueryDslContentRepository queryDslContentRepository;
     @Mock
     UserRepository userRepository;
     @Mock
