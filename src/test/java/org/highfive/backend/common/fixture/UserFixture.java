@@ -8,7 +8,7 @@ public class UserFixture {
         return User.builder()
                 .id(1L)
                 .embedding("test-embedding")
-                .build()
+                .build();
   }
   
     public static User createUser (Long id){
