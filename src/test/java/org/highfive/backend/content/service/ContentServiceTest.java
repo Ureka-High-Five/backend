@@ -161,7 +161,7 @@ public class ContentServiceTest {
         assertEquals("감독", result.director());
         assertEquals(List.of("배우1", "배우2"), result.actors());
         assertEquals(List.of("로맨스"), result.contentGenres());
-        assertEquals("2025-07-10T00:00", result.openDate());
+        assertEquals(2025, result.openYear());
         assertEquals("테스트 제목", result.contentTitle());
 
     }
