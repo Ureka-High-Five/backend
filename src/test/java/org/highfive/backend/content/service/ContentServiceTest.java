@@ -19,6 +19,7 @@ import java.util.Optional;
 import org.highfive.backend.common.fixture.ContentFixture;
 import org.highfive.backend.common.fixture.MetaInfoContentsFixture;
 import org.highfive.backend.common.fixture.MetaInfoFixture;
+import org.highfive.backend.common.fixture.UserFixture;
 import org.highfive.backend.content.dto.response.ContentDetailResponseDto;
 import org.highfive.backend.content.dto.response.HomeContentsResponseDto.MainRecommendDto;
 import org.highfive.backend.content.dto.response.HomeContentsResponseDto.PersonalRecommendDto;
@@ -191,11 +192,6 @@ public class ContentServiceTest {
         assertEquals(ContentErrorCode.CONTENT_NOT_FOUND, exception.getErrorCode());
     }
 
-    private final User dummyUser = User.builder()
-            .id(1L)
-            .embedding("[0.1,0.2]") // 임의
-            .build();
-
     @Nested
     @DisplayName("홈 화면 메인 컨텐츠")
     class RecommendMain {
@@ -205,15 +201,11 @@ public class ContentServiceTest {
         void success() {
             given(fastApiClient.getContentsByVector(anyString(), eq(1))).willReturn(List.of(new FastApiRecommendResponseDto(1L)));
 
-            Content c = Content.builder()
-                    .id(1L)
-                    .postUrl("poster.jpg")
-                    .description("desc")
-                    .build();
+            Content c = ContentFixture.createHomeMainContent(1L, "poster.jpg", "desc");
             given(contentRepository.findById(1L)).willReturn(Optional.of(c));
             given(contentRepository.findContentGenresByContentIds(List.of(1L))).willReturn(List.of(Map.of("genreName", "Action")));
 
-            MainRecommendDto dto = contentService.recommendMainContentsByUser(dummyUser);
+            MainRecommendDto dto = contentService.recommendMainContentsByUser(UserFixture.createUser());
 
             assertThat(dto.posterUrl()).isEqualTo("poster.jpg");
             assertThat(dto.description()).isEqualTo("desc");
@@ -226,14 +218,14 @@ public class ContentServiceTest {
             given(fastApiClient.getContentsByVector(anyString(), eq(1))).willReturn(List.of(new FastApiRecommendResponseDto(1L)));
             given(contentRepository.findById(1L)).willReturn(java.util.Optional.empty());
 
-            BusinessException ex = assertThrows(BusinessException.class, () -> contentService.recommendMainContentsByUser(dummyUser));
+            BusinessException ex = assertThrows(BusinessException.class, () -> contentService.recommendMainContentsByUser(UserFixture.createUser()));
 
             assertThat(ex.getErrorCode()).isEqualTo(ContentErrorCode.CONTENT_NOT_FOUND);
         }
     }
 
     @Nested
-    @DisplayName("recommendContentsByUser()")
+    @DisplayName("개인화 추천 컨텐츠 조회")
     class RecommendPersonal {
 
         @Test
@@ -247,13 +239,11 @@ public class ContentServiceTest {
             given(fastApiClient.getContentsByVector(anyString(), eq(3))).willReturn(fastDtos);
 
             for (long id : List.of(200L, 201L, 202L)) {
-                Content c = Content.builder()
-                        .id(id)
-                        .build();
+                Content c = ContentFixture.createContent(id);
                 given(contentRepository.findById(id)).willReturn(java.util.Optional.of(c));
             }
 
-            List<PersonalRecommendDto> list = contentService.recommendContentsByUser(dummyUser, 3);
+            List<PersonalRecommendDto> list = contentService.recommendContentsByUser(UserFixture.createUser(), 3);
 
             assertThat(list).hasSize(3)
                     .extracting("contentId")

@@ -1,10 +1,12 @@
 package org.highfive.backend.content.controller;
 
+import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.Map;
 import org.highfive.backend.content.dto.response.HomeContentsResponseDto.GenreContentDto;
@@ -63,11 +65,11 @@ class ContentControllerTest {
         Map<String, List<GenreContentDto>> genre =
                 Map.of("Action", List.of(new GenreContentDto(300L, "g1.jpg")));
 
-        org.mockito.Mockito.when(contentService.recommendMainContentsByUser(org.mockito.ArgumentMatchers.any()))
+        when(contentService.recommendMainContentsByUser(any()))
                 .thenReturn(main);
-        org.mockito.Mockito.when(contentService.recommendContentsByUser(org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.eq(4)))
+        when(contentService.recommendContentsByUser(any(), eq(4)))
                 .thenReturn(personal);
-        org.mockito.Mockito.when(contentService.recommendContentsByUserGenre(org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.eq(2)))
+        when(contentService.recommendContentsByUserGenre(any(), eq(2)))
                 .thenReturn(genre);
 
         // when, then
