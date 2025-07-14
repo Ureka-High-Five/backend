@@ -39,4 +39,16 @@ public class Curation {
         this.curationContents.add(curationContents);
         curationContents.assignCuration(this);
     }
+
+    public void updateTitle(final String title) {
+        this.title = title;
+    }
+
+    public void updateDescription(final String description) {
+        this.description = description;
+    }
+
+    public void updateThumbnailUrl(final String thumbnailUrl) {
+        this.thumbnailUrl = thumbnailUrl;
+    }
 }
