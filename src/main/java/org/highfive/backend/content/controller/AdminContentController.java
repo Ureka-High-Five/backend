@@ -3,11 +3,14 @@ package org.highfive.backend.content.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.content.dto.request.AdminAddContentRequestDto;
+import org.highfive.backend.content.dto.request.AdminUpdateContentRequestDto;
 import org.highfive.backend.content.dto.response.AdminAddContentResponseDto;
+import org.highfive.backend.content.dto.response.AdminUpdateContentResponseDto;
 import org.highfive.backend.content.service.AdminContentService;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.user.entity.User;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,5 +25,11 @@ public class AdminContentController {
     public Response<AdminAddContentResponseDto> adminAddContent(@Valid @RequestBody final AdminAddContentRequestDto request,
                                                                 @AuthenticationPrincipal final User user) {
         return adminContentService.addContent(request, user);
+    }
+
+    @PatchMapping("/content")
+    public Response<AdminUpdateContentResponseDto> adminUpdateContent(@Valid @RequestBody AdminUpdateContentRequestDto request,
+                                                                      @AuthenticationPrincipal User user) {
+        return adminContentService.updateContent(request, user);
     }
 }
