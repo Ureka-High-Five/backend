@@ -1,12 +1,15 @@
 package org.highfive.backend.content.service;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
 import org.highfive.backend.common.fixture.ContentFixture;
+import org.highfive.backend.common.fixture.UserFixture;
 import org.highfive.backend.content.dto.request.AdminAddContentRequestDto;
 import org.highfive.backend.content.dto.response.AdminAddContentResponseDto;
 import org.highfive.backend.content.entity.Content;
@@ -17,7 +20,10 @@ import org.highfive.backend.content.repository.ContentRepository;
 import org.highfive.backend.content.repository.MetaInfoContentsRepository;
 import org.highfive.backend.content.repository.querydsl.QueryDslMetaInfoRepository;
 import org.highfive.backend.global.client.fastapi.FastApiClient;
+import org.highfive.backend.global.code.GlobalErrorCode;
 import org.highfive.backend.global.dto.Response;
+import org.highfive.backend.global.exception.BusinessException;
+import org.highfive.backend.user.entity.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,7 +31,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
 
 @ExtendWith(MockitoExtension.class)
@@ -72,7 +77,7 @@ class AdminContentServiceTest {
         AdminAddContentRequestDto request = getAdminAddContentRequestDto();
 
         // when
-        Response<AdminAddContentResponseDto> response = adminContentService.addContent(request);
+        Response<AdminAddContentResponseDto> response = adminContentService.addContent(request, UserFixture.createAdmin(1L));
 
         // then
         Long contentId = response.content().getContentId();
@@ -88,9 +93,25 @@ class AdminContentServiceTest {
                 .willThrow(new IllegalArgumentException("unknown genre"));
 
         AdminAddContentRequestDto req = getAdminAddContentRequestDto();
-        Assertions.assertThrows(IllegalArgumentException.class, () -> adminContentService.addContent(req));
+        assertThrows(IllegalArgumentException.class, () -> adminContentService.addContent(req, UserFixture.createAdmin(1L)));
 
         verify(fastApiClient).calcVectorByGenres(List.of("thriller"));
+    }
+
+    @Test
+    @DisplayName("컨텐츠 추가 - 어드민이 아닌 경우 예외를 반환합니다.")
+    void accessDenied_test() {
+        // given
+        User user = UserFixture.createUser(1L);
+        AdminAddContentRequestDto req = getAdminAddContentRequestDto();
+
+        // when, then
+        BusinessException ex = assertThrows(
+                BusinessException.class,
+                () -> adminContentService.addContent(req, user)
+        );
+
+        assert ex.getErrorCode() == GlobalErrorCode.ACCESS_DENIED;
     }
 
     private static AdminAddContentRequestDto getAdminAddContentRequestDto() {
