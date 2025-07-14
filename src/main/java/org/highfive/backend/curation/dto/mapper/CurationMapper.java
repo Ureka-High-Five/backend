@@ -1,9 +1,11 @@
 package org.highfive.backend.curation.dto.mapper;
 
+import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.curation.dto.request.CreateCurationRequestDto;
 import org.highfive.backend.curation.dto.response.CurationDetailResponseDto;
 import org.highfive.backend.curation.dto.response.MyCurationResponseDto;
 import org.highfive.backend.curation.entity.Curation;
+import org.highfive.backend.curation.entity.CurationContents;
 import org.highfive.backend.user.entity.User;
 
 import java.util.List;
@@ -37,6 +39,19 @@ public class CurationMapper {
                         curation.getTitle(),
                         curation.getThumbnailUrl()
                 ))
+                .toList();
+    }
+
+    public static List<CurationDetailResponseDto.ContentDto> mapToContentDtos(final List<CurationContents> curationContents) {
+        return curationContents.stream()
+                .map(curationContent -> {
+                    final Content content = curationContent.getContent();
+                    return new CurationDetailResponseDto.ContentDto(
+                            content.getId(),
+                            content.getTitle(),
+                            content.getThumbnailUrl()
+                    );
+                })
                 .toList();
     }
 }
