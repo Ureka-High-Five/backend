@@ -32,7 +32,7 @@ public class ContentController {
         return contentService.getContentDetail(contentId);
     }
 
-    @GetMapping("/recommend")
+    @GetMapping("/home")
     public Response<HomeContentsResponseDto> homeContents(@AuthenticationPrincipal final User user) {
         MainRecommendDto mainRecommend = contentService.recommendMainContentsByUser(user);
         List<PersonalRecommendDto> personalRecommends = contentService.recommendContentsByUser(user, 4);
