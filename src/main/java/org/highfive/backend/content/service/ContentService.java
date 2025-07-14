@@ -1,25 +1,15 @@
 package org.highfive.backend.content.service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.highfive.backend.content.dto.mapper.ContentMapper;
+import org.highfive.backend.content.dto.response.*;
 import org.highfive.backend.content.dto.response.HomeContentsResponseDto.GenreContentDto;
 import org.highfive.backend.content.dto.response.HomeContentsResponseDto.MainRecommendDto;
 import org.highfive.backend.content.dto.response.HomeContentsResponseDto.PersonalRecommendDto;
-import org.highfive.backend.content.dto.response.MostPopularContentPerGenreDto;
-import org.highfive.backend.content.dto.response.OnboardingInitContentsResponseDto;
-import org.highfive.backend.content.dto.mapper.ContentMapper;
-import org.highfive.backend.content.dto.response.ContentDetailResponseDto;
-import org.highfive.backend.content.dto.response.SearchContentResponseDto;
-import org.highfive.backend.content.dto.response.TopContentsByGenreDto;
 import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.content.entity.metadata.MetaInfo;
 import org.highfive.backend.content.entity.metadata.MetaInfoContents;
 import org.highfive.backend.content.entity.metadata.MetaType;
-import org.highfive.backend.content.repository.MetaInfoContentsRepository;
 import org.highfive.backend.content.exception.ContentErrorCode;
 import org.highfive.backend.content.repository.ContentRepository;
 import org.highfive.backend.content.repository.QueryDslContentRepository;
@@ -32,6 +22,12 @@ import org.highfive.backend.user.entity.User;
 import org.highfive.backend.user.entity.preference.PreferMetaInfoRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.highfive.backend.content.dto.mapper.ContentMapper.toSearchContentResponseDto;
 import static org.highfive.backend.global.code.SuccessCode.OK;

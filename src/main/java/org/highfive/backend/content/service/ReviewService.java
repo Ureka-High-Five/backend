@@ -1,11 +1,5 @@
 package org.highfive.backend.content.service;
 
-import static org.highfive.backend.content.exception.ContentErrorCode.*;
-import static org.highfive.backend.content.exception.ReviewErrorCode.MY_REVIEW_NOT_FOUND;
-import static org.highfive.backend.global.code.SuccessCode.CREATED;
-import static org.highfive.backend.global.code.SuccessCode.NO_CONTENT;
-import static org.highfive.backend.global.code.SuccessCode.OK;
-
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.content.dto.mapper.ReviewMapper;
 import org.highfive.backend.content.dto.request.CreateReviewRequestDto;
@@ -22,6 +16,11 @@ import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.user.entity.User;
 import org.springframework.stereotype.Service;
+
+import static org.highfive.backend.content.exception.ContentErrorCode.CONTENT_NOT_FOUND;
+import static org.highfive.backend.content.exception.ReviewErrorCode.MY_REVIEW_NOT_FOUND;
+import static org.highfive.backend.global.code.SuccessCode.CREATED;
+import static org.highfive.backend.global.code.SuccessCode.OK;
 
 @Service
 @RequiredArgsConstructor
