@@ -28,8 +28,8 @@ public class AdminContentController {
     }
 
     @PatchMapping("/content")
-    public Response<AdminUpdateContentResponseDto> adminUpdateContent(@Valid @RequestBody AdminUpdateContentRequestDto request,
-                                                                      @AuthenticationPrincipal User user) {
+    public Response<AdminUpdateContentResponseDto> adminUpdateContent(@Valid @RequestBody final AdminUpdateContentRequestDto request,
+                                                                      @AuthenticationPrincipal final User user) {
         return adminContentService.updateContent(request, user);
     }
 }

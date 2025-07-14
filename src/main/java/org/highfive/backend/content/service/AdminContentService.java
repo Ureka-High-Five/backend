@@ -20,7 +20,6 @@ import org.highfive.backend.content.repository.jpa.MetaInfoRepository;
 import org.highfive.backend.global.client.fastapi.FastApiClient;
 import org.highfive.backend.global.client.fastapi.dto.response.FastApiVectorFromGenresDto;
 import org.highfive.backend.global.code.GlobalErrorCode;
-import org.highfive.backend.global.code.SuccessCode;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.user.entity.User;
@@ -38,7 +37,7 @@ public class AdminContentService {
 
     @Transactional
     public Response<AdminAddContentResponseDto> addContent(final AdminAddContentRequestDto request, final User user) {
-        validateUser(user);
+        validateAdmin(user);
 
         final Content content = ContentMapper.fromAdminAddContentRequestDto(request);
         final String vector = callEmbedding(request);
@@ -50,36 +49,35 @@ public class AdminContentService {
         setDirector(request, content);
         setCountry(request, content);
 
-        return new Response<>(SuccessCode.OK.getCode(), new AdminAddContentResponseDto(savedContent.getId()),null);
+        return Response.ok(new AdminAddContentResponseDto(savedContent.getId()));
     }
 
     @Transactional
-    public Response<AdminUpdateContentResponseDto> updateContent(@Valid final AdminUpdateContentRequestDto request, User user) {
-        validateUser(user);
-        Content content = updateContent(request);
+    public Response<AdminUpdateContentResponseDto> updateContent(@Valid final AdminUpdateContentRequestDto request, final User user) {
+        validateAdmin(user);
+        final Content content = updateContent(request);
 
         updateGenres(request, content);
         updateDirector(request, content);
         updateActors(request, content);
 
-        FastApiVectorFromGenresDto response = fastApiClient.vectorFromGenres(request.genres());
+        final FastApiVectorFromGenresDto response = fastApiClient.vectorFromGenres(request.genres());
         content.updateEmbedding(response.vector());
         return Response.ok(new AdminUpdateContentResponseDto(content.getId()));
     }
 
     private Content updateContent(final AdminUpdateContentRequestDto request) {
-        long id = request.contentId();
-        Content content = contentRepository.findById(id).orElseThrow(() -> new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND));
+        final Content content = contentRepository.findById(request.contentId()).orElseThrow(() -> new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND));
         content.updateFromDto(request);
         contentRepository.save(content);
         return content;
     }
 
     private void updateGenres(final AdminUpdateContentRequestDto request, final Content content) {
-        List<String> genres = request.genres();
+        final List<String> genres = request.genres();
         metaInfoContentsRepository.deleteAllByContentAndType(content.getId(), MetaType.GENRE);
         for (String genreName : genres) {
-            MetaInfo genre = metaInfoRepository.findByNameAndType(genreName, MetaType.GENRE);
+            final MetaInfo genre = metaInfoRepository.findByNameAndType(genreName, MetaType.GENRE);
             if (genre == null) throw new BusinessException(MetaInfoErrorCode.GENRE_NOT_FOUND);
             metaInfoContentsRepository.save(MetaInfoContents.builder().content(content).metaInfo(genre).build());
         }
@@ -87,13 +85,13 @@ public class AdminContentService {
 
     private void updateDirector(final AdminUpdateContentRequestDto request, final Content content) {
         metaInfoContentsRepository.deleteAllByContentAndType(content.getId(), MetaType.DIRECTOR);
-        MetaInfo director = metaInfoRepository.findByNameAndType(request.director(), MetaType.DIRECTOR);
+        final MetaInfo director = metaInfoRepository.findByNameAndType(request.director(), MetaType.DIRECTOR);
         if (director == null) throw new BusinessException(MetaInfoErrorCode.DIRECTOR_NOT_FOUND);
         metaInfoContentsRepository.save(MetaInfoContents.builder().content(content).metaInfo(director).build());
     }
 
     private void updateActors(final AdminUpdateContentRequestDto request, final Content content) {
-        List<String> actors = request.actors();
+        final List<String> actors = request.actors();
         metaInfoContentsRepository.deleteAllByContentAndType(content.getId(), MetaType.ACTOR);
         for (String actorName : actors) {
             MetaInfo actor = metaInfoRepository.findByNameAndType(actorName, MetaType.ACTOR);
@@ -103,7 +101,7 @@ public class AdminContentService {
     }
 
     private String callEmbedding(final AdminAddContentRequestDto request) {
-        List<String> genres = request.genres();
+        final List<String> genres = request.genres();
         return fastApiClient.vectorFromGenres(genres).vector();
     }
 
@@ -117,7 +115,7 @@ public class AdminContentService {
     }
 
     private void setActors(final AdminAddContentRequestDto request, final Content content) {
-        List<String> actors = request.actors();
+        final List<String> actors = request.actors();
         for (String actorName : actors) {
             MetaInfo actor = metaInfoRepository.findByNameAndType(actorName, MetaType.ACTOR);
             if (actor == null) {
@@ -136,7 +134,7 @@ public class AdminContentService {
         metaInfoContentsRepository.save(MetaInfoContents.builder().content(content).metaInfo(director).build());
     }
 
-    private void validateUser(final User user) {
+    private void validateAdmin(final User user) {
         if (!user.isAdmin()) {
             throw new BusinessException(GlobalErrorCode.ACCESS_DENIED);
         }
