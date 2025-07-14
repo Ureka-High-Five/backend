@@ -39,6 +39,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @EntityListeners(AuditingEntityListener.class)
 public class Content {
 
+    public void updateEmbedding(String embedding) {
+        this.embedding = embedding;
+    }
+
     @Id
     @GeneratedValue
     private Long id;
