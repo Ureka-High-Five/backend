@@ -21,7 +21,7 @@ public class CurationController {
     private final CurationService curationService;
 
     @PostMapping
-    public Response<?> createCuration(final @AuthenticationPrincipal User user, @Valid @RequestBody final CreateCurationRequestDto createCurationRequestDto) {
+    public Response<Void> createCuration(final @AuthenticationPrincipal User user, @Valid @RequestBody final CreateCurationRequestDto createCurationRequestDto) {
         return curationService.create(user, createCurationRequestDto);
     }
 
