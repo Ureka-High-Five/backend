@@ -5,6 +5,7 @@ import lombok.*;
 import org.highfive.backend.content.entity.Content;
 
 @Entity
+@Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
