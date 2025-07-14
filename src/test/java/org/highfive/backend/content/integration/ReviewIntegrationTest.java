@@ -184,13 +184,13 @@ class ReviewIntegrationTest {
         }
 
         @Test
-        @DisplayName("리뷰가 존재하지 않으면 예외가 발생한다")
+        @DisplayName("리뷰가 존재하지 않으면 hasNext가 false가 된다.")
         void list_noContent() throws Exception {
             Long emptyContentId = contentRepository.save(ContentFixture.createContent(null)).getId();
 
             mockMvc.perform(get("/content/review/{contentId}", emptyContentId))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.code").value(NO_CONTENT.getCode()));
+                    .andExpect(jsonPath("$.content.hasNext").value(false));
         }
     }
 
