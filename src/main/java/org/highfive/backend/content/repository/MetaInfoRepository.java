@@ -8,9 +8,15 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface MetaInfoRepository extends JpaRepository<MetaInfo, Long> {
 
-    @Query("SELECT m FROM MetaInfo m WHERE m.name = :name AND m.type = 'GENRE'")
-    List<MetaInfo> findGenreMetaIdByName(String name);
+    @Query("SELECT m FROM MetaInfo m WHERE m.name = :genreName AND m.type = 'GENRE'")
+    List<MetaInfo> findGenreMetaIdByName(String genreName);
 
-    @Query("SELECT mi FROM MetaInfo mi WHERE mi.name = :name AND mi.type = 'COUNTRY'")
-    MetaInfo findByCountryName(String name);
+    @Query("SELECT mi FROM MetaInfo mi WHERE mi.name = :countryName AND mi.type = 'COUNTRY'")
+    MetaInfo findByCountryName(String countryName);
+
+    @Query("SELECT mi FROM MetaInfo mi WHERE mi.name = :actorName AND mi.type = 'ACTOR'")
+    MetaInfo findByActorName(String actorName);
+
+    @Query("SELECT mi FROM MetaInfo mi WHERE mi.name = :directorName AND mi.type = 'DIRECTOR'")
+    MetaInfo findByDirectorName(String directorName);
 }
