@@ -3,6 +3,7 @@ package org.highfive.backend.content.service;
 import static org.highfive.backend.content.exception.ContentErrorCode.*;
 import static org.highfive.backend.content.exception.ReviewErrorCode.MY_REVIEW_NOT_FOUND;
 import static org.highfive.backend.global.code.SuccessCode.CREATED;
+import static org.highfive.backend.global.code.SuccessCode.NO_CONTENT;
 import static org.highfive.backend.global.code.SuccessCode.OK;
 
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,7 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final ContentRepository contentRepository;
 
-    public Response<?> createReview(final CreateReviewRequestDto requestDto, User user) {
+    public Response<Void> createReview(final CreateReviewRequestDto requestDto, User user) {
 
         // TODO: review에 대한 금칙어 처리 추가 필요
 
@@ -43,7 +44,7 @@ public class ReviewService {
 
     }
 
-    public Response<?> updateReview(final Long reviewId, final UpdateReviewRequestDto requestDto, final User user) {
+    public Response<Void> updateReview(final Long reviewId, final UpdateReviewRequestDto requestDto, final User user) {
         // TODO: review에 대한 금칙어 처리 추가 필요
 
         Review existedReview = reviewRepository.findById(reviewId)
@@ -58,7 +59,7 @@ public class ReviewService {
 
     }
 
-    public Response<?> deleteReview(final Long reviewId, final User user) {
+    public Response<Void> deleteReview(final Long reviewId, final User user) {
 
         Review existedReview = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new BusinessException(ReviewErrorCode.REVIEW_NOT_FOUND));
@@ -73,11 +74,18 @@ public class ReviewService {
     }
 
 
-    public CursorPageResponse<ReviewSimpleResponseDto> getReviewsByCursor(final Long contentId, final String cursor,
-                                                                          final int size) {
+    public Response<CursorPageResponse<ReviewSimpleResponseDto>> getReviewsByCursor(
+            final Long contentId,
+            final String cursor,
+            final int size) {
 
-        return reviewRepository.findReviewsByCursor(contentId, cursor,
-                size);
+        CursorPageResponse<ReviewSimpleResponseDto> response = reviewRepository.findReviewsByCursor(contentId, cursor, size);
+
+        if (response.items() == null || response.items().isEmpty()) {
+            return new Response<>(NO_CONTENT.getCode(), null, null);
+        }
+
+        return new Response<>(OK.getCode(), response, null);
     }
 
     public Response<ContentMyReviewResponseDto> getMyReviewByContent(final Long contentId, final User user) {

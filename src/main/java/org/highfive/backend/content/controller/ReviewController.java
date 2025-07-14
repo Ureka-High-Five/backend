@@ -32,13 +32,13 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @PostMapping
-    public Response<?> createReview(@Valid @RequestBody final CreateReviewRequestDto requestDto,
+    public Response<Void> createReview(@Valid @RequestBody final CreateReviewRequestDto requestDto,
                                     @AuthenticationPrincipal final User user) {
         return reviewService.createReview(requestDto, user);
     }
 
     @PatchMapping("/{reviewId}")
-    public Response<?> updateReview(
+    public Response<Void> updateReview(
             @PathVariable final Long reviewId,
             @Valid @RequestBody final UpdateReviewRequestDto requestDto,
             @AuthenticationPrincipal final User user) {
@@ -47,7 +47,7 @@ public class ReviewController {
     }
 
     @DeleteMapping("/{reviewId}")
-    public Response<?> deleteReview(
+    public Response<Void> deleteReview(
             @PathVariable final Long reviewId,
             @AuthenticationPrincipal final User user) {
 
@@ -60,14 +60,7 @@ public class ReviewController {
             @RequestParam(required = false) final String cursor,
             @RequestParam(defaultValue = "3") final int size
     ) {
-        CursorPageResponse<ReviewSimpleResponseDto> response = reviewService.getReviewsByCursor(contentId, cursor,
-                size);
-
-        if (response.items() == null || response.items().isEmpty()) {
-            return new Response<>(NO_CONTENT.getCode(), null, null);
-        }
-
-        return new Response<>(OK.getCode(), response, null);
+        return reviewService.getReviewsByCursor(contentId, cursor, size);
     }
 
     @GetMapping("/{contentId}/me")

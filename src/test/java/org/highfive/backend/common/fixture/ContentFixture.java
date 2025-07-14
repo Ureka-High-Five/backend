@@ -1,8 +1,10 @@
 package org.highfive.backend.common.fixture;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.content.entity.ContentType;
+import org.highfive.backend.content.entity.metadata.MetaInfoContents;
 
 public class ContentFixture {
 
@@ -54,6 +56,24 @@ public class ContentFixture {
                 .contentType(ContentType.MOVIE)
                 .embedding("test-embedding")
                 .popularity(100)
+                .build();
+    }
+
+    public static Content createContentWithMetaInfo(Content content, List<MetaInfoContents> metaInfoContents) {
+        return Content.builder()
+                .id(content.getId())
+                .title(content.getTitle())
+                .description(content.getDescription())
+                .videoUrl(content.getVideoUrl())
+                .thumbnailUrl(content.getThumbnailUrl())
+                .postUrl(content.getPostUrl())
+                .openDate(content.getOpenDate())
+                .runningTime(content.getRunningTime())
+                .grade(content.getGrade())
+                .contentType(content.getContentType())
+                .embedding(content.getEmbedding())
+                .popularity(content.getPopularity())
+                .metaInfoContents(metaInfoContents)
                 .build();
     }
 }
