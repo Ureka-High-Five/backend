@@ -12,7 +12,6 @@ import org.highfive.backend.content.entity.metadata.MetaType;
 import org.highfive.backend.content.exception.MetaInfoErrorCode;
 import org.highfive.backend.content.repository.ContentRepository;
 import org.highfive.backend.content.repository.MetaInfoContentsRepository;
-import org.highfive.backend.content.repository.MetaInfoRepository;
 import org.highfive.backend.content.repository.querydsl.QueryDslMetaInfoRepository;
 import org.highfive.backend.global.client.fastapi.FastApiClient;
 import org.highfive.backend.global.code.SuccessCode;

@@ -5,7 +5,6 @@ import org.highfive.backend.auth.dto.response.TokenResponseDto;
 import org.highfive.backend.auth.service.TokenService;
 import org.highfive.backend.content.entity.metadata.MetaInfo;
 import org.highfive.backend.content.entity.metadata.MetaType;
-import org.highfive.backend.content.repository.MetaInfoRepository;
 import org.highfive.backend.content.repository.QueryDslContentRepository;
 import org.highfive.backend.content.repository.querydsl.QueryDslMetaInfoRepository;
 import org.highfive.backend.global.client.fastapi.FastApiClient;
