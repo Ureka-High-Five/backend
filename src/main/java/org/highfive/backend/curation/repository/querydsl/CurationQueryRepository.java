@@ -18,15 +18,13 @@ import java.util.Optional;
 public class CurationQueryRepository {
 
     private final QCuration curation = QCuration.curation;
+    private final QUser user = QUser.user;
+    private final QContent content = QContent.content;
+    private final QCurationContents curationContents = QCurationContents.curationContents;
 
     private final JPAQueryFactory queryFactory;
 
     public Optional<Curation> findCurationWithAll(final Long id) {
-
-        QCurationContents curationContents = QCurationContents.curationContents;
-        QContent content = QContent.content;
-        QUser user = QUser.user;
-
         final Curation result = queryFactory
                 .selectFrom(curation)
                 .distinct()
