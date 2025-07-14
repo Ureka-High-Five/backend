@@ -21,7 +21,7 @@ import java.util.Arrays;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfing {
+public class SecurityConfig {
 
     private final TokenService tokenService;
     private final ObjectMapper objectMapper;
