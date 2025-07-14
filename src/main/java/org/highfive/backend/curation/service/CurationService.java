@@ -43,13 +43,15 @@ public class CurationService {
                 .thumbnailUrl(dto.thumbnail())
                 .build();
 
-        final List<CurationContents> curationContents = contents.stream()
-                .map(content -> CurationContents.builder().curation(curation).content(content).build()).toList();
+        for(Content content : contents) {
+            final CurationContents curationContents = CurationContents.builder()
+                    .content(content)
+                    .build();
 
-        curation.getCurationContents().addAll(curationContents);
+            curation.addCurationContents(curationContents);
+        }
 
         curationRepository.save(curation);
-
         return new Response<>(SuccessCode.OK.getCode(), null, SuccessCode.OK.getMessage());
     }
 
