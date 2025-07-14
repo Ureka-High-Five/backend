@@ -8,11 +8,13 @@ import org.highfive.backend.content.repository.ContentRepository;
 import org.highfive.backend.curation.dto.mapper.CurationMapper;
 import org.highfive.backend.curation.dto.request.CreateCurationRequestDto;
 import org.highfive.backend.curation.dto.response.CurationDetailResponseDto;
+import org.highfive.backend.curation.dto.response.MyCurationResponseDto;
 import org.highfive.backend.curation.entity.Curation;
 import org.highfive.backend.curation.entity.CurationContents;
 import org.highfive.backend.curation.exception.CurationErrorCode;
 import org.highfive.backend.curation.repository.jpa.CurationRepository;
 import org.highfive.backend.curation.repository.querydsl.CurationQueryRepository;
+import org.highfive.backend.global.dto.CursorPageResponse;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.user.entity.User;
@@ -49,6 +51,21 @@ public class CurationService {
         final CurationDetailResponseDto responseDto = CurationMapper.toCurationDetailResponseDto(curation, contentDtos);
 
         return Response.ok(responseDto);
+    }
+
+    public Response<CursorPageResponse<MyCurationResponseDto>> getMyCurations(final User user, final String cursor, final int size) {
+        List<Curation> curations = curationQueryRepository.findCurationWithUserId(user.getId(), cursor, size);
+        final boolean hasNext = curations.size() > size;
+        curations = hasNext ? curations.subList(0, size) : curations;
+
+        List<MyCurationResponseDto> myCurationResponseDtos = curations.stream()
+                .map(curation -> new MyCurationResponseDto(curation.getId(), curation.getTitle(), curation.getThumbnailUrl()))
+                .toList();
+
+        final String nextCursor = hasNext ? String.valueOf(curations.get(curations.size() - 1).getId()) : null;
+        CursorPageResponse<MyCurationResponseDto> response = new CursorPageResponse<>(myCurationResponseDtos, nextCursor);
+        return Response.ok(response);
+
     }
 
     private List<CurationDetailResponseDto.ContentDto> mapToContentDtos(final List<CurationContents> curationContentsList) {
