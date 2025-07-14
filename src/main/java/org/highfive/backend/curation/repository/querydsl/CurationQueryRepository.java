@@ -37,7 +37,7 @@ public class CurationQueryRepository {
         return Optional.ofNullable(result);
     }
 
-    public List<Curation> findCurationWithUserId(final Long userId, final String cursor, final int size) {
+    public List<Curation> findCurationByUserId(final Long userId, final String cursor, final int size) {
 
         return queryFactory
                 .selectFrom(curation)

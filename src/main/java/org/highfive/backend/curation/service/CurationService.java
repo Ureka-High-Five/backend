@@ -53,7 +53,7 @@ public class CurationService {
     }
 
     public Response<CursorPageResponse<MyCurationResponseDto>> getMyCurations(final User user, final String cursor, final int size) {
-        final List<Curation> curations = curationQueryRepository.findCurationWithUserId(user.getId(), cursor, size);
+        final List<Curation> curations = curationQueryRepository.findCurationByUserId(user.getId(), cursor, size);
         final boolean hasNext = curations.size() > size;
         final List<Curation> items = hasNext ? curations.subList(0, size) : curations;
         final String nextCursor = hasNext ? getNextCursor(items) : null;
