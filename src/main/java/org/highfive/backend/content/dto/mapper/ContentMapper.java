@@ -1,5 +1,6 @@
 package org.highfive.backend.content.dto.mapper;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.highfive.backend.content.dto.request.AdminAddContentRequestDto;
 import org.highfive.backend.content.dto.response.ContentDetailResponseDto;
@@ -36,7 +37,7 @@ public class ContentMapper {
                 .description(request.getDescription())
                 .videoUrl(request.getVideoUrl())
                 .postUrl(request.getPostUrl())
-                .openDate(LocalDateTime.parse(request.getOpenDate()))
+                .openDate(LocalDateTime.from(LocalDate.parse(request.getOpenDate()).atStartOfDay()))
                 .runningTime(request.getRunningTime())
                 .totalRound(request.getTotalRound())
                 .contentType(ContentType.valueOf(request.getType()))
