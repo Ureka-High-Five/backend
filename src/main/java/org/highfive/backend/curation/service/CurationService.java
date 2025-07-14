@@ -28,7 +28,7 @@ public class CurationService {
     private final CurationRepository curationRepository;
 
     @Transactional
-    public Response<?> create(final User user, final CreateCurationRequestDto dto) {
+    public Response<Void> create(final User user, final CreateCurationRequestDto dto) {
 
         final List<Content> contents = getContentsOrThrow(dto.contents());
         final Curation curation = CurationMapper.toEntity(user, dto);
