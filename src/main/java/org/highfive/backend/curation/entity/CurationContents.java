@@ -1,4 +1,4 @@
-package org.highfive.backend.content.entity.curation;
+package org.highfive.backend.curation.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
