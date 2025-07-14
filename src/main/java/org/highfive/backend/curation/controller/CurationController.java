@@ -1,10 +1,13 @@
 package org.highfive.backend.curation.controller;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.curation.dto.request.CreateCurationRequestDto;
 import org.highfive.backend.curation.dto.response.CurationDetailResponseDto;
+import org.highfive.backend.curation.dto.response.MyCurationResponseDto;
 import org.highfive.backend.curation.service.CurationService;
+import org.highfive.backend.global.dto.CursorPageResponse;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.user.entity.User;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -25,5 +28,14 @@ public class CurationController {
     @GetMapping("/{curationId}")
     public Response<CurationDetailResponseDto> getCuration(@PathVariable final Long curationId) {
         return curationService.getCurationDetail(curationId);
+    }
+
+    @GetMapping("/me")
+    public Response<CursorPageResponse<MyCurationResponseDto>> getMyCurations(
+            @AuthenticationPrincipal final User user,
+            @RequestParam @Nullable String cursor,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return curationService.getMyCurations(user, cursor, size);
     }
 }
