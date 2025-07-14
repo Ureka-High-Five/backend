@@ -20,6 +20,7 @@ import org.highfive.backend.content.repository.ContentRepository;
 import org.highfive.backend.content.repository.MetaInfoContentsRepository;
 import org.highfive.backend.content.repository.querydsl.QueryDslMetaInfoRepository;
 import org.highfive.backend.global.client.fastapi.FastApiClient;
+import org.highfive.backend.global.client.fastapi.dto.response.FastApiVectorFromGenresDto;
 import org.highfive.backend.global.code.GlobalErrorCode;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
@@ -56,7 +57,7 @@ class AdminContentServiceTest {
     @DisplayName("컨텐츠 추가 - 컨텐츠가 정상적으로 추가됩니다.")
     void addContents_success() {
         // given
-        given(fastApiClient.calcVectorByGenres(List.of("thriller"))).willReturn("MOCK_VEC");
+        given(fastApiClient.vectorFromGenres(List.of("thriller"))).willReturn(new FastApiVectorFromGenresDto("MOCK_VEC"));
 
         MetaInfo actor    = MetaInfo.builder().name("톰 크루즈").type( MetaType.ACTOR).build();
         MetaInfo director = MetaInfo.builder().name("딘 데블로이스").type(MetaType.DIRECTOR).build();
@@ -89,13 +90,13 @@ class AdminContentServiceTest {
     @Test
     @DisplayName("컨텐츠 추가 - 잘못된 장르 전달 시 FastAPI 서버 예외 전파")
     void invalidGenreName_test() {
-        given(fastApiClient.calcVectorByGenres(List.of("thriller")))
+        given(fastApiClient.vectorFromGenres(List.of("thriller")))
                 .willThrow(new IllegalArgumentException("unknown genre"));
 
         AdminAddContentRequestDto req = getAdminAddContentRequestDto();
         assertThrows(IllegalArgumentException.class, () -> adminContentService.addContent(req, UserFixture.createAdmin(1L)));
 
-        verify(fastApiClient).calcVectorByGenres(List.of("thriller"));
+        verify(fastApiClient).vectorFromGenres(List.of("thriller"));
     }
 
     @Test

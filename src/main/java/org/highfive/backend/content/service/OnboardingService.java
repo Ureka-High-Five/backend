@@ -18,10 +18,12 @@ import org.highfive.backend.content.dto.response.OnboardingContentDto;
 import org.highfive.backend.content.dto.response.OnboardingInitContentsResponseDto;
 import org.highfive.backend.content.dto.response.OnboardingSelectContentResponseDto;
 import org.highfive.backend.content.entity.metadata.MetaInfo;
+import org.highfive.backend.content.entity.metadata.MetaType;
 import org.highfive.backend.content.exception.ContentErrorCode;
 import org.highfive.backend.content.repository.ContentRepository;
-import org.highfive.backend.content.repository.MetaInfoRepository;
 import org.highfive.backend.content.repository.QueryDslContentRepository;
+import org.highfive.backend.content.repository.jpa.MetaInfoRepository;
+import org.highfive.backend.content.repository.querydsl.QueryDslMetaInfoRepository;
 import org.highfive.backend.global.client.fastapi.FastApiClient;
 import org.highfive.backend.global.client.fastapi.dto.response.FastApiOnboardingResponseDto;
 import org.highfive.backend.global.code.SuccessCode;
@@ -52,7 +54,7 @@ public class OnboardingService {
     private final WeightManager weightManager;
     private final UserRepository userRepository;
     private final ContentRepository contentRepository;
-    private final MetaInfoRepository metaInfoRepository;
+    private final QueryDslMetaInfoRepository queryDslMetaInfoRepository;
     private final PreferMetaInfoRepository preferMetaInfoRepository;
     private final QueryDslContentRepository queryDslContentRepository;
 
@@ -160,12 +162,12 @@ public class OnboardingService {
             final String genreName = entry.getKey();
             final double weight = entry.getValue();
 
-            final List<MetaInfo> metaInfo = metaInfoRepository.findGenreMetaIdByName(genreName);
+            final MetaInfo metaInfo = queryDslMetaInfoRepository.findByNameAndType(genreName, MetaType.GENRE);
 
             final PreferMetaInfo prefer = PreferMetaInfo.builder()
                     .user(user)
                     .weight(weight)
-                    .metaInfo(metaInfo.get(0))
+                    .metaInfo(metaInfo)
                     .build();
 
             preferMetaInfoRepository.save(prefer);

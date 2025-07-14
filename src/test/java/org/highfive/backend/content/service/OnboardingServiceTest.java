@@ -27,8 +27,9 @@ import org.highfive.backend.content.entity.metadata.MetaType;
 import org.highfive.backend.content.exception.ContentErrorCode;
 import org.highfive.backend.content.repository.ContentRepository;
 import org.highfive.backend.content.repository.MetaInfoContentsRepository;
-import org.highfive.backend.content.repository.MetaInfoRepository;
 import org.highfive.backend.content.repository.QueryDslContentRepository;
+import org.highfive.backend.content.repository.jpa.MetaInfoRepository;
+import org.highfive.backend.content.repository.querydsl.QueryDslMetaInfoRepository;
 import org.highfive.backend.global.client.fastapi.FastApiClient;
 import org.highfive.backend.global.client.fastapi.dto.response.FastApiOnboardingResponseDto;
 import org.highfive.backend.global.dto.Response;
@@ -66,7 +67,7 @@ class OnboardingServiceTest {
     @Mock
     UserRepository userRepository;
     @Mock
-    MetaInfoRepository metaInfoRepository;
+    QueryDslMetaInfoRepository queryDslMetaInfoRepository;
     @Mock
     WeightManager weightManager;
     @Mock
@@ -198,9 +199,9 @@ class OnboardingServiceTest {
                 .willReturn(Map.of("Action", 0.7, "Comedy", 0.3));
 
         MetaInfo actionMeta = new MetaInfo(1L, "Action", MetaType.GENRE, null);
-        given(metaInfoRepository.findGenreMetaIdByName("Action")).willReturn(List.of(actionMeta));
+        given(queryDslMetaInfoRepository.findByNameAndType("Action", MetaType.GENRE)).willReturn(actionMeta);
         MetaInfo comedyMeta = new MetaInfo(2L, "Comedy", MetaType.GENRE, null);
-        given(metaInfoRepository.findGenreMetaIdByName("Comedy")).willReturn(List.of(comedyMeta));
+        given(queryDslMetaInfoRepository.findByNameAndType("Comedy", MetaType.GENRE)).willReturn(comedyMeta);
 
         given(tokenService.generateAccessToken(eq(kakaoUserId), anyList())).willReturn("access");
         given(tokenService.generateRefreshToken(eq(kakaoUserId), anyList())).willReturn("refresh");
