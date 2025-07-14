@@ -14,8 +14,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/curation")
 @RequiredArgsConstructor
+@RequestMapping("/curation")
 public class CurationController {
 
     private final CurationService curationService;
@@ -34,7 +34,7 @@ public class CurationController {
     public Response<CursorPageResponse<MyCurationResponseDto>> getMyCurations(
             @AuthenticationPrincipal final User user,
             @RequestParam @Nullable String cursor,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "2") int size
     ) {
         return curationService.getMyCurations(user, cursor, size);
     }
