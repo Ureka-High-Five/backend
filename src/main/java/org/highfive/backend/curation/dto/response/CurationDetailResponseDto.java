@@ -1,7 +1,5 @@
 package org.highfive.backend.curation.dto.response;
 
-import org.highfive.backend.content.entity.Content;
-
 import java.util.List;
 
 public record CurationDetailResponseDto(

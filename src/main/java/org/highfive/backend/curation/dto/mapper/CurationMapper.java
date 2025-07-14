@@ -1,6 +1,5 @@
 package org.highfive.backend.curation.dto.mapper;
 
-import org.highfive.backend.content.dto.response.HomeContentsResponseDto;
 import org.highfive.backend.curation.dto.request.CreateCurationRequestDto;
 import org.highfive.backend.curation.dto.response.CurationDetailResponseDto;
 import org.highfive.backend.curation.entity.Curation;
