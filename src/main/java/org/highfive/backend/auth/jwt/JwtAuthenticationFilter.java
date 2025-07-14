@@ -40,13 +40,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain) throws ServletException, IOException {
 
-        final String requestURI = request.getRequestURI();
-
         if (OPTIONS.equalsIgnoreCase(request.getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);
             return;
         }
 
+        final String requestURI = request.getRequestURI();
 
         if (requestURI.startsWith(AUTH_LOGIN)
                 || requestURI.startsWith(SWAGGER)
@@ -60,7 +59,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         try {
-
             final String token = tokenService.resolveToken(request);
             tokenService.validateToken(token, ACCESSTOKEN);
             Authentication authentication = tokenService.getAuthentication(token, ACCESSTOKEN);
