@@ -15,7 +15,7 @@ import org.highfive.backend.content.entity.metadata.MetaInfoContents;
 import org.highfive.backend.content.entity.metadata.MetaType;
 import org.highfive.backend.content.repository.ContentRepository;
 import org.highfive.backend.content.repository.MetaInfoContentsRepository;
-import org.highfive.backend.content.repository.MetaInfoRepository;
+import org.highfive.backend.content.repository.querydsl.QueryDslMetaInfoRepository;
 import org.highfive.backend.global.client.fastapi.FastApiClient;
 import org.highfive.backend.global.dto.Response;
 import org.junit.jupiter.api.Assertions;
@@ -41,7 +41,7 @@ class AdminContentServiceTest {
     MetaInfoContentsRepository metaInfoContentsRepository;
 
     @Mock
-    private MetaInfoRepository metaInfoRepository;
+    private QueryDslMetaInfoRepository queryDslMetaInfoRepository;
 
     @Mock
     private FastApiClient fastApiClient;
@@ -57,9 +57,9 @@ class AdminContentServiceTest {
         MetaInfo director = MetaInfo.builder().name("딘 데블로이스").type(MetaType.DIRECTOR).build();
         MetaInfo country  = MetaInfo.builder().name("KR").type(MetaType.COUNTRY).build();
 
-        given(metaInfoRepository.findByActorName("톰 크루즈")).willReturn(actor);
-        given(metaInfoRepository.findByDirectorName("딘 데블로이스")).willReturn(director);
-        given(metaInfoRepository.findByCountryName("KR")).willReturn(country);
+        given(queryDslMetaInfoRepository.findByNameAndType("톰 크루즈", MetaType.ACTOR)).willReturn(actor);
+        given(queryDslMetaInfoRepository.findByNameAndType("딘 데블로이스", MetaType.DIRECTOR)).willReturn(director);
+        given(queryDslMetaInfoRepository.findByNameAndType("KR", MetaType.COUNTRY)).willReturn(country);
 
         given(contentRepository.save(any(Content.class)))
                 .willAnswer(inv -> {

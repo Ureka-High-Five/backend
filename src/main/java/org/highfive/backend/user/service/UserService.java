@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.highfive.backend.auth.dto.response.TokenResponseDto;
 import org.highfive.backend.auth.service.TokenService;
 import org.highfive.backend.content.entity.metadata.MetaInfo;
+import org.highfive.backend.content.entity.metadata.MetaType;
 import org.highfive.backend.content.repository.MetaInfoRepository;
 import org.highfive.backend.content.repository.QueryDslContentRepository;
+import org.highfive.backend.content.repository.querydsl.QueryDslMetaInfoRepository;
 import org.highfive.backend.global.client.fastapi.FastApiClient;
 import org.highfive.backend.global.client.fastapi.dto.response.FastApiOnboardingResponseDto;
 import org.highfive.backend.global.dto.Response;
@@ -36,10 +38,10 @@ public class UserService {
     private final FastApiClient fastApiClient;
     private final WeightManager weightManager;
     private final UserRepository userRepository;
-    private final MetaInfoRepository metaInfoRepository;
-    private final PreferMetaInfoRepository preferMetaInfoRepository;
     private final TokenService tokenService;
     private final QueryDslContentRepository queryDslContentRepository;
+    private final QueryDslMetaInfoRepository queryDslMetaInfoRepository;
+    private final PreferMetaInfoRepository preferMetaInfoRepository;
 
     @Transactional
     public Response<TokenResponseDto> initUser(final SubmitOnboardingRequestDto request) {
@@ -90,12 +92,12 @@ public class UserService {
             final String genreName = entry.getKey();
             final double weight = entry.getValue();
 
-            final List<MetaInfo> metaInfo = metaInfoRepository.findGenreMetaIdByName(genreName);
+            final MetaInfo metaInfo = queryDslMetaInfoRepository.findByNameAndType(genreName, MetaType.GENRE);
 
             final PreferMetaInfo prefer = PreferMetaInfo.builder()
                     .user(user)
                     .weight(weight)
-                    .metaInfo(metaInfo.get(0))
+                    .metaInfo(metaInfo)
                     .build();
 
             preferMetaInfoRepository.save(prefer);

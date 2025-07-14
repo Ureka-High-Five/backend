@@ -8,10 +8,12 @@ import org.highfive.backend.content.dto.response.AdminAddContentResponseDto;
 import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.content.entity.metadata.MetaInfo;
 import org.highfive.backend.content.entity.metadata.MetaInfoContents;
+import org.highfive.backend.content.entity.metadata.MetaType;
 import org.highfive.backend.content.exception.MetaInfoErrorCode;
 import org.highfive.backend.content.repository.ContentRepository;
 import org.highfive.backend.content.repository.MetaInfoContentsRepository;
 import org.highfive.backend.content.repository.MetaInfoRepository;
+import org.highfive.backend.content.repository.querydsl.QueryDslMetaInfoRepository;
 import org.highfive.backend.global.client.fastapi.FastApiClient;
 import org.highfive.backend.global.code.SuccessCode;
 import org.highfive.backend.global.dto.Response;
@@ -24,9 +26,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class AdminContentService {
 
     private final ContentRepository contentRepository;
-    private final MetaInfoRepository metaInfoRepository;
     private final MetaInfoContentsRepository metaInfoContentsRepository;
     private final FastApiClient fastApiClient;
+    private final QueryDslMetaInfoRepository queryDslMetaInfoRepository;
 
     @Transactional
     public Response<AdminAddContentResponseDto> addContent(AdminAddContentRequestDto request) {
@@ -51,7 +53,7 @@ public class AdminContentService {
     private void setActors(AdminAddContentRequestDto request, Content content) {
         List<String> actors = request.getActors();
         for (String actorName : actors) {
-            MetaInfo actor = metaInfoRepository.findByActorName(actorName);
+            MetaInfo actor = queryDslMetaInfoRepository.findByNameAndType(actorName, MetaType.ACTOR);
             if (actor == null) {
                 throw new BusinessException(MetaInfoErrorCode.ACTOR_NOT_FOUND);
             }
@@ -61,7 +63,7 @@ public class AdminContentService {
 
     private void setDirector(AdminAddContentRequestDto request, Content content) {
         String directorName = request.getDirector();
-        MetaInfo director = metaInfoRepository.findByDirectorName(directorName);
+        MetaInfo director = queryDslMetaInfoRepository.findByNameAndType(directorName, MetaType.DIRECTOR);
         if (director == null) {
             throw new BusinessException(MetaInfoErrorCode.DIRECTOR_NOT_FOUND);
         }
@@ -70,7 +72,7 @@ public class AdminContentService {
 
     private void setCountry(AdminAddContentRequestDto request, Content content) {
         String countryName = request.getCountryName();
-        MetaInfo metaInfo = metaInfoRepository.findByCountryName(countryName);
+        MetaInfo metaInfo = queryDslMetaInfoRepository.findByNameAndType(countryName, MetaType.COUNTRY);
         if (metaInfo == null) {
             throw new BusinessException(MetaInfoErrorCode.COUNTRY_NOT_FOUND);
         }

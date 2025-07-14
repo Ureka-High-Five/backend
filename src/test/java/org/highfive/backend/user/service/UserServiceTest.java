@@ -17,8 +17,8 @@ import org.highfive.backend.auth.dto.response.TokenResponseDto;
 import org.highfive.backend.auth.service.TokenService;
 import org.highfive.backend.content.entity.metadata.MetaInfo;
 import org.highfive.backend.content.entity.metadata.MetaType;
-import org.highfive.backend.content.repository.MetaInfoRepository;
 import org.highfive.backend.content.repository.QueryDslContentRepository;
+import org.highfive.backend.content.repository.querydsl.QueryDslMetaInfoRepository;
 import org.highfive.backend.global.client.fastapi.FastApiClient;
 import org.highfive.backend.global.client.fastapi.dto.response.FastApiOnboardingResponseDto;
 import org.highfive.backend.global.client.fastapi.exception.FastApiErrorCode;
@@ -48,7 +48,7 @@ class UserServiceTest {
     @Mock
     UserRepository userRepository;
     @Mock
-    MetaInfoRepository metaRepo;
+    QueryDslMetaInfoRepository queryDslMetaInfoRepository;
     @Mock
     PreferMetaInfoRepository preferRepo;
     @Mock
@@ -66,6 +66,8 @@ class UserServiceTest {
         User user = User.builder()
                 .id(1L)
                 .kakaoUserId("kakao123")
+                .age(10)
+                .averageRating(100)
                 .build();
         SubmitOnboardingRequestDto req =
                 new SubmitOnboardingRequestDto(1L, List.of(10L,11L), 1998, Gender.MALE, "홍길동");
@@ -90,8 +92,8 @@ class UserServiceTest {
 
         MetaInfo actionMeta = new MetaInfo(100L,"Action", MetaType.GENRE,null);
         MetaInfo dramaMeta  = new MetaInfo(101L,"Drama", MetaType.GENRE,null);
-        when(metaRepo.findGenreMetaIdByName("Action")).thenReturn(List.of(actionMeta));
-        when(metaRepo.findGenreMetaIdByName("Drama")).thenReturn(List.of(dramaMeta));
+        when(queryDslMetaInfoRepository.findByNameAndType("Action", MetaType.GENRE)).thenReturn(actionMeta);
+        when(queryDslMetaInfoRepository.findByNameAndType("Drama", MetaType.GENRE)).thenReturn(dramaMeta);
 
         when(tokenService.generateAccessToken(eq("kakao123"), anyList())).thenReturn("access");
         when(tokenService.generateRefreshToken(eq("kakao123"), anyList())).thenReturn("refresh");
