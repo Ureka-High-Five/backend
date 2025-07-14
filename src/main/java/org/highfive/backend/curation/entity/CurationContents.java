@@ -1,13 +1,11 @@
-package org.highfive.backend.content.entity.curation;
+package org.highfive.backend.curation.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.highfive.backend.content.entity.Content;
 
 @Entity
+@Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -23,4 +21,8 @@ public class CurationContents {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "content_id")
     private Content content;
+
+    public void assignCuration(final Curation curation) {
+        this.curation = curation;
+    }
 }
