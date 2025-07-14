@@ -10,4 +10,7 @@ public interface MetaInfoRepository extends JpaRepository<MetaInfo, Long> {
 
     @Query("SELECT m FROM MetaInfo m WHERE m.name = :name AND m.type = 'GENRE'")
     List<MetaInfo> findGenreMetaIdByName(String name);
+
+    @Query("SELECT mi FROM MetaInfo mi WHERE mi.name = :name AND mi.type = 'COUNTRY'")
+    MetaInfo findByCountryName(String name);
 }
