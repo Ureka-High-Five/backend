@@ -2,7 +2,7 @@ package org.highfive.backend.content.dto.response;
 
 public record OnboardingSelectContentResponseDto(
         long contentId,
-        String posterUrl,
+        String thumbnailUrl,
         String title,
         int openYear
 ) {
