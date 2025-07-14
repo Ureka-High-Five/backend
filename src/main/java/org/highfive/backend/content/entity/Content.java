@@ -53,7 +53,7 @@ public class Content {
     @Column(nullable = false, length = 1000)
     private String description;
 
-    @Column(nullable = false, length = 500)
+    @Column(nullable = false, length = 1024)
     private String videoUrl;
 
     @Column(nullable = false)
