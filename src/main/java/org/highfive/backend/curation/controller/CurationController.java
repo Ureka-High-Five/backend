@@ -34,7 +34,7 @@ public class CurationController {
     public Response<CursorPageResponse<MyCurationResponseDto>> getMyCurations(
             @AuthenticationPrincipal final User user,
             @RequestParam @Nullable String cursor,
-            @RequestParam(defaultValue = "2") int size
+            @RequestParam(defaultValue = "10") int size
     ) {
         return curationService.getMyCurations(user, cursor, size);
     }
