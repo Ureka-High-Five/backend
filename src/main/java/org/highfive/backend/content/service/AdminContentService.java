@@ -14,9 +14,11 @@ import org.highfive.backend.content.repository.ContentRepository;
 import org.highfive.backend.content.repository.MetaInfoContentsRepository;
 import org.highfive.backend.content.repository.querydsl.QueryDslMetaInfoRepository;
 import org.highfive.backend.global.client.fastapi.FastApiClient;
+import org.highfive.backend.global.code.GlobalErrorCode;
 import org.highfive.backend.global.code.SuccessCode;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
+import org.highfive.backend.user.entity.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,7 +32,11 @@ public class AdminContentService {
     private final QueryDslMetaInfoRepository queryDslMetaInfoRepository;
 
     @Transactional
-    public Response<AdminAddContentResponseDto> addContent(AdminAddContentRequestDto request) {
+    public Response<AdminAddContentResponseDto> addContent(AdminAddContentRequestDto request, User user) {
+        if (!user.isAdmin()) {
+            throw new BusinessException(GlobalErrorCode.ACCESS_DENIED);
+        }
+
         Content content = ContentMapper.fromAdminAddContentRequestDto(request);
         String vector = getEmbedding(request);
         content.updateEmbedding(vector);
