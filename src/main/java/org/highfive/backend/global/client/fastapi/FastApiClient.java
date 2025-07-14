@@ -105,8 +105,4 @@ public class FastApiClient {
     private String genUrl(final String endPoint) {
         return fastApiHost + ":" + fastApiPort + endPoint;
     }
-
-    public String calcVectorByGenres(List<String> genres) {
-        return null;
-    }
 }

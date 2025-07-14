@@ -52,7 +52,7 @@ public class AdminContentService {
 
     private String getEmbedding(AdminAddContentRequestDto request) {
         List<String> genres = request.getGenres();
-        return fastApiClient.calcVectorByGenres(genres);
+        return fastApiClient.vectorFromGenres(genres).getVector();
     }
 
     private void setActors(AdminAddContentRequestDto request, Content content) {
