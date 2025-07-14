@@ -40,7 +40,7 @@ public class AdminContentService {
         validateAdmin(user);
 
         final Content content = ContentMapper.fromAdminAddContentRequestDto(request);
-        final String vector = callEmbedding(request);
+        final String vector = getEmbeddingByGenres(request.genres());
         content.updateEmbedding(vector);
 
         final Content savedContent = contentRepository.save(content);
@@ -100,11 +100,6 @@ public class AdminContentService {
         }
     }
 
-    private String callEmbedding(final AdminAddContentRequestDto request) {
-        final List<String> genres = request.genres();
-        return fastApiClient.vectorFromGenres(genres).vector();
-    }
-
     private void setCountry(final AdminAddContentRequestDto request, final Content content) {
         final String countryName = request.countryName();
         final MetaInfo metaInfo = metaInfoRepository.findByNameAndType(countryName, MetaType.COUNTRY);
@@ -132,6 +127,10 @@ public class AdminContentService {
             throw new BusinessException(MetaInfoErrorCode.DIRECTOR_NOT_FOUND);
         }
         metaInfoContentsRepository.save(MetaInfoContents.builder().content(content).metaInfo(director).build());
+    }
+
+    private String getEmbeddingByGenres(final List<String> genres) {
+        return fastApiClient.vectorFromGenres(genres).vector();
     }
 
     private void validateAdmin(final User user) {
