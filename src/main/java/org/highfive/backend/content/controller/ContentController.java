@@ -17,7 +17,7 @@ public class ContentController {
 
     private final ContentService contentService;
 
-    @GetMapping("{contentId}/detail")
+    @GetMapping("/{contentId}/detail")
     public Response<ContentDetailResponseDto> getContentDetail(
             @PathVariable final Long contentId) {
         return contentService.getContentDetail(contentId);

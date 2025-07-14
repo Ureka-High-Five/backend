@@ -1,8 +1,5 @@
 package org.highfive.backend.content.service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.content.dto.mapper.ContentMapper;
 import org.highfive.backend.content.dto.response.ContentDetailResponseDto;
@@ -11,16 +8,18 @@ import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.content.entity.metadata.MetaInfo;
 import org.highfive.backend.content.entity.metadata.MetaInfoContents;
 import org.highfive.backend.content.entity.metadata.MetaType;
-import org.highfive.backend.content.repository.MetaInfoContentsRepository;
 import org.highfive.backend.content.exception.ContentErrorCode;
 import org.highfive.backend.content.repository.ContentRepository;
 import org.highfive.backend.content.repository.QueryDslContentRepository;
 import org.highfive.backend.global.dto.CursorPageResponse;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
-import org.highfive.backend.user.entity.preference.PreferMetaInfoRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.highfive.backend.content.dto.mapper.ContentMapper.toSearchContentResponseDto;
 import static org.highfive.backend.global.code.SuccessCode.OK;
@@ -32,8 +31,6 @@ public class ContentService {
     private final String LIKE = "%";
 
     private final ContentRepository contentRepository;
-    private final MetaInfoContentsRepository metaInfoContentsRepository;
-    private final PreferMetaInfoRepository preferMetaInfoRepository;
     private final QueryDslContentRepository queryDslContentRepository;
 
     public Response<ContentDetailResponseDto> getContentDetail(final Long contentId) {
@@ -56,14 +53,17 @@ public class ContentService {
     public Response<CursorPageResponse<SearchContentResponseDto>> search(final String input, final String cursor, final int size) {
         final String keyword = LIKE + input.toLowerCase() + LIKE;
 
-        final List<Content> contents = contentRepository.searchByInput(keyword, cursor, Pageable.ofSize(size));
+        List<Content> contents = contentRepository.searchByInput(keyword, cursor, Pageable.ofSize(size + 1));
 
         if (contents.isEmpty()) {
             throw new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND);
         }
 
-        final Long nextCursor = contents.get(contents.size() - 1).getId();
-        return new Response<>(OK.getCode(), toSearchContentResponseDto(contents, nextCursor), OK.getMessage());
+        final boolean hasNext = contents.size() > size;
+        contents = hasNext ? contents.subList(0, size) : contents;
+        final String nextCursor = hasNext ? contents.get(contents.size() - 1).getId().toString() : null;
+
+        return Response.ok(toSearchContentResponseDto(contents, hasNext, nextCursor));
     }
 
     private String extractDirector(final Map<MetaType, List<String>> metaMap) {

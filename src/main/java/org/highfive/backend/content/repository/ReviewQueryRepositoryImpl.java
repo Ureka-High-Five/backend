@@ -20,9 +20,9 @@ public class ReviewQueryRepositoryImpl implements ReviewQueryRepository {
     private static final QReview review = QReview.review;
 
     @Override
-    public CursorPageResponse<ReviewSimpleResponseDto> findReviewsByCursor(Long contentId, String cursor, int size) {
+    public CursorPageResponse<ReviewSimpleResponseDto> findReviewsByCursor(final Long contentId, final String cursor, final int size) {
 
-        List<ReviewSimpleResponseDto> items = queryFactory
+        final List<ReviewSimpleResponseDto> items = queryFactory
                 .select(new QReviewSimpleResponseDto(review))
                 .from(review)
                 .where(
@@ -33,11 +33,11 @@ public class ReviewQueryRepositoryImpl implements ReviewQueryRepository {
                 .limit(size + 1)
                 .fetch();
 
-        boolean hasNext = items.size() > size;
-        List<ReviewSimpleResponseDto> pageItems = subLastPage(items, hasNext);
-        String nextCursor = getNextCursor(pageItems, hasNext);
+        final boolean hasNext = items.size() > size;
+        final List<ReviewSimpleResponseDto> pageItems = subLastPage(items, hasNext);
+        final String nextCursor = hasNext ? String.valueOf(pageItems.get(pageItems.size() - 1).reviewId()) : null;
 
-        return new CursorPageResponse<>(pageItems, nextCursor);
+        return new CursorPageResponse<>(pageItems, hasNext, nextCursor);
     }
 
     private BooleanExpression cursorFilter(String cursor) {
@@ -54,13 +54,5 @@ public class ReviewQueryRepositoryImpl implements ReviewQueryRepository {
         }
 
         return hasNext ? items.subList(0, items.size() - 1) : items;
-    }
-
-    private String getNextCursor(List<ReviewSimpleResponseDto> items, boolean hasNext) {
-        if (Objects.isNull(items) || items.isEmpty() || !hasNext) {
-            return null;
-        }
-
-        return String.valueOf(items.getLast().reviewId());
     }
 }
