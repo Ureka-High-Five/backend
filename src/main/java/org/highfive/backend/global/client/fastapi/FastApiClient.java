@@ -38,11 +38,11 @@ public class FastApiClient {
 
     private HttpHeaders headers = new HttpHeaders();
 
-    public FastApiVectorFromGenresDto vectorFromGenres(List<String> genres) {
-        String url = genUrl("/embedding-by-genre");
+    public FastApiVectorFromGenresDto vectorFromGenres(final List<String> genres) {
+        final String url = genUrl("/embedding-by-genre");
 
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<List<String>> request = new HttpEntity<>(genres, headers);
+        final HttpEntity<List<String>> request = new HttpEntity<>(genres, headers);
 
         return executeWithFastApiHandling(() ->
                 restTemplate.postForEntity(url, request, FastApiVectorFromGenresDto.class).getBody());

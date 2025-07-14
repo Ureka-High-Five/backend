@@ -23,7 +23,6 @@ import org.highfive.backend.content.exception.ContentErrorCode;
 import org.highfive.backend.content.repository.ContentRepository;
 import org.highfive.backend.content.repository.QueryDslContentRepository;
 import org.highfive.backend.content.repository.jpa.MetaInfoRepository;
-import org.highfive.backend.content.repository.querydsl.QueryDslMetaInfoRepository;
 import org.highfive.backend.global.client.fastapi.FastApiClient;
 import org.highfive.backend.global.client.fastapi.dto.response.FastApiOnboardingResponseDto;
 import org.highfive.backend.global.code.SuccessCode;
@@ -54,9 +53,9 @@ public class OnboardingService {
     private final WeightManager weightManager;
     private final UserRepository userRepository;
     private final ContentRepository contentRepository;
-    private final QueryDslMetaInfoRepository queryDslMetaInfoRepository;
     private final PreferMetaInfoRepository preferMetaInfoRepository;
     private final QueryDslContentRepository queryDslContentRepository;
+    private final MetaInfoRepository metaInfoRepository;
 
     public Response<List<OnboardingSelectContentResponseDto>> getContentBySelectedContent(final OnboardingSelectContentRequestDto request) {
         List<GenreCountDto> topGenresByContentIds = queryDslContentRepository.findTopGenresByContentIds(request.selectedContentIds());
@@ -162,7 +161,7 @@ public class OnboardingService {
             final String genreName = entry.getKey();
             final double weight = entry.getValue();
 
-            final MetaInfo metaInfo = queryDslMetaInfoRepository.findByNameAndType(genreName, MetaType.GENRE);
+            final MetaInfo metaInfo = metaInfoRepository.findByNameAndType(genreName, MetaType.GENRE);
 
             final PreferMetaInfo prefer = PreferMetaInfo.builder()
                     .user(user)

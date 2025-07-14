@@ -12,7 +12,7 @@ import org.highfive.backend.content.entity.metadata.MetaType;
 import org.highfive.backend.content.exception.MetaInfoErrorCode;
 import org.highfive.backend.content.repository.ContentRepository;
 import org.highfive.backend.content.repository.MetaInfoContentsRepository;
-import org.highfive.backend.content.repository.querydsl.QueryDslMetaInfoRepository;
+import org.highfive.backend.content.repository.jpa.MetaInfoRepository;
 import org.highfive.backend.global.client.fastapi.FastApiClient;
 import org.highfive.backend.global.code.GlobalErrorCode;
 import org.highfive.backend.global.code.SuccessCode;
@@ -29,19 +29,19 @@ public class AdminContentService {
     private final ContentRepository contentRepository;
     private final MetaInfoContentsRepository metaInfoContentsRepository;
     private final FastApiClient fastApiClient;
-    private final QueryDslMetaInfoRepository queryDslMetaInfoRepository;
+    private final MetaInfoRepository metaInfoRepository;
 
     @Transactional
-    public Response<AdminAddContentResponseDto> addContent(AdminAddContentRequestDto request, User user) {
+    public Response<AdminAddContentResponseDto> addContent(final AdminAddContentRequestDto request, final User user) {
         if (!user.isAdmin()) {
             throw new BusinessException(GlobalErrorCode.ACCESS_DENIED);
         }
 
-        Content content = ContentMapper.fromAdminAddContentRequestDto(request);
-        String vector = getEmbedding(request);
+        final Content content = ContentMapper.fromAdminAddContentRequestDto(request);
+        final String vector = getEmbedding(request);
         content.updateEmbedding(vector);
 
-        Content savedContent = contentRepository.save(content);
+        final Content savedContent = contentRepository.save(content);
 
         setActors(request, content);
         setDirector(request, content);
@@ -50,15 +50,15 @@ public class AdminContentService {
         return new Response<>(SuccessCode.OK.getCode(), new AdminAddContentResponseDto(savedContent.getId()),null);
     }
 
-    private String getEmbedding(AdminAddContentRequestDto request) {
-        List<String> genres = request.getGenres();
-        return fastApiClient.vectorFromGenres(genres).getVector();
+    private String getEmbedding(final AdminAddContentRequestDto request) {
+        List<String> genres = request.genres();
+        return fastApiClient.vectorFromGenres(genres).vector();
     }
 
-    private void setActors(AdminAddContentRequestDto request, Content content) {
-        List<String> actors = request.getActors();
+    private void setActors(final AdminAddContentRequestDto request, final Content content) {
+        List<String> actors = request.actors();
         for (String actorName : actors) {
-            MetaInfo actor = queryDslMetaInfoRepository.findByNameAndType(actorName, MetaType.ACTOR);
+            MetaInfo actor = metaInfoRepository.findByNameAndType(actorName, MetaType.ACTOR);
             if (actor == null) {
                 throw new BusinessException(MetaInfoErrorCode.ACTOR_NOT_FOUND);
             }
@@ -66,9 +66,9 @@ public class AdminContentService {
         }
     }
 
-    private void setDirector(AdminAddContentRequestDto request, Content content) {
-        String directorName = request.getDirector();
-        MetaInfo director = queryDslMetaInfoRepository.findByNameAndType(directorName, MetaType.DIRECTOR);
+    private void setDirector(final AdminAddContentRequestDto request, final Content content) {
+        final String directorName = request.director();
+        final MetaInfo director = metaInfoRepository.findByNameAndType(directorName, MetaType.DIRECTOR);
         if (director == null) {
             throw new BusinessException(MetaInfoErrorCode.DIRECTOR_NOT_FOUND);
         }
@@ -76,8 +76,8 @@ public class AdminContentService {
     }
 
     private void setCountry(AdminAddContentRequestDto request, Content content) {
-        String countryName = request.getCountryName();
-        MetaInfo metaInfo = queryDslMetaInfoRepository.findByNameAndType(countryName, MetaType.COUNTRY);
+        final String countryName = request.countryName();
+        final MetaInfo metaInfo = metaInfoRepository.findByNameAndType(countryName, MetaType.COUNTRY);
         if (metaInfo == null) {
             throw new BusinessException(MetaInfoErrorCode.COUNTRY_NOT_FOUND);
         }

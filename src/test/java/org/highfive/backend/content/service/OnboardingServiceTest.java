@@ -29,7 +29,6 @@ import org.highfive.backend.content.repository.ContentRepository;
 import org.highfive.backend.content.repository.MetaInfoContentsRepository;
 import org.highfive.backend.content.repository.QueryDslContentRepository;
 import org.highfive.backend.content.repository.jpa.MetaInfoRepository;
-import org.highfive.backend.content.repository.querydsl.QueryDslMetaInfoRepository;
 import org.highfive.backend.global.client.fastapi.FastApiClient;
 import org.highfive.backend.global.client.fastapi.dto.response.FastApiOnboardingResponseDto;
 import org.highfive.backend.global.dto.Response;
@@ -67,7 +66,7 @@ class OnboardingServiceTest {
     @Mock
     UserRepository userRepository;
     @Mock
-    QueryDslMetaInfoRepository queryDslMetaInfoRepository;
+    MetaInfoRepository metaInfoRepository;
     @Mock
     WeightManager weightManager;
     @Mock
@@ -199,9 +198,9 @@ class OnboardingServiceTest {
                 .willReturn(Map.of("Action", 0.7, "Comedy", 0.3));
 
         MetaInfo actionMeta = new MetaInfo(1L, "Action", MetaType.GENRE, null);
-        given(queryDslMetaInfoRepository.findByNameAndType("Action", MetaType.GENRE)).willReturn(actionMeta);
+        given(metaInfoRepository.findByNameAndType("Action", MetaType.GENRE)).willReturn(actionMeta);
         MetaInfo comedyMeta = new MetaInfo(2L, "Comedy", MetaType.GENRE, null);
-        given(queryDslMetaInfoRepository.findByNameAndType("Comedy", MetaType.GENRE)).willReturn(comedyMeta);
+        given(metaInfoRepository.findByNameAndType("Comedy", MetaType.GENRE)).willReturn(comedyMeta);
 
         given(tokenService.generateAccessToken(eq(kakaoUserId), anyList())).willReturn("access");
         given(tokenService.generateRefreshToken(eq(kakaoUserId), anyList())).willReturn("refresh");

@@ -2,10 +2,8 @@ package org.highfive.backend.content.service;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.util.List;
 import org.highfive.backend.common.fixture.ContentFixture;
@@ -18,7 +16,7 @@ import org.highfive.backend.content.entity.metadata.MetaInfoContents;
 import org.highfive.backend.content.entity.metadata.MetaType;
 import org.highfive.backend.content.repository.ContentRepository;
 import org.highfive.backend.content.repository.MetaInfoContentsRepository;
-import org.highfive.backend.content.repository.querydsl.QueryDslMetaInfoRepository;
+import org.highfive.backend.content.repository.jpa.MetaInfoRepository;
 import org.highfive.backend.global.client.fastapi.FastApiClient;
 import org.highfive.backend.global.client.fastapi.dto.response.FastApiVectorFromGenresDto;
 import org.highfive.backend.global.code.GlobalErrorCode;
@@ -47,7 +45,7 @@ class AdminContentServiceTest {
     MetaInfoContentsRepository metaInfoContentsRepository;
 
     @Mock
-    private QueryDslMetaInfoRepository queryDslMetaInfoRepository;
+    private MetaInfoRepository metaInfoRepository;
 
     @Mock
     private FastApiClient fastApiClient;
@@ -63,9 +61,9 @@ class AdminContentServiceTest {
         MetaInfo director = MetaInfo.builder().name("딘 데블로이스").type(MetaType.DIRECTOR).build();
         MetaInfo country  = MetaInfo.builder().name("KR").type(MetaType.COUNTRY).build();
 
-        given(queryDslMetaInfoRepository.findByNameAndType("톰 크루즈", MetaType.ACTOR)).willReturn(actor);
-        given(queryDslMetaInfoRepository.findByNameAndType("딘 데블로이스", MetaType.DIRECTOR)).willReturn(director);
-        given(queryDslMetaInfoRepository.findByNameAndType("KR", MetaType.COUNTRY)).willReturn(country);
+        given(metaInfoRepository.findByNameAndType("톰 크루즈", MetaType.ACTOR)).willReturn(actor);
+        given(metaInfoRepository.findByNameAndType("딘 데블로이스", MetaType.DIRECTOR)).willReturn(director);
+        given(metaInfoRepository.findByNameAndType("KR", MetaType.COUNTRY)).willReturn(country);
 
         given(contentRepository.save(any(Content.class)))
                 .willAnswer(inv -> {

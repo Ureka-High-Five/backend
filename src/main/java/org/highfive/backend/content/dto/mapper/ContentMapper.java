@@ -33,14 +33,16 @@ public class ContentMapper {
 
     public static Content fromAdminAddContentRequestDto(AdminAddContentRequestDto request) {
         return Content.builder()
-                .title(request.getTitle())
-                .description(request.getDescription())
-                .videoUrl(request.getVideoUrl())
-                .postUrl(request.getPostUrl())
-                .openDate(LocalDateTime.from(LocalDate.parse(request.getOpenDate()).atStartOfDay()))
-                .runningTime(request.getRunningTime())
-                .totalRound(request.getTotalRound())
-                .contentType(ContentType.valueOf(request.getType()))
+                .title(request.title())
+                .description(request.description())
+                .videoUrl(request.videoUrl())
+                .postUrl(request.postUrl())
+                .openDate(LocalDateTime.from(LocalDate.parse(request.openDate()).atStartOfDay()))
+                .runningTime(request.runningTime())
+                .totalRound(request.totalRound())
+                .contentType(ContentType.valueOf(request.type()))
+                .grade(15)
+                .popularity(100)
                 .build();
     }
 }

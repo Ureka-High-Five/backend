@@ -19,8 +19,8 @@ public class AdminContentController {
     private final AdminContentService adminContentService;
 
     @PostMapping("/content")
-    public Response<AdminAddContentResponseDto> adminAddContent(@Valid @RequestBody AdminAddContentRequestDto request,
-                                                                @AuthenticationPrincipal User user) {
+    public Response<AdminAddContentResponseDto> adminAddContent(@Valid @RequestBody final AdminAddContentRequestDto request,
+                                                                @AuthenticationPrincipal final User user) {
         return adminContentService.addContent(request, user);
     }
 }
