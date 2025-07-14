@@ -67,19 +67,6 @@ public class CurationService {
         return String.valueOf(curations.get(curations.size() - 1).getId());
     }
 
-    private List<CurationDetailResponseDto.ContentDto> mapToContentDtos(final List<CurationContents> curationContentsList) {
-        return curationContentsList.stream()
-                .map(curationContent -> {
-                    final Content content = curationContent.getContent();
-                    return new CurationDetailResponseDto.ContentDto(
-                            content.getId(),
-                            content.getTitle(),
-                            content.getThumbnailUrl()
-                    );
-                })
-                .toList();
-    }
-
     private List<Content> getContentsOrThrow(final List<Long> contentIds) {
         final List<Content> contents = contentRepository.findAllById(contentIds);
         if(contents.size() != contentIds.size()) {
@@ -89,12 +76,12 @@ public class CurationService {
     }
 
     private void addCurationContents(final Curation curation, final List<Content> contents) {
-        for(Content content : contents) {
+        contents.forEach(content -> {
             final CurationContents curationContents = CurationContents.builder()
                     .content(content)
                     .build();
             curation.addCurationContents(curationContents);
-        }
+        });
     }
 
 }
