@@ -78,7 +78,9 @@ public class AdminContentService {
         metaInfoContentsRepository.deleteAllByContentAndType(content.getId(), MetaType.GENRE);
         for (String genreName : genres) {
             final MetaInfo genre = metaInfoRepository.findByNameAndType(genreName, MetaType.GENRE);
-            if (genre == null) throw new BusinessException(MetaInfoErrorCode.GENRE_NOT_FOUND);
+            if (genre == null) {
+                throw new BusinessException(MetaInfoErrorCode.GENRE_NOT_FOUND);
+            }
             metaInfoContentsRepository.save(MetaInfoContents.builder().content(content).metaInfo(genre).build());
         }
     }
@@ -86,7 +88,9 @@ public class AdminContentService {
     private void updateDirector(final AdminUpdateContentRequestDto request, final Content content) {
         metaInfoContentsRepository.deleteAllByContentAndType(content.getId(), MetaType.DIRECTOR);
         final MetaInfo director = metaInfoRepository.findByNameAndType(request.director(), MetaType.DIRECTOR);
-        if (director == null) throw new BusinessException(MetaInfoErrorCode.DIRECTOR_NOT_FOUND);
+        if (director == null) {
+            throw new BusinessException(MetaInfoErrorCode.DIRECTOR_NOT_FOUND);
+        }
         metaInfoContentsRepository.save(MetaInfoContents.builder().content(content).metaInfo(director).build());
     }
 
@@ -95,7 +99,9 @@ public class AdminContentService {
         metaInfoContentsRepository.deleteAllByContentAndType(content.getId(), MetaType.ACTOR);
         for (String actorName : actors) {
             MetaInfo actor = metaInfoRepository.findByNameAndType(actorName, MetaType.ACTOR);
-            if (actor == null) throw new BusinessException(MetaInfoErrorCode.ACTOR_NOT_FOUND);
+            if (actor == null) {
+                throw new BusinessException(MetaInfoErrorCode.ACTOR_NOT_FOUND);
+            }
             metaInfoContentsRepository.save(MetaInfoContents.builder().content(content).metaInfo(actor).build());
         }
     }
