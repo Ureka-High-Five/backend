@@ -24,10 +24,10 @@ import org.highfive.backend.content.dto.response.OnboardingInitContentsResponseD
 import org.highfive.backend.content.dto.response.OnboardingSelectContentResponseDto;
 import org.highfive.backend.content.entity.metadata.MetaInfo;
 import org.highfive.backend.content.entity.metadata.MetaType;
-import org.highfive.backend.content.entity.repository.MetaInfoContentsRepository;
-import org.highfive.backend.content.entity.repository.MetaInfoRepository;
 import org.highfive.backend.content.exception.ContentErrorCode;
 import org.highfive.backend.content.repository.ContentRepository;
+import org.highfive.backend.content.repository.MetaInfoContentsRepository;
+import org.highfive.backend.content.repository.MetaInfoRepository;
 import org.highfive.backend.content.repository.QueryDslContentRepository;
 import org.highfive.backend.global.client.fastapi.FastApiClient;
 import org.highfive.backend.global.client.fastapi.dto.response.FastApiOnboardingResponseDto;
