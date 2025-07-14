@@ -1,6 +1,7 @@
 package org.highfive.backend.content.service;
 
 import lombok.RequiredArgsConstructor;
+import org.highfive.backend.content.dto.VideoType;
 import org.highfive.backend.content.dto.mapper.ContentMapper;
 import org.highfive.backend.content.dto.response.ContentDetailResponseDto;
 import org.highfive.backend.content.dto.response.ContentVideoResponseDto;
@@ -93,7 +94,7 @@ public class ContentService {
         final Content content = contentRepository.findById(contentId)
                 .orElseThrow(() -> new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND));
 
-        ContentVideoResponseDto response = new ContentVideoResponseDto(content.getVideoUrl());
+        ContentVideoResponseDto response = new ContentVideoResponseDto(content.getVideoUrl(), VideoType.VIDEO.toString());
 
         return Response.ok(response);
     }
