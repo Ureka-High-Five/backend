@@ -111,7 +111,7 @@ class OnboardingControllerTest {
                 .andExpect(jsonPath("$.code").value(20000))
                 .andExpect(jsonPath("$.content", hasSize(dtoList.size())))
                 .andExpect(jsonPath("$.content[0].contentId").value(10L))
-                .andExpect(jsonPath("$.content[0].posterUrl").value("url1"))
+                .andExpect(jsonPath("$.content[0].thumbnailUrl").value("url1"))
                 .andExpect(jsonPath("$.content[0].title").value("title1"))
                 .andExpect(jsonPath("$.content[0].openYear").value(2024));
     }
