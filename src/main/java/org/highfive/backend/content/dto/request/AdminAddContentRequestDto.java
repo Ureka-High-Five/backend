@@ -25,11 +25,8 @@ public class AdminAddContentRequestDto {
     @NotBlank
     private String postUrl;
 
-    @NotNull
-    private Long countryId;
-
     @NotBlank
-    private String country;
+    private String countryName;
 
     @NotBlank
     private String openDate;
@@ -37,16 +34,9 @@ public class AdminAddContentRequestDto {
     @Positive
     private Integer runningTime;
 
-    @NotNull
-    @PositiveOrZero
-    private Integer viewCount;
-
     @Positive
-    private Integer total_round;
+    private Integer totalRound;
 
     @NotBlank
     private String type;
-
-    @NotNull
-    private Long contentId;
 }
