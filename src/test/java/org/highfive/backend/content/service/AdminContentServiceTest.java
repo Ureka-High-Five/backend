@@ -79,7 +79,7 @@ class AdminContentServiceTest {
         Response<AdminAddContentResponseDto> response = adminContentService.addContent(request, UserFixture.createAdmin(1L));
 
         // then
-        Long contentId = response.content().getContentId();
+        Long contentId = response.content().contentId();
         Assertions.assertNotNull(contentId);
         Assertions.assertNotNull(contentRepository.findById(contentId));
         Assertions.assertNotNull(metaInfoContentsRepository.findByContentId(contentId));
