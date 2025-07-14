@@ -79,14 +79,17 @@ public class ContentService {
     public Response<CursorPageResponse<SearchContentResponseDto>> search(final String input, final String cursor, final int size) {
         final String keyword = LIKE + input.toLowerCase() + LIKE;
 
-        final List<Content> contents = contentRepository.searchByInput(keyword, cursor, Pageable.ofSize(size));
+        List<Content> contents = contentRepository.searchByInput(keyword, cursor, Pageable.ofSize(size + 1));
 
         if (contents.isEmpty()) {
             throw new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND);
         }
 
-        final Long nextCursor = contents.get(contents.size() - 1).getId();
-        return new Response<>(OK.getCode(), toSearchContentResponseDto(contents, nextCursor), OK.getMessage());
+        final boolean hasNext = contents.size() > size;
+        contents = hasNext ? contents.subList(0, size) : contents;
+        final String nextCursor = hasNext ? contents.get(contents.size() - 1).getId().toString() : null;
+
+        return Response.ok(toSearchContentResponseDto(contents, hasNext, nextCursor));
     }
 
     private String extractDirector(final Map<MetaType, List<String>> metaMap) {

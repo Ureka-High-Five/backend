@@ -19,11 +19,11 @@ public class ContentMapper {
         return new SearchContentResponseDto(content.getId(), content.getPostUrl(), content.getTitle(), content.getOpenDate().getYear());
     }
 
-    public static CursorPageResponse<SearchContentResponseDto> toSearchContentResponseDto(final List<Content> contents, final Long nextCursor) {
+    public static CursorPageResponse<SearchContentResponseDto> toSearchContentResponseDto(final List<Content> contents, final boolean hasNext, final String nextCursor) {
         final List<SearchContentResponseDto> results = contents.stream()
                 .map(ContentMapper::toSearchContentResponseDto)
                 .toList();
-        return new CursorPageResponse<>(results, String.valueOf(nextCursor));
+        return new CursorPageResponse<>(results, hasNext, nextCursor);
 
     }
 }
