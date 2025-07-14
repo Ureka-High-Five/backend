@@ -4,6 +4,7 @@ import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.content.dto.response.ContentDetailResponseDto;
+import org.highfive.backend.content.dto.response.ContentVideoResponseDto;
 import org.highfive.backend.content.dto.response.SearchContentResponseDto;
 import org.highfive.backend.content.service.ContentService;
 import org.highfive.backend.global.dto.CursorPageResponse;
@@ -30,6 +31,13 @@ public class ContentController {
             @RequestParam(value = "size", defaultValue = "10") final int size
     ) {
         return contentService.search(input, cursor, size);
+    }
+
+    @GetMapping("/{contentId}/video")
+    public Response<ContentVideoResponseDto> getContentVideo(
+            @PathVariable final Long contentId
+    ){
+        return contentService.getContentVideo(contentId);
     }
 
 }

@@ -3,6 +3,7 @@ package org.highfive.backend.content.service;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.content.dto.mapper.ContentMapper;
 import org.highfive.backend.content.dto.response.ContentDetailResponseDto;
+import org.highfive.backend.content.dto.response.ContentVideoResponseDto;
 import org.highfive.backend.content.dto.response.SearchContentResponseDto;
 import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.content.entity.metadata.MetaInfo;
@@ -80,5 +81,14 @@ public class ContentService {
                         MetaInfo::getType,
                         Collectors.mapping(MetaInfo::getName, Collectors.toList())
                 ));
+    }
+
+    public Response<ContentVideoResponseDto> getContentVideo(final Long contentId) {
+        final Content content = contentRepository.findById(contentId)
+                .orElseThrow(() -> new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND));
+
+        ContentVideoResponseDto response = new ContentVideoResponseDto(content.getVideoUrl());
+
+        return Response.ok(response);
     }
 }
