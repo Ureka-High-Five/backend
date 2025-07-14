@@ -1,5 +1,6 @@
 package org.highfive.backend.curation.dto.request;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -12,6 +13,9 @@ public record CreateCurationRequestDto(
         @NotNull
         @NoDuplicate
         List<Long> contents,
+
+        @Nullable
+        String description,
 
         @NotBlank
         String thumbnail
