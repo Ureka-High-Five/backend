@@ -6,6 +6,7 @@ import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.content.exception.ContentErrorCode;
 import org.highfive.backend.content.repository.ContentRepository;
 import org.highfive.backend.curation.dto.request.CreateCurationRequestDto;
+import org.highfive.backend.curation.dto.request.CurationUpdateRequestDto;
 import org.highfive.backend.curation.dto.response.CurationDetailResponseDto;
 import org.highfive.backend.curation.dto.response.MyCurationResponseDto;
 import org.highfive.backend.curation.entity.Curation;
@@ -19,7 +20,11 @@ import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.user.entity.User;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.highfive.backend.curation.dto.mapper.CurationMapper.*;
 
@@ -61,6 +66,80 @@ public class CurationService {
 
         final CursorPageResponse<MyCurationResponseDto> response = new CursorPageResponse<>(myCurationResponseDtos,  hasNext, nextCursor);
         return Response.ok(response);
+    }
+
+    @Transactional
+    public Response<Void> updateCuration(final User user, final Long curationId, final CurationUpdateRequestDto dto) {
+
+        final Curation curation = curationRepository.findById(curationId)
+                .orElseThrow(() -> new BusinessException(CurationErrorCode.CURATION_NOT_FOUND));
+
+        if(!Objects.equals(user.getId(), curation.getUser().getId())) {
+            throw new BusinessException(CurationErrorCode.CURATION_ACCESS_DENIED);
+        }
+
+        updateTitle(curation, dto.title());
+        updateThumbnailUrl(curation, dto.thumbnailUrl());
+        updateContents(curation, dto.contents());
+
+        return Response.ok(null);
+    }
+
+    private void updateTitle(final Curation curation, final String newTitle) {
+        if (newTitle != null && !newTitle.equals(curation.getTitle())) {
+            curation.updateTitle(newTitle);
+        }
+    }
+
+    private void updateThumbnailUrl(final Curation curation, final String newThumbnailUrl) {
+        if (newThumbnailUrl != null && !newThumbnailUrl.equals(curation.getThumbnailUrl())) {
+            curation.updateThumbnailUrl(newThumbnailUrl);
+        }
+    }
+
+    private void updateContents(final Curation curation, final List<Long> newContentIds) {
+        if (newContentIds == null) return;
+        if (!isContentUpdated(curation, newContentIds)) return;
+        List<Content> newContents = getValidContents(newContentIds);
+        replaceCurationContents(curation, newContents);
+    }
+
+    private List<Content> getValidContents(final List<Long> contentIds) {
+        List<Content> contents = contentRepository.findAllById(contentIds);
+
+        Set<Long> foundIds = contents.stream()
+                .map(Content::getId)
+                .collect(Collectors.toSet());
+
+        contentIds.stream()
+                .filter(id -> !foundIds.contains(id))
+                .findFirst()
+                .ifPresent(id -> {
+                    throw new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND);
+                });
+
+        return contents;
+    }
+
+    private boolean isContentUpdated(final Curation curation, final List<Long> newContentIds) {
+        Set<Long> originalContentIds = curation.getCurationContents().stream()
+                .map(cc -> cc.getContent().getId())
+                .collect(Collectors.toSet());
+
+        Set<Long> updatedContentIds = new HashSet<>(newContentIds);
+
+        return !originalContentIds.equals(updatedContentIds);
+    }
+
+    private void replaceCurationContents(final Curation curation, final List<Content> newContents) {
+        curation.getCurationContents().clear();
+
+        newContents.forEach(content -> {
+            final CurationContents cc = CurationContents.builder()
+                    .content(content)
+                    .build();
+            curation.addCurationContents(cc);
+        });
     }
 
     private String getNextCursor(final List<Curation> curations) {
