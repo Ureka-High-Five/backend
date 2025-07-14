@@ -60,7 +60,7 @@ class ContentControllerTest {
                 .thenReturn(genre);
 
         // when, then
-        mockMvc.perform(get("/content/recommend").accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/content/home").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(20000))
                 .andExpect(jsonPath("$.content.mainRecommend.posterUrl").value("main.jpg"))
