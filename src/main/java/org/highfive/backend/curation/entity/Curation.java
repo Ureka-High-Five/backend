@@ -37,6 +37,6 @@ public class Curation {
 
     public void addCurationContents(CurationContents curationContents) {
         this.curationContents.add(curationContents);
-        curationContents.setCuration(this);
+        curationContents.assignCuration(this);
     }
 }
