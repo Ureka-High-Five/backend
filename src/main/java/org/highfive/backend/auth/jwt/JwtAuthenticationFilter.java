@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.highfive.backend.auth.exception.AuthErrorCode;
 import org.highfive.backend.auth.service.TokenService;
+import org.highfive.backend.global.code.GlobalErrorCode;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
 import org.springframework.security.core.Authentication;
@@ -31,6 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final String REISSUE = "/auth/reissue";
     private final String ONBOARDING_INIT = "/content/init";
     private final String ONBOARDING_SELECT = "/content/recommend";
+    private final String OPTIONS = "OPTIONS";
 
     private final ObjectMapper objectMapper;
     private final TokenService tokenService;
@@ -39,6 +41,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain) throws ServletException, IOException {
 
         final String requestURI = request.getRequestURI();
+
+        if (OPTIONS.equalsIgnoreCase(request.getMethod())) {
+            response.setStatus(HttpServletResponse.SC_OK);
+            return;
+        }
+
 
         if (requestURI.startsWith(AUTH_LOGIN)
                 || requestURI.startsWith(SWAGGER)
@@ -52,30 +60,31 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         try {
+
             final String token = tokenService.resolveToken(request);
             tokenService.validateToken(token, ACCESSTOKEN);
             Authentication authentication = tokenService.getAuthentication(token, ACCESSTOKEN);
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
         } catch (JwtException | IllegalArgumentException | BusinessException e) {
-            log.error("JWT 인증 실패 : {}", e.getMessage(), e);
-            errorResponse(response);
+            log.error(" Filter 에러 : {}", e.getMessage(), e);
+            errorResponse(response, e);
             return;
         }
 
         filterChain.doFilter(request, response);
     }
 
-    private void errorResponse(final HttpServletResponse response) throws IOException {
+    private void errorResponse(final HttpServletResponse response, final Exception e) throws IOException {
         final AuthErrorCode authErrorCode = AuthErrorCode.ACCESS_TOKEN_ERROR;
         response.setStatus(authErrorCode.getHttpStatus().value());
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");
 
         Response<Object> errorResponse = new Response<>(
-                authErrorCode.getCode(),
+                GlobalErrorCode.INTERNAL_SERVER_ERROR.getCode(),
                 null,
-                authErrorCode.getMessage()
+                e.getMessage()
         );
 
         String json = objectMapper.writeValueAsString(errorResponse);
