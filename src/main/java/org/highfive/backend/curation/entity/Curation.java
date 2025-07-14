@@ -1,10 +1,7 @@
-package org.highfive.backend.content.entity.curation;
+package org.highfive.backend.curation.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 import org.highfive.backend.user.entity.User;
 
@@ -12,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Getter
 @Builder
 @DynamicUpdate
 @AllArgsConstructor
