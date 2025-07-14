@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.highfive.backend.global.client.fastapi.dto.request.RecommendRequest;
 import org.highfive.backend.global.client.fastapi.dto.response.FastApiOnboardingResponseDto;
 import org.highfive.backend.global.client.fastapi.dto.response.FastApiRecommendResponseDto;
+import org.highfive.backend.global.client.fastapi.dto.response.FastApiVectorFromGenresDto;
 import org.highfive.backend.global.client.fastapi.exception.FastApiErrorCode;
 import org.highfive.backend.global.code.GlobalErrorCode;
 import org.highfive.backend.global.exception.BusinessException;
@@ -37,13 +38,16 @@ public class FastApiClient {
 
     private HttpHeaders headers = new HttpHeaders();
 
-    /**
-     * 온보딩 화면에서 선택한 컨텐츠를 FastAPI 서버에 전달합니다.
-     * FastAPI 서버는 사용자의 초기 벡터를 계산하여 반환합니다.
-     *
-     * @param genreCount // 온보딩 화면에서 선택한 컨텐츠 id
-     * @return // 가중치와 벡터 저장 성공 시 true 아니면 false
-     */
+    public FastApiVectorFromGenresDto vectorFromGenres(final List<String> genres) {
+        final String url = genUrl("/embedding-by-genre");
+
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        final HttpEntity<List<String>> request = new HttpEntity<>(genres, headers);
+
+        return executeWithFastApiHandling(() ->
+                restTemplate.postForEntity(url, request, FastApiVectorFromGenresDto.class).getBody());
+    }
+
     public FastApiOnboardingResponseDto onboardingSubmit(final Map<String, Integer> genreCount) {
         String url = genUrl("/user/preferences");
 
@@ -55,13 +59,6 @@ public class FastApiClient {
         );
     }
 
-    /**
-     * 사용자 아이디를 FastAPI 서버에 전달합니다.
-     * FastAPI 서버는 사용자에게 추천할 컨텐츠를 반환합니다.
-     *
-     * @param vector // 사용자 벡터
-     * @return // 추천할 컨텐츠 아이디
-     */
     public List<FastApiRecommendResponseDto> getContentsByVector(final String vector, final int count) {
         final String url = genUrl("/contents?count=" + count);
 

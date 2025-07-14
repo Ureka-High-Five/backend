@@ -15,7 +15,7 @@ public class HomeContentController {
 
     private final HomeContentService homeContentService;
 
-    @GetMapping("/content/recommend")
+    @GetMapping("/content/home")
     public Response<HomeContentsResponseDto> homeContents(@AuthenticationPrincipal final User user) {
         return homeContentService.getHomeContents(user);
     }

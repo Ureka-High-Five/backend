@@ -1,8 +1,12 @@
 package org.highfive.backend.content.dto.mapper;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import org.highfive.backend.content.dto.request.AdminAddContentRequestDto;
 import org.highfive.backend.content.dto.response.ContentDetailResponseDto;
 import org.highfive.backend.content.dto.response.SearchContentResponseDto;
 import org.highfive.backend.content.entity.Content;
+import org.highfive.backend.content.entity.ContentType;
 import org.highfive.backend.global.dto.CursorPageResponse;
 
 import java.util.List;
@@ -25,5 +29,20 @@ public class ContentMapper {
                 .toList();
         return new CursorPageResponse<>(results, hasNext, nextCursor);
 
+    }
+
+    public static Content fromAdminAddContentRequestDto(AdminAddContentRequestDto request) {
+        return Content.builder()
+                .title(request.title())
+                .description(request.description())
+                .videoUrl(request.videoUrl())
+                .postUrl(request.postUrl())
+                .openDate(LocalDateTime.from(LocalDate.parse(request.openDate()).atStartOfDay()))
+                .runningTime(request.runningTime())
+                .totalRound(request.totalRound())
+                .contentType(ContentType.valueOf(request.type()))
+                .grade(15)
+                .popularity(100)
+                .build();
     }
 }

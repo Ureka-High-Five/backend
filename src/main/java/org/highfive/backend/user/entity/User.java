@@ -76,4 +76,7 @@ public class User {
         this.embedding = embedding;
     }
 
+    public boolean isAdmin() {
+        return this.userRole == UserRole.ADMIN;
+    }
 }
