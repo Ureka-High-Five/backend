@@ -7,10 +7,12 @@ import org.highfive.backend.content.exception.ContentErrorCode;
 import org.highfive.backend.content.repository.ContentRepository;
 import org.highfive.backend.curation.dto.mapper.CurationMapper;
 import org.highfive.backend.curation.dto.request.CreateCurationRequestDto;
+import org.highfive.backend.curation.dto.response.CurationDetailResponseDto;
 import org.highfive.backend.curation.entity.Curation;
 import org.highfive.backend.curation.entity.CurationContents;
-import org.highfive.backend.curation.repository.CurationRepository;
-import org.highfive.backend.global.code.SuccessCode;
+import org.highfive.backend.curation.exception.CurationErrorCode;
+import org.highfive.backend.curation.repository.jpa.CurationRepository;
+import org.highfive.backend.curation.repository.querydsl.CurationQueryRepository;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.user.entity.User;
@@ -26,6 +28,7 @@ public class CurationService {
 
     private final ContentRepository contentRepository;
     private final CurationRepository curationRepository;
+    private final CurationQueryRepository curationQueryRepository;
 
     @Transactional
     public Response<Void> create(final User user, final CreateCurationRequestDto dto) {
@@ -36,7 +39,29 @@ public class CurationService {
         addCurationContents(curation, contents);
 
         curationRepository.save(curation);
-        return new Response<>(SuccessCode.OK.getCode(), null, SuccessCode.OK.getMessage());
+        return Response.ok(null);
+    }
+
+    public Response<CurationDetailResponseDto> getCurationDetail(final Long curationId) {
+        final Curation curation = curationQueryRepository.findCurationWithAll(curationId)
+                .orElseThrow(() -> new BusinessException(CurationErrorCode.CURATION_NOT_FOUND));
+        final List<CurationDetailResponseDto.ContentDto> contentDtos = mapToContentDtos(curation.getCurationContents());
+        final CurationDetailResponseDto responseDto = CurationMapper.toCurationDetailResponseDto(curation, contentDtos);
+
+        return Response.ok(responseDto);
+    }
+
+    private List<CurationDetailResponseDto.ContentDto> mapToContentDtos(final List<CurationContents> curationContentsList) {
+        return curationContentsList.stream()
+                .map(curationContent -> {
+                    final Content content = curationContent.getContent();
+                    return new CurationDetailResponseDto.ContentDto(
+                            content.getId(),
+                            content.getTitle(),
+                            content.getThumbnailUrl()
+                    );
+                })
+                .toList();
     }
 
     private List<Content> getContentsOrThrow(final List<Long> contentIds) {
