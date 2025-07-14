@@ -45,7 +45,6 @@ public class ContentIntegrationTest {
 
     private Content savedContent;
 
-
     @BeforeEach
     void setUp() {
         Content content = ContentFixture.createContent(null);
