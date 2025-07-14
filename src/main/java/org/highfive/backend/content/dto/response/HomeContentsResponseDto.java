@@ -26,6 +26,5 @@ public record HomeContentsResponseDto(
     ) {}
 
     public record CurationDto(
-            // 필드가 비어 있으므로 추후 확장 가능
     ) {}
 }

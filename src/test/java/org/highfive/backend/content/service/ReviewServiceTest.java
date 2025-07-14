@@ -1,6 +1,5 @@
 package org.highfive.backend.content.service;
 
-import static com.mysema.commons.lang.Assert.assertThat;
 import static org.highfive.backend.content.exception.ContentErrorCode.CONTENT_NOT_FOUND;
 import static org.highfive.backend.content.exception.ReviewErrorCode.MY_REVIEW_NOT_FOUND;
 import static org.highfive.backend.content.exception.ReviewErrorCode.REVIEW_FORBIDDEN;
