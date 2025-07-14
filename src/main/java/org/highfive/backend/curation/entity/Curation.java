@@ -34,4 +34,9 @@ public class Curation {
     @Builder.Default
     @OneToMany(mappedBy = "curation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CurationContents> curationContents = new ArrayList<>();
+
+    public void addCurationContents(CurationContents curationContents) {
+        this.curationContents.add(curationContents);
+        curationContents.setCuration(this);
+    }
 }
