@@ -2,15 +2,6 @@ package org.highfive.backend.content.service;
 
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.content.dto.mapper.ContentMapper;
-import org.highfive.backend.content.dto.response.*;
-import org.highfive.backend.content.dto.response.HomeContentsResponseDto.GenreContentDto;
-import org.highfive.backend.content.dto.response.HomeContentsResponseDto.MainRecommendDto;
-import org.highfive.backend.content.dto.response.HomeContentsResponseDto.PersonalRecommendDto;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
-import org.highfive.backend.content.dto.mapper.ContentMapper;
 import org.highfive.backend.content.dto.response.ContentDetailResponseDto;
 import org.highfive.backend.content.dto.response.SearchContentResponseDto;
 import org.highfive.backend.content.entity.Content;
@@ -23,12 +14,9 @@ import org.highfive.backend.content.repository.QueryDslContentRepository;
 import org.highfive.backend.global.dto.CursorPageResponse;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
-import org.highfive.backend.user.entity.preference.PreferMetaInfoRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -43,8 +31,6 @@ public class ContentService {
     private final String LIKE = "%";
 
     private final ContentRepository contentRepository;
-    private final MetaInfoContentsRepository metaInfoContentsRepository;
-    private final PreferMetaInfoRepository preferMetaInfoRepository;
     private final QueryDslContentRepository queryDslContentRepository;
 
     public Response<ContentDetailResponseDto> getContentDetail(final Long contentId) {
