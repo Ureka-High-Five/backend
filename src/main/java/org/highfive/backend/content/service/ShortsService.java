@@ -4,26 +4,12 @@ package org.highfive.backend.content.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.content.dto.VideoType;
-import org.highfive.backend.content.dto.mapper.ShortsLikeTimeLogMapper;
-import org.highfive.backend.content.dto.request.ShortsLikeRequestDto;
-import org.highfive.backend.content.dto.response.RecommendShortsResponseDto;
-import org.highfive.backend.content.entity.shorts.Shorts;
-import org.highfive.backend.content.entity.shorts.log.ShortsLikeTimeLog;
-import org.highfive.backend.content.exception.ShortsErrorCode;
-import org.highfive.backend.content.repository.jpa.ShortsLikeTimeLogRepository;
-
-import static org.highfive.backend.content.dto.mapper.ShortsLikeTimeLogMapper.*;
-import static org.highfive.backend.content.exception.ShortsErrorCode.SHORTS_NOT_FOUND;
-
-import lombok.RequiredArgsConstructor;
-import org.highfive.backend.content.dto.VideoType;
 import org.highfive.backend.content.dto.mapper.ShortsCommentMapper;
 import org.highfive.backend.content.dto.request.CreateShortsCommentRequestDto;
 import org.highfive.backend.content.dto.request.ShortsLikeRequestDto;
 import org.highfive.backend.content.dto.response.RecommendShortsResponseDto;
 import org.highfive.backend.content.entity.shorts.Shorts;
 import org.highfive.backend.content.entity.shorts.ShortsComment;
-import org.highfive.backend.content.entity.shorts.log.ShortsLikeTimeLog;
 import org.highfive.backend.content.exception.ShortsErrorCode;
 import org.highfive.backend.content.repository.jpa.ShortsCommentRepository;
 import org.highfive.backend.content.repository.jpa.ShortsLikeTimeLogRepository;
@@ -33,6 +19,9 @@ import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.user.entity.User;
 import org.springframework.stereotype.Service;
+
+import static org.highfive.backend.content.dto.mapper.ShortsLikeTimeLogMapper.toShorts;
+import static org.highfive.backend.content.exception.ShortsErrorCode.SHORTS_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
