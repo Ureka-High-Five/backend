@@ -4,6 +4,7 @@ import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.curation.dto.request.CreateCurationRequestDto;
+import org.highfive.backend.curation.dto.request.CurationUpdateRequestDto;
 import org.highfive.backend.curation.dto.response.CurationDetailResponseDto;
 import org.highfive.backend.curation.dto.response.MyCurationResponseDto;
 import org.highfive.backend.curation.service.CurationService;
@@ -37,5 +38,12 @@ public class CurationController {
             @RequestParam(defaultValue = "10") int size
     ) {
         return curationService.getMyCurations(user, cursor, size);
+    }
+
+    @PutMapping("/{curationId}")
+    public Response<Void> updateCuration(@PathVariable final Long curationId,
+                                         @RequestBody @Valid final CurationUpdateRequestDto curationUpdateRequestDto,
+                                         @AuthenticationPrincipal final User user) {
+        return curationService.updateCuration(user, curationId, curationUpdateRequestDto);
     }
 }
