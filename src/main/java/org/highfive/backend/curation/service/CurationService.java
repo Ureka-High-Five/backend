@@ -20,10 +20,7 @@ import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.user.entity.User;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.highfive.backend.curation.dto.mapper.CurationMapper.*;
@@ -74,15 +71,26 @@ public class CurationService {
         final Curation curation = curationRepository.findById(curationId)
                 .orElseThrow(() -> new BusinessException(CurationErrorCode.CURATION_NOT_FOUND));
 
-        if(!Objects.equals(user.getId(), curation.getUser().getId())) {
-            throw new BusinessException(CurationErrorCode.CURATION_ACCESS_DENIED);
-        }
-
+        checkCurationOwner(curation, user);
         updateTitle(curation, dto.title());
         updateThumbnailUrl(curation, dto.thumbnailUrl());
         updateContents(curation, dto.contents());
 
         return Response.ok(null);
+    }
+
+    @Transactional
+    public Response<Void> deleteCuration(final Long curationId, final User user) {
+        final Curation curation = curationRepository.findById(curationId).orElseThrow(() -> new BusinessException(CurationErrorCode.CURATION_NOT_FOUND));
+        checkCurationOwner(curation, user);
+        curationRepository.delete(curation);
+        return Response.ok(null);
+    }
+
+    private void checkCurationOwner(final Curation curation, final User user) {
+        if(!curation.getUser().getId().equals(user.getId())) {
+            throw new BusinessException(CurationErrorCode.CURATION_ACCESS_DENIED);
+        }
     }
 
     private void updateTitle(final Curation curation, final String newTitle) {
