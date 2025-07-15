@@ -58,9 +58,10 @@ public class ReviewController {
     public Response<CursorPageResponse<ReviewSimpleResponseDto>> getReviewByContent(
             @PathVariable final Long contentId,
             @RequestParam(required = false) final String cursor,
-            @RequestParam(defaultValue = "3") final int size
+            @RequestParam(defaultValue = "3") final int size,
+            @AuthenticationPrincipal final User user
     ) {
-        return reviewService.getReviewsByCursor(contentId, cursor, size);
+        return reviewService.getReviewsByCursor(contentId, cursor, size, user);
     }
 
     @GetMapping("/{contentId}/me")

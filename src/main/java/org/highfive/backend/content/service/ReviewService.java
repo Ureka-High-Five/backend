@@ -77,9 +77,10 @@ public class ReviewService {
     public Response<CursorPageResponse<ReviewSimpleResponseDto>> getReviewsByCursor(
             final Long contentId,
             final String cursor,
-            final int size) {
+            final int size,
+            final User user) {
 
-        CursorPageResponse<ReviewSimpleResponseDto> items = reviewRepository.findReviewsByCursor(contentId, cursor, size);
+        CursorPageResponse<ReviewSimpleResponseDto> items = reviewRepository.findReviewsByCursor(contentId, cursor, size, user);
         return Response.ok(items);
     }
 
