@@ -162,13 +162,19 @@ public class OnboardingService {
             final double weight = entry.getValue();
 
             final MetaInfo metaInfo = metaInfoRepository.findByNameAndType(genreName, MetaType.GENRE);
+            Long metaInfoId = metaInfo.getId();
+            PreferMetaInfo preferMetaInfo = preferMetaInfoRepository.findByMetaInfoAndUser(metaInfoId, user.getId()).orElse(null);
+
+            if (preferMetaInfo != null) {
+                preferMetaInfo.updateWeight(weight);
+                return;
+            }
 
             final PreferMetaInfo prefer = PreferMetaInfo.builder()
                     .user(user)
                     .weight(weight)
                     .metaInfo(metaInfo)
                     .build();
-
             preferMetaInfoRepository.save(prefer);
         }
     }

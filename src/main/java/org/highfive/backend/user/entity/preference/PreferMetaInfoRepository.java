@@ -1,6 +1,7 @@
 package org.highfive.backend.user.entity.preference;
 
 import java.util.List;
+import java.util.Optional;
 import org.highfive.backend.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -19,4 +20,10 @@ public interface PreferMetaInfoRepository extends JpaRepository<PreferMetaInfo, 
 """, nativeQuery = true)
     List<String> findPreferGenresByUser(Long userId, int count);
 
+    @Query(value = """
+    SELECT pmi.id
+    FROM PreferMetaInfo pmi
+    WHERE pmi.metaInfo.id = :metaInfoId AND pmi.user.id = :id
+""")
+    Optional<PreferMetaInfo> findByMetaInfoAndUser(Long metaInfoId, Long id);
 }
