@@ -27,23 +27,23 @@ public class ShortsQueryRepository {
                 ).orderBy(shorts.id.asc())
                 .limit(size + 1)
                 .fetch();
-        boolean hasNext = findShorts.size() > size;
-        String nextCursor = hasNext ? findShorts.getLast().getId().toString() : null;
-        List<ShortsItemDto> shortsItemDtos = getShortsItemDto(findShorts);
+        final boolean hasNext = findShorts.size() > size;
+        final String nextCursor = hasNext ? findShorts.getLast().getId().toString() : null;
+        final List<ShortsItemDto> shortsItemDtos = getShortsItemDto(findShorts);
         return new CursorPageResponse<>(shortsItemDtos, hasNext, nextCursor);
     }
 
     private List<ShortsItemDto> getShortsItemDto(List<Shorts> findShorts) {
-        int resultSize = Math.max(findShorts.size() - 1, 0);   // 마지막 1개 제외
+        final int resultSize = Math.max(findShorts.size() - 1, 0);
         return findShorts.stream()
-                .limit(resultSize)                   // ← 끝에서 하나 자르기
+                .limit(resultSize)
                 .map(ShortsMapper::toShortsItemDto)
                 .toList();
     }
 
     private BooleanExpression cursorFilter(String cursor) {
         if (cursor == null || cursor.isBlank()) {
-            return null;                       // ← 조건 없이 전체 조회
+            return null;
         }
         return shorts.id.goe(Long.parseLong(cursor));
     }

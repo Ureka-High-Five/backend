@@ -18,7 +18,7 @@ public class ShortsService {
 
     private final ShortsQueryRepository shortsQueryRepository;
 
-    public Response<RecommendShortsResponseDto> mockRecommendShorts(Long cursor, Integer size) {
+    public Response<RecommendShortsResponseDto> mockRecommendShorts(final Long cursor, final Integer size) {
         return Response.ok(new RecommendShortsResponseDto(
                 shortsQueryRepository.findByCursor(cursor.toString(), size),
                 VideoType.SHORTS.name())
