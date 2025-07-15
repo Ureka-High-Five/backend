@@ -31,7 +31,6 @@ import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.user.entity.User;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -41,7 +40,6 @@ public class ShortsService {
     private final ShortsRepository shortsRepository;
     private final ShortsCommentRepository shortsCommentRepository;
     private final ShortsQueryRepository shortsQueryRepository;
-    private final ShortsLikeTimeLogRepository shortsLikeTimeLogRepository;
 
     @Transactional
     public Response<Void> createShortsComment(CreateShortsCommentRequestDto requestDto, User user) {
