@@ -71,7 +71,7 @@ public class Content {
     @Column(nullable = false)
     private ContentType contentType;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String embedding;
 
     @Column(nullable = false)

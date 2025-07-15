@@ -1,5 +1,6 @@
 package org.highfive.backend.content.service;
 
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.content.dto.mapper.ReviewMapper;
 import org.highfive.backend.content.dto.request.CreateReviewRequestDto;
@@ -76,15 +77,21 @@ public class ReviewService {
     public Response<CursorPageResponse<ReviewSimpleResponseDto>> getReviewsByCursor(
             final Long contentId,
             final String cursor,
-            final int size) {
+            final int size,
+            final User user) {
 
-        CursorPageResponse<ReviewSimpleResponseDto> items = reviewRepository.findReviewsByCursor(contentId, cursor, size);
+        CursorPageResponse<ReviewSimpleResponseDto> items = reviewRepository.findReviewsByCursor(contentId, cursor, size, user);
         return Response.ok(items);
     }
 
     public Response<ContentMyReviewResponseDto> getMyReviewByContent(final Long contentId, final User user) {
-        final Review review = reviewRepository.findByUserIdAndContentId(user.getId(), contentId).orElseThrow(() -> new BusinessException(MY_REVIEW_NOT_FOUND));
-        final ContentMyReviewResponseDto contentMyReviewResponseDto = new ContentMyReviewResponseDto(review.getRating(), review.getReviewText());
-        return new Response<>(OK.getCode(), contentMyReviewResponseDto, OK.getMessage());
+        final Optional<Review> opReview = reviewRepository.findByUserIdAndContentId(user.getId(), contentId);
+
+        if (opReview.isPresent()) {
+            Review review = opReview.get();
+            ContentMyReviewResponseDto dto = new ContentMyReviewResponseDto(review.getRating(), review.getReviewText());
+            return new Response<>(OK.getCode(), dto, OK.getMessage());
+        }
+        return new Response<>(OK.getCode(), null, null);
     }
 }
