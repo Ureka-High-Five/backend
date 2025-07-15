@@ -61,7 +61,8 @@ public class SecurityConfig {
         config.setAllowedOrigins(Arrays.asList(
                 "http://localhost:5173",
                 "https://lead-me.site",
-                "https://www.lead-me.site"
+                "https://www.lead-me.site",
+                "http://localhost:8080"
         ));
 
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
