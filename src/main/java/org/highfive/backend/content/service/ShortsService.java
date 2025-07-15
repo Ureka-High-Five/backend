@@ -15,7 +15,7 @@ public class ShortsService {
 
     public Response<RecommendShortsResponseDto> recommendShorts(final Long cursor, final Integer size) {
         return Response.ok(new RecommendShortsResponseDto(
-                shortsQueryRepository.findByCursor(cursor.toString(), size),
+                shortsQueryRepository.findByCursor(cursor == null ? null : cursor.toString(), size),
                 VideoType.SHORTS.name())
         );
     }

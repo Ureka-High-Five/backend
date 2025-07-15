@@ -1,5 +1,6 @@
 package org.highfive.backend.common.fixture;
 
+import java.util.List;
 import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.content.entity.shorts.Shorts;
 
@@ -10,7 +11,7 @@ public class ShortsFixture {
                 .content(content)
                 .shortsUrl("test-url")
                 .thumbnailUrl("test-url")
-                .shortsLikeTimeLogs(null)
+                .shortsLikeTimeLogs(List.of())
                 .build();
     }
 }
