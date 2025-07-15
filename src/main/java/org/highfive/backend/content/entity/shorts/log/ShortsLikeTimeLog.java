@@ -30,7 +30,7 @@ public class ShortsLikeTimeLog {
     @JoinColumn(name = "shorts_id")
     private Shorts shorts;
 
-    private LocalDateTime time;
+    private Long time;
 
     @CreatedDate
     private LocalDateTime createdAt;
