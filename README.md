@@ -31,8 +31,12 @@ OTT 서비스의 대표적인 문제인 **개인 취향에 맞는 콘텐츠를 �
 
 ### 🏗 시스템 아키텍처
 
-<img width="932" height="715" alt="image" src="https://github.com/user-attachments/assets/9dd7c8e5-4a48-4455-a8ac-a821a066104d" />
+<img width="936" height="705" alt="image" src="https://github.com/user-attachments/assets/56ddb581-ba1b-481a-a553-9bee4d01e5fb" />
 
+
+
+
+##
 
 ### 🗃 ERD
 
@@ -41,6 +45,10 @@ OTT 서비스의 대표적인 문제인 **개인 취향에 맞는 콘텐츠를 �
 
 >[▶️ERD CLOUD 바로가기](https://www.erdcloud.com/d/GLGXxrdRRm9f6ZaKE)
 
+<br/>
+
+
+## 
 
 ### 🔄 추천 플로우차트
 
@@ -57,8 +65,8 @@ OTT 서비스의 대표적인 문제인 **개인 취향에 맞는 콘텐츠를 �
 
 ### ☁ Infra
 - <img src="https://img.shields.io/badge/Docker-0db7ed?style=flat&logo=docker&logoColor=white"/>
-- <img src="https://img.shields.io/badge/AWS EC2-FF9900?style=flat&logo=amazonaws&logoColor=white"/>, <img src="https://img.shields.io/badge/AWS RDS-527FFF?style=flat&logo=amazonaws&logoColor=white"/>, 
-- <img src="https://img.shields.io/badge/AWS_S3-569A31?style=for-the-badge&logo=amazon-s3&logoColor=white"/>, MediaConvert
+- <img src="https://img.shields.io/badge/AWS EC2-FF9900?style=flat&logo=amazonaws&logoColor=white"/>, <img src="https://img.shields.io/badge/AWS RDS-527FFF?style=flat&logo=amazonaws&logoColor=white"/>,![AWS ElastiCache](https://img.shields.io/badge/AWS-ElastiCache-ff9900?logo=amazon-aws&logoColor=white)
+- ![AWS S3](https://img.shields.io/badge/AWS-S3-569A31?logo=amazon-aws&logoColor=white), ![AWS MediaConvert](https://img.shields.io/badge/AWS-MediaConvert-orange?logo=amazon-aws&logoColor=white)
 - [![AWS Lambda](https://custom-icon-badges.demolab.com/badge/AWS%20Lambda-%23FF9900.svg?logo=aws-lambda&logoColor=white)](#)
 
 ### 📈 Monitoring & Logging
