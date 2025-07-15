@@ -21,7 +21,7 @@ public interface PreferMetaInfoRepository extends JpaRepository<PreferMetaInfo, 
     List<String> findPreferGenresByUser(Long userId, int count);
 
     @Query(value = """
-    SELECT pmi.id
+    SELECT pmi
     FROM PreferMetaInfo pmi
     WHERE pmi.metaInfo.id = :metaInfoId AND pmi.user.id = :id
 """)
