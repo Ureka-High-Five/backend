@@ -46,4 +46,9 @@ public class CurationController {
                                          @AuthenticationPrincipal final User user) {
         return curationService.updateCuration(user, curationId, curationUpdateRequestDto);
     }
+
+    @DeleteMapping("/{curationId}")
+    public Response<Void> deleteCuration(@PathVariable final Long curationId, @AuthenticationPrincipal final User user) {
+        return curationService.deleteCuration(curationId, user);
+    }
 }
