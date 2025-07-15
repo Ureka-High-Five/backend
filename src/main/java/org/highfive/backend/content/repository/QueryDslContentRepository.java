@@ -99,7 +99,6 @@ public class QueryDslContentRepository implements ContentQueryRepository{
         QMetaInfo m = QMetaInfo.metaInfo;
         QContent c = QContent.content;
 
-        // 1) 먼저 DTO 리스트로 조회
         List<ContentGenreDto> dtoList = queryFactory
                 .select(Projections.fields(
                         ContentGenreDto.class,
@@ -115,7 +114,6 @@ public class QueryDslContentRepository implements ContentQueryRepository{
                 )
                 .fetch();
 
-        // 2) DTO → Map 변환 후 반환
         return dtoList.stream()
                 .map(dto -> {
                     Map<String, Object> map = new HashMap<>();

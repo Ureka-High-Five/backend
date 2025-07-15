@@ -12,6 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
+import org.highfive.backend.content.dto.request.AdminUpdateContentRequestDto;
 import org.highfive.backend.content.entity.metadata.Episode;
 import org.highfive.backend.content.entity.metadata.MetaInfoContents;
 import org.highfive.backend.content.entity.metadata.Series;
@@ -38,10 +40,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 public class Content {
-
-    public void updateEmbedding(String embedding) {
-        this.embedding = embedding;
-    }
 
     @Id
     @GeneratedValue
@@ -105,4 +103,23 @@ public class Content {
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    public void updateEmbedding(String embedding) {
+        this.embedding = embedding;
+    }
+
+    public Content updateFromDto(AdminUpdateContentRequestDto request) {
+        this.title = request.title();
+        this.description = request.description();
+        this.videoUrl = request.videoUrl();
+        this.thumbnailUrl = request.thumbnailUrl();
+        this.postUrl = request.postUrl();
+        this.openDate = LocalDate.parse(request.openDate()).atStartOfDay();
+        this.runningTime = request.runningTime();
+        this.totalRound = request.totalRound();
+        this.grade = request.grade();
+        this.updatedAt = LocalDateTime.now();
+
+        return this;
+    }
 }
