@@ -3,6 +3,7 @@ package org.highfive.backend.content.controller;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.highfive.backend.content.dto.request.ShortsLikeRequestDto;
 import org.highfive.backend.content.dto.response.RecommendShortsResponseDto;
 import org.highfive.backend.content.dto.request.CreateShortsCommentRequestDto;
 import org.highfive.backend.content.service.ShortsService;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,5 +39,10 @@ public class ShortsController {
             @RequestParam(defaultValue = "5") @Positive final Integer size
     ) {
         return shortsService.recommendShorts(cursor, size);
+    }
+
+    @PostMapping("/like")
+    public Response<Void> like(@AuthenticationPrincipal final User user, @RequestBody @Valid final ShortsLikeRequestDto dto) {
+        return shortsService.like(user, dto);
     }
 }
