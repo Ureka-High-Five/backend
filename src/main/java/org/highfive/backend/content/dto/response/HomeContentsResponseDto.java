@@ -10,6 +10,7 @@ public record HomeContentsResponseDto(
         CurationDto curation
 ) {
     public record MainRecommendDto(
+            Long contentId,
             String posterUrl,
             String description,
             List<String> genre
