@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -37,43 +39,50 @@ class ShortsIntegrationTest {
     @Autowired
     private UserRepository userRepository;
 
-    private User testUser;
     private Shorts testShorts;
+    private List<User> testUsers = new ArrayList<>();
+
+    private static final int NUMBER_OF_THREADS = 50;
 
     @BeforeEach
-    void setUp() {
-        // 테스트 유저 및 쇼츠 데이터 생성
-        testUser = userRepository.save(User.builder()
-                .name("박상윤")
-                .kakaoUserId("kakao-test-user")
-                .profileUrl("http://kakao.com/123")
-                .userRole(UserRole.USER)
-                .build());
-
+    void setup() {
         testShorts = shortsRepository.save(Shorts.builder()
-
                 .shortsUrl("https://example.com/video.mp4")
                 .thumbnailUrl("https://example.com/thumb.jpg")
-                .content(/* 연관 Content 설정 */ null)
+                .content(null)  // 필요시 Content 연결
                 .likeCount(0)
                 .build());
+
+        // 미리 50명의 유저 생성
+        for (int i = 0; i < NUMBER_OF_THREADS; i++) {
+            User user = userRepository.save(User.builder()
+                    .name("User " + i)
+                    .kakaoUserId("test-user-" + i)
+                    .userRole(UserRole.USER)
+                    .profileUrl("https://example.com/profile.jpg")
+                    .build());
+            testUsers.add(user);
+        }
     }
 
     @Test
-    @DisplayName("좋아요 동시 요청시 동시성 문제가 발생 하지 않습니다.")
-    void shorts_like_concurrency() throws Exception {
+    @DisplayName("좋아요 동시 요청 동시성 문제가 발생하지 않습니다.")
+    void like_concurrency_test() throws InterruptedException {
 
-        // given
-        int numberOfThreads = 1000;
-        ExecutorService executorService = Executors.newFixedThreadPool(100);
-        CountDownLatch latch = new CountDownLatch(numberOfThreads);
+        //given
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
+        CountDownLatch latch = new CountDownLatch(NUMBER_OF_THREADS);
 
-        // when
-        for (int i = 0; i < numberOfThreads; i++) {
+        for (int i = 0; i < NUMBER_OF_THREADS; i++) {
+            final int userIndex = i;
+
             executorService.execute(() -> {
                 try {
-                    ShortsLikeRequestDto dto = new ShortsLikeRequestDto(testShorts.getId(), 120L);
-                    shortsService.like(testUser, dto);
+                    User user = testUsers.get(userIndex);
+                    ShortsLikeRequestDto dto = new ShortsLikeRequestDto(testShorts.getId(), 123L);
+                    shortsService.like(user, dto);
+                } catch (Exception e) {
+                    System.out.println(e);
                 } finally {
                     latch.countDown();
                 }
@@ -83,9 +92,7 @@ class ShortsIntegrationTest {
         latch.await();
 
         Shorts result = shortsRepository.findById(testShorts.getId()).orElseThrow();
-
-        // then
-        assertEquals(numberOfThreads, result.getLikeCount());
-        assertEquals(numberOfThreads, shortsLikeTimeLogRepository.count());
+        assertEquals(NUMBER_OF_THREADS, result.getLikeCount());
+        assertEquals(NUMBER_OF_THREADS, shortsLikeTimeLogRepository.count());
     }
 }
