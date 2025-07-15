@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.highfive.backend.content.entity.Content;
+import org.highfive.backend.global.entity.BaseEntity;
 import org.highfive.backend.user.entity.User;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -18,7 +19,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class WatchInfo {
+public class WatchInfo extends BaseEntity {
 
     @Id @GeneratedValue
     private Long id;

@@ -3,6 +3,7 @@ package org.highfive.backend.curation.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
+import org.highfive.backend.global.entity.BaseEntity;
 import org.highfive.backend.user.entity.User;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ import java.util.List;
 @DynamicUpdate
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Curation {
+public class Curation extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

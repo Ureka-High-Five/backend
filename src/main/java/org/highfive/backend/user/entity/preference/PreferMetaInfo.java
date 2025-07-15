@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.highfive.backend.content.entity.metadata.MetaInfo;
+import org.highfive.backend.global.entity.BaseEntity;
 import org.highfive.backend.user.entity.User;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -14,7 +15,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PreferMetaInfo {
+public class PreferMetaInfo extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
