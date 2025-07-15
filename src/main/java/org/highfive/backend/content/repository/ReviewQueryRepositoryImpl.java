@@ -10,6 +10,7 @@ import org.highfive.backend.content.dto.response.QReviewSimpleResponseDto;
 import org.highfive.backend.content.dto.response.ReviewSimpleResponseDto;
 import org.highfive.backend.content.entity.review.QReview;
 import org.highfive.backend.global.dto.CursorPageResponse;
+import org.highfive.backend.user.entity.User;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -20,13 +21,14 @@ public class ReviewQueryRepositoryImpl implements ReviewQueryRepository {
     private static final QReview review = QReview.review;
 
     @Override
-    public CursorPageResponse<ReviewSimpleResponseDto> findReviewsByCursor(final Long contentId, final String cursor, final int size) {
+    public CursorPageResponse<ReviewSimpleResponseDto> findReviewsByCursor(final Long contentId, final String cursor, final int size, final User user) {
 
         final List<ReviewSimpleResponseDto> items = queryFactory
                 .select(new QReviewSimpleResponseDto(review))
                 .from(review)
                 .where(
                         review.content.id.eq(contentId),
+                        review.user.id.ne(user.getId()),
                         cursorFilter(cursor)
                 )
                 .orderBy(review.id.desc())

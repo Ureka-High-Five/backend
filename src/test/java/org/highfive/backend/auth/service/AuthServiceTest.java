@@ -185,7 +185,6 @@ class AuthServiceTest {
 
         TokenResponseDto content = response.content();
         assertThat(content.accessToken()).isEqualTo(ACCESS_TOKEN);
-        assertThat(content.refreshToken()).isEqualTo(REFRESH_TOKEN);
         assertThat(content.isNew()).isFalse();
     }
 

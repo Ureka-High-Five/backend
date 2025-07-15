@@ -73,7 +73,7 @@ public class AuthService {
         }
 
         final String renewAccessToken = tokenService.generateAccessToken(user.getKakaoUserId(), List.of(user.getUserRole().toString()));
-        return tokenResponse(renewAccessToken, refreshToken);
+        return tokenResponse(renewAccessToken, null);
     }
 
     public Response<Void> logout(final User user, final HttpServletRequest request) {
