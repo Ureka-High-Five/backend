@@ -1,4 +1,4 @@
-package org.highfive.backend.curation.dto.request;
+package org.highfive.backend.curation.dto.request.customAnnotation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
