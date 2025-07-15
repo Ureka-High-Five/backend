@@ -4,6 +4,7 @@ package org.highfive.backend.content.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.content.dto.VideoType;
+import org.highfive.backend.content.dto.mapper.ShortsLikeTimeLogMapper;
 import org.highfive.backend.content.dto.request.ShortsLikeRequestDto;
 import org.highfive.backend.content.dto.response.RecommendShortsResponseDto;
 import org.highfive.backend.content.entity.shorts.Shorts;
@@ -11,6 +12,7 @@ import org.highfive.backend.content.entity.shorts.log.ShortsLikeTimeLog;
 import org.highfive.backend.content.exception.ShortsErrorCode;
 import org.highfive.backend.content.repository.jpa.ShortsLikeTimeLogRepository;
 
+import static org.highfive.backend.content.dto.mapper.ShortsLikeTimeLogMapper.*;
 import static org.highfive.backend.content.exception.ShortsErrorCode.SHORTS_NOT_FOUND;
 
 import lombok.RequiredArgsConstructor;
@@ -70,14 +72,7 @@ public class ShortsService {
         if(shortsLikeTimeLogRepository.existsByUserIdAndShortsId(user.getId(), shortsId)) {
             throw new BusinessException(ShortsErrorCode.SHORTS_ALREADY_LIKED);
         }
-
-        final ShortsLikeTimeLog log = ShortsLikeTimeLog.builder()
-                .user(user)
-                .shorts(shorts)
-                .time(time)
-                .build();
-
-        shortsLikeTimeLogRepository.save(log);
+        shortsLikeTimeLogRepository.save(toShorts(user, shorts, time));
         shortsRepository.increaseLike(shortsId);
 
         return Response.ok(null);
