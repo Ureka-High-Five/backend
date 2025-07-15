@@ -10,6 +10,7 @@ public record ContentDetailResponseDto(
         String posterUrl,
         List<String> actors,
         String director,
-        int openYear
+        int openYear,
+        String contentDescription
 ) {
 }
