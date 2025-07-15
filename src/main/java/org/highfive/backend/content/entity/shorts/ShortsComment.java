@@ -37,4 +37,13 @@ public class ShortsComment {
 
     @CreatedDate
     private LocalDateTime createdAt;
+
+    public static ShortsComment of(User user, Shorts shorts, String message, Long time){
+        return ShortsComment.builder()
+                .user(user)
+                .shorts(shorts)
+                .message(message)
+                .time(time)
+                .build();
+    }
 }
