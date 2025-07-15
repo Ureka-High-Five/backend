@@ -59,7 +59,7 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<ShortsLikeTimeLog> shortsLikeTimeLogs = new ArrayList<>();
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String kakaoUserId;
 
     @CreatedDate
