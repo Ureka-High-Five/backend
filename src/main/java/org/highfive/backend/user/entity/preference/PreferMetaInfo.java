@@ -29,4 +29,9 @@ public class PreferMetaInfo {
 
     @Column(nullable = false)
     private double weight;
+
+    public double updateWeight(double update) {
+        this.weight += update;
+        return this.weight;
+    }
 }

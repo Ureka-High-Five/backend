@@ -141,7 +141,7 @@ public class OnboardingService {
         user.updateEmbedding(vector);
 
         Map<String, Double> genreWeights = weightManager.calcWeight(genreCount);
-        saveUserWeight(user, genreWeights);
+        updateUserWeight(user, genreWeights);
     }
 
     private Map<String, Integer> countGenre(final List<Long> contentIds) {
@@ -156,20 +156,34 @@ public class OnboardingService {
         return genreCount;
     }
 
-    private void saveUserWeight(final User user, final Map<String, Double> genreWeights) {
+    private void updateUserWeight(final User user, final Map<String, Double> genreWeights) {
         for (Map.Entry<String, Double> entry : genreWeights.entrySet()) {
             final String genreName = entry.getKey();
             final double weight = entry.getValue();
+            
+            if (weight == 0) {
+                continue;
+            }
 
             final MetaInfo metaInfo = metaInfoRepository.findByNameAndType(genreName, MetaType.GENRE);
+            Long metaInfoId = metaInfo.getId();
+            PreferMetaInfo preferMetaInfo = preferMetaInfoRepository.findByMetaInfoAndUser(metaInfoId, user.getId()).orElse(null);
 
-            final PreferMetaInfo prefer = PreferMetaInfo.builder()
-                    .user(user)
-                    .weight(weight)
-                    .metaInfo(metaInfo)
-                    .build();
+            if (preferMetaInfo != null) {
+                preferMetaInfo.updateWeight(weight);
+                return;
+            }
 
-            preferMetaInfoRepository.save(prefer);
+            saveUserWeight(user, weight, metaInfo);
         }
+    }
+
+    private void saveUserWeight(User user, double weight, MetaInfo metaInfo) {
+        final PreferMetaInfo prefer = PreferMetaInfo.builder()
+                .user(user)
+                .weight(weight)
+                .metaInfo(metaInfo)
+                .build();
+        preferMetaInfoRepository.save(prefer);
     }
 }
