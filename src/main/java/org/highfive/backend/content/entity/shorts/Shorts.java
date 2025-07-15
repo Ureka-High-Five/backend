@@ -30,9 +30,12 @@ public class Shorts {
     private String shortsUrl;
 
     @Column(nullable = false)
+    private int likeCount;
+
+    @Column(nullable = false)
     private String thumbnailUrl;
 
     @Builder.Default
-    @OneToMany(mappedBy = "shorts")
+    @OneToMany(mappedBy = "shorts", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ShortsLikeTimeLog> shortsLikeTimeLogs = new ArrayList<>();
 }
