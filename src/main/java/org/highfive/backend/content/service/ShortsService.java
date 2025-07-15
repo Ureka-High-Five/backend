@@ -1,5 +1,16 @@
 package org.highfive.backend.content.service;
 
+
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.highfive.backend.content.dto.VideoType;
+import org.highfive.backend.content.dto.request.ShortsLikeRequestDto;
+import org.highfive.backend.content.dto.response.RecommendShortsResponseDto;
+import org.highfive.backend.content.entity.shorts.Shorts;
+import org.highfive.backend.content.entity.shorts.log.ShortsLikeTimeLog;
+import org.highfive.backend.content.exception.ShortsErrorCode;
+import org.highfive.backend.content.repository.jpa.ShortsLikeTimeLogRepository;
+
 import static org.highfive.backend.content.exception.ShortsErrorCode.SHORTS_NOT_FOUND;
 
 import lombok.RequiredArgsConstructor;
@@ -26,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ShortsService {
 
+    private final ShortsLikeTimeLogRepository shortsLikeTimeLogRepository;
     private final ShortsRepository shortsRepository;
     private final ShortsCommentRepository shortsCommentRepository;
     private final ShortsQueryRepository shortsQueryRepository;
