@@ -19,16 +19,16 @@ public enum CurationErrorCode implements ErrorCode {
 
     @Override
     public int getCode() {
-        return 0;
+        return this.code;
     }
 
     @Override
     public String getMessage() {
-        return "";
+        return this.message;
     }
 
     @Override
     public HttpStatus getHttpStatus() {
-        return null;
+        return this.httpStatus;
     }
 }
