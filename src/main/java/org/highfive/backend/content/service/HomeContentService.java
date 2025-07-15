@@ -46,7 +46,7 @@ public class HomeContentService {
         Content content = contentRepository.findById(contentsByUserVector.getFirst().id())
                 .orElseThrow(() -> new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND));
         List<String> genres = getGenres(content);
-        return new MainRecommendDto(content.getPostUrl(), content.getDescription(), genres);
+        return new MainRecommendDto(content.getId(), content.getPostUrl(), content.getDescription(), genres);
     }
 
     private List<PersonalRecommendDto> recommendContentsByUser(User user, int count) {
