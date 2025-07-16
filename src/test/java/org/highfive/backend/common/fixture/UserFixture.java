@@ -11,7 +11,19 @@ public class UserFixture {
                 .age(25)
                 .averageRating(10)
                 .build();
-  }
+    }
+
+    public static User createDefaultUser() {
+        return User.builder()
+                .name("test-name")
+                .profileUrl("test-profile")
+                .userRole(UserRole.USER)
+                .embedding("[1, 1, 1]")
+                .age(25)
+                .averageRating(10)
+                .kakaoUserId("test-kakao-id")
+                .build();
+    }
   
     public static User createUser (Long id){
         return User.builder()
