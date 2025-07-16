@@ -1,8 +1,11 @@
 package org.highfive.backend.shorts.controller;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
+import org.highfive.backend.global.dto.CursorPageResponse;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.shorts.dto.request.CreateShortsCommentRequestDto;
 import org.highfive.backend.shorts.dto.request.ShortsDislikeRequestDto;
@@ -10,6 +13,7 @@ import org.highfive.backend.shorts.dto.request.ShortsLikeCreateRequestDto;
 import org.highfive.backend.shorts.dto.response.GetShortsCommentResponseDto;
 import org.highfive.backend.shorts.dto.response.RecommendShortsResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsLikeTimeResponseDto;
+import org.highfive.backend.shorts.dto.response.ShortsLikedUserItemDto;
 import org.highfive.backend.shorts.service.ShortsService;
 import org.highfive.backend.user.entity.User;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -63,5 +67,10 @@ public class ShortsController {
             @RequestParam final Long time
     ){
         return shortsService.getOneShortsComment(shortsId, time);
+    }
+
+    @GetMapping("/liked")
+    public Response<CursorPageResponse<ShortsLikedUserItemDto>> likedShorts(final @AuthenticationPrincipal User user, @RequestParam @Nullable final String cursor, @RequestParam(value = "5") final int size) {
+        return shortsService.likedShorts(user, cursor, size);
     }
 }
