@@ -8,10 +8,7 @@ import lombok.NoArgsConstructor;
 import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.global.entity.BaseEntity;
 import org.highfive.backend.user.entity.User;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Builder
@@ -39,7 +36,4 @@ public class UserLog extends BaseEntity {
 
     @Column(nullable = false)
     private int rating;
-
-    @CreatedDate
-    private LocalDateTime createdAt;
 }
