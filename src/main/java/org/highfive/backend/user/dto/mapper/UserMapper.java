@@ -6,9 +6,10 @@ import org.highfive.backend.user.entity.User;
 
 public class UserMapper {
 
-    public static User from(final KakaoUserResponseDto response, final UserRole userRole) {
+    public static User from(final KakaoUserResponseDto response, final UserRole userRole, final String email) {
         final KakaoUserResponseDto.KakaoProfile profile = response.kakaoAccount().profile();
         return User.builder()
+                .email(email)
                 .kakaoUserId(response.id())
                 .name(profile.nickname())
                 .profileUrl(profile.profileImageUrl())
