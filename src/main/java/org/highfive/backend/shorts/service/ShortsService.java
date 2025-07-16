@@ -1,6 +1,11 @@
 package org.highfive.backend.shorts.service;
 
 
+import static org.highfive.backend.shorts.dto.mapper.ShortsLikeTimeLogMapper.toShorts;
+import static org.highfive.backend.shorts.exception.ShortsErrorCode.SHORTS_ALREADY_LIKED;
+import static org.highfive.backend.shorts.exception.ShortsErrorCode.SHORTS_LIKED_NOT_FOUND;
+import static org.highfive.backend.shorts.exception.ShortsErrorCode.SHORTS_NOT_FOUND;
+
 import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -24,9 +29,6 @@ import org.highfive.backend.shorts.repository.jpa.ShortsRepository;
 import org.highfive.backend.shorts.repository.querydsl.ShortsQueryRepository;
 import org.highfive.backend.user.entity.User;
 import org.springframework.stereotype.Service;
-
-import static org.highfive.backend.shorts.dto.mapper.ShortsLikeTimeLogMapper.toShorts;
-import static org.highfive.backend.shorts.exception.ShortsErrorCode.*;
 
 @Service
 @RequiredArgsConstructor

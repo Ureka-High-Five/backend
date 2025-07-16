@@ -13,7 +13,6 @@ import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.shorts.dto.response.RecommendShortsResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsAndLikedItemDto;
 import org.highfive.backend.shorts.dto.response.ShortsItemDto;
-import org.highfive.backend.shorts.entity.ShortsLikeTimeLog;
 import org.highfive.backend.shorts.repository.jpa.ShortsLikeTimeLogRepository;
 import org.highfive.backend.shorts.repository.querydsl.ShortsQueryRepository;
 import org.highfive.backend.shorts.service.ShortsService;

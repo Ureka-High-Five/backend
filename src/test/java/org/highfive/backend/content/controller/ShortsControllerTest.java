@@ -4,18 +4,16 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
-import org.highfive.backend.shorts.controller.ShortsController;
 import java.util.List;
 import org.highfive.backend.common.fixture.UserFixture;
+import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.shorts.controller.ShortsController;
 import org.highfive.backend.shorts.dto.response.RecommendShortsResponseDto;
 import org.highfive.backend.shorts.service.ShortsService;
-import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.user.entity.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,8 +46,8 @@ class ShortsControllerTest {
     private static RequestPostProcessor withUser(User domainUser) {
         return request -> {
             var auth = new UsernamePasswordAuthenticationToken(
-                    domainUser,                                 // principal
-                    null,                                       // credentials
+                    domainUser,
+                    null,
                     List.of(new SimpleGrantedAuthority("ROLE_USER"))
             );
             SecurityContextHolder.clearContext();
