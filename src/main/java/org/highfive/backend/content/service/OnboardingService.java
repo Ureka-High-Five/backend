@@ -126,7 +126,7 @@ public class OnboardingService {
     }
 
     private void initBasic(final SubmitOnboardingRequestDto request, final User user) {
-        int age = Year.now().getValue() - request.year();
+        int age = Year.now().getValue() - request.birthYear();
         Gender gender = request.gender();
         String name = request.name();
         user.updateBasicInfo(name, age, gender, UserRole.USER);
