@@ -115,4 +115,12 @@ public class ShortsService {
 
         return Response.ok(responseDto);
     }
+
+    public Response<ShortsLikeTimeResponseDto> getShortsLike(final long shortsId, final int duration) {
+        shortsRepository.findById(shortsId).orElseThrow(() -> new BusinessException(SHORTS_NOT_FOUND));
+        List<Object[]> results = shortsLikeTimeLogRepository.findAllShortsLikeWithTime(shortsId, duration);
+        List<ShortsLikeTimeResponseDto.ShortsLikeTimeLineDto> data = ShortsLikeTimeLogMapper.toShortsLikeTimeLineDto(results);
+
+        return Response.ok(new ShortsLikeTimeResponseDto(data));
+    }
 }
