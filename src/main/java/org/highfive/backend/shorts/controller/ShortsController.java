@@ -12,6 +12,7 @@ import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.user.entity.User;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,6 +41,14 @@ public class ShortsController {
             @AuthenticationPrincipal User user
     ) {
         return shortsService.recommendShorts(cursor, size, user);
+    }
+
+    @GetMapping("/{shortsId}/comments")
+    public Response<ShortsCommentsByTimeResponseDto> commentsByTime(
+        @PathVariable Long shortsId,
+        @RequestParam @Positive Integer duration,
+        @RequestParam @Positive Integer time) {
+        return shortsService.commentsByTime(shortsId, duration, time);
     }
 
     @PostMapping("/like")
