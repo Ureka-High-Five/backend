@@ -12,7 +12,7 @@ import org.highfive.backend.content.dto.response.HomeContentsResponseDto.Persona
 import org.highfive.backend.content.dto.response.TopContentsByGenreDto;
 import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.content.exception.ContentErrorCode;
-import org.highfive.backend.content.repository.ContentRepository;
+import org.highfive.backend.content.repository.jpa.ContentRepository;
 import org.highfive.backend.global.client.fastapi.FastApiClient;
 import org.highfive.backend.global.client.fastapi.dto.response.FastApiRecommendResponseDto;
 import org.highfive.backend.global.code.SuccessCode;

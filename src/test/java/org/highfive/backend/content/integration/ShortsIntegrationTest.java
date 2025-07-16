@@ -1,10 +1,10 @@
 package org.highfive.backend.content.integration;
 
-import org.highfive.backend.content.dto.request.ShortsLikeRequestDto;
-import org.highfive.backend.content.entity.shorts.Shorts;
-import org.highfive.backend.content.repository.jpa.ShortsLikeTimeLogRepository;
-import org.highfive.backend.content.repository.jpa.ShortsRepository;
-import org.highfive.backend.content.service.ShortsService;
+import org.highfive.backend.shorts.dto.request.ShortsLikeRequestDto;
+import org.highfive.backend.shorts.entity.Shorts;
+import org.highfive.backend.shorts.repository.jpa.ShortsLikeTimeLogRepository;
+import org.highfive.backend.shorts.repository.jpa.ShortsRepository;
+import org.highfive.backend.shorts.service.ShortsService;
 import org.highfive.backend.user.entity.User;
 import org.highfive.backend.user.entity.UserRole;
 import org.highfive.backend.user.repository.UserRepository;

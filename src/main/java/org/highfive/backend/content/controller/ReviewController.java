@@ -1,15 +1,12 @@
 package org.highfive.backend.content.controller;
 
-import static org.highfive.backend.global.code.SuccessCode.NO_CONTENT;
-import static org.highfive.backend.global.code.SuccessCode.OK;
-
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.highfive.backend.content.dto.request.CreateReviewRequestDto;
-import org.highfive.backend.content.dto.request.UpdateReviewRequestDto;
-import org.highfive.backend.content.dto.response.ContentMyReviewResponseDto;
-import org.highfive.backend.content.dto.response.ReviewSimpleResponseDto;
-import org.highfive.backend.content.service.ReviewService;
+import org.highfive.backend.review.dto.request.CreateReviewRequestDto;
+import org.highfive.backend.review.dto.request.UpdateReviewRequestDto;
+import org.highfive.backend.review.dto.response.ContentMyReviewResponseDto;
+import org.highfive.backend.review.dto.response.ReviewSimpleResponseDto;
+import org.highfive.backend.review.service.ReviewService;
 import org.highfive.backend.global.dto.CursorPageResponse;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.user.entity.User;

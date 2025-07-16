@@ -2,7 +2,7 @@ package org.highfive.backend.common.fixture;
 
 import java.util.List;
 import org.highfive.backend.content.entity.Content;
-import org.highfive.backend.content.entity.shorts.Shorts;
+import org.highfive.backend.shorts.entity.Shorts;
 
 public class ShortsFixture {
 

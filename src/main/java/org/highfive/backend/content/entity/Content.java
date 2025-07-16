@@ -1,35 +1,20 @@
 package org.highfive.backend.content.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
+import org.highfive.backend.content.dto.request.AdminUpdateContentRequestDto;
+import org.highfive.backend.metadata.entity.Episode;
+import org.highfive.backend.metadata.entity.MetaInfoContents;
+import org.highfive.backend.metadata.entity.Series;
+import org.highfive.backend.shorts.entity.Shorts;
+import org.highfive.backend.global.entity.BaseEntity;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.DynamicUpdate;
-import org.highfive.backend.content.dto.request.AdminUpdateContentRequestDto;
-import org.highfive.backend.content.entity.metadata.Episode;
-import org.highfive.backend.content.entity.metadata.MetaInfoContents;
-import org.highfive.backend.content.entity.metadata.Series;
-import org.highfive.backend.content.entity.shorts.Shorts;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Getter
@@ -39,7 +24,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
-public class Content {
+public class Content extends BaseEntity {
 
     @Id
     @GeneratedValue
@@ -98,12 +83,6 @@ public class Content {
 
     private LocalDateTime deletedAt;
 
-    @CreatedDate
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
-
     public void updateEmbedding(String embedding) {
         this.embedding = embedding;
     }
@@ -118,7 +97,6 @@ public class Content {
         this.runningTime = request.runningTime();
         this.totalRound = request.totalRound();
         this.grade = request.grade();
-        this.updatedAt = LocalDateTime.now();
 
         return this;
     }

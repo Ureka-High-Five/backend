@@ -6,12 +6,12 @@
 //import org.highfive.backend.common.fixture.ContentFixture;
 //import org.highfive.backend.common.fixture.ReviewFixture;
 //import org.highfive.backend.common.fixture.UserFixture;
-//import org.highfive.backend.content.dto.request.CreateReviewRequestDto;
-//import org.highfive.backend.content.dto.request.UpdateReviewRequestDto;
+//import org.highfive.backend.review.dto.request.CreateReviewRequestDto;
+//import org.highfive.backend.review.dto.request.UpdateReviewRequestDto;
 //import org.highfive.backend.content.entity.Content;
-//import org.highfive.backend.content.entity.review.Review;
-//import org.highfive.backend.content.repository.ContentRepository;
-//import org.highfive.backend.content.repository.ReviewRepository;
+//import org.highfive.backend.review.entity.Review;
+//import org.highfive.backend.content.repository.jpa.ContentRepository;
+//import org.highfive.backend.review.repository.jpa.ReviewRepository;
 //import org.highfive.backend.user.entity.User;
 //import org.highfive.backend.user.repository.UserRepository;
 //import org.junit.jupiter.api.BeforeEach;
@@ -31,8 +31,8 @@
 //
 //import static org.assertj.core.api.Assertions.assertThat;
 //import static org.highfive.backend.content.exception.ContentErrorCode.CONTENT_NOT_FOUND;
-//import static org.highfive.backend.content.exception.ReviewErrorCode.MY_REVIEW_NOT_FOUND;
-//import static org.highfive.backend.content.exception.ReviewErrorCode.REVIEW_NOT_FOUND;
+//import static org.highfive.backend.review.exception.ReviewErrorCode.MY_REVIEW_NOT_FOUND;
+//import static org.highfive.backend.review.exception.ReviewErrorCode.REVIEW_NOT_FOUND;
 //import static org.highfive.backend.global.code.SuccessCode.NO_CONTENT;
 //import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 //import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;

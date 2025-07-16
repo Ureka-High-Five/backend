@@ -3,13 +3,14 @@ package org.highfive.backend.curation.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.highfive.backend.content.entity.Content;
+import org.highfive.backend.global.entity.BaseEntity;
 
 @Entity
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CurationContents {
+public class CurationContents extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

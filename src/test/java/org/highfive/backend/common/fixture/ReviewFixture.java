@@ -1,7 +1,7 @@
 package org.highfive.backend.common.fixture;
 
 import org.highfive.backend.content.entity.Content;
-import org.highfive.backend.content.entity.review.Review;
+import org.highfive.backend.review.entity.Review;
 import org.highfive.backend.user.entity.User;
 
 public class ReviewFixture {

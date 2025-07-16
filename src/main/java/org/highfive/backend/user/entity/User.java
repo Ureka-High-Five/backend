@@ -2,8 +2,9 @@ package org.highfive.backend.user.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.highfive.backend.content.entity.shorts.ShortsComment;
-import org.highfive.backend.content.entity.shorts.log.ShortsLikeTimeLog;
+import org.highfive.backend.shorts.entity.ShortsComment;
+import org.highfive.backend.shorts.entity.ShortsLikeTimeLog;
+import org.highfive.backend.global.entity.BaseEntity;
 import org.highfive.backend.user.entity.preference.PreferMetaInfo;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -19,7 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User {
+public class User extends BaseEntity {
 
     @Id
     @GeneratedValue
