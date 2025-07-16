@@ -8,8 +8,12 @@ import org.highfive.backend.global.dto.CursorPageResponse;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.shorts.dto.mapper.ShortsCommentMapper;
+import org.highfive.backend.shorts.dto.mapper.ShortsLikeTimeLogMapper;
 import org.highfive.backend.shorts.dto.request.CreateShortsCommentRequestDto;
 import org.highfive.backend.shorts.dto.request.ShortsDislikeRequestDto;
+import org.highfive.backend.shorts.dto.request.ShortsLikeCreateRequestDto;
+import org.highfive.backend.shorts.dto.response.RecommendShortsResponseDto;
+import org.highfive.backend.shorts.dto.response.ShortsLikeTimeResponseDto;
 import org.highfive.backend.shorts.dto.request.ShortsLikeCreateRequestDto;
 import org.highfive.backend.shorts.dto.response.*;
 import org.highfive.backend.shorts.entity.Shorts;
@@ -23,10 +27,8 @@ import org.highfive.backend.user.entity.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 import static org.highfive.backend.shorts.dto.mapper.ShortsLikeTimeLogMapper.toShorts;
-import static org.highfive.backend.shorts.dto.mapper.ShortsLikeTimeLogMapper.toShortsLikeTimeLineDto;
 import static org.highfive.backend.shorts.exception.ShortsErrorCode.*;
 
 @Service
@@ -37,21 +39,6 @@ public class ShortsService {
     private final ShortsRepository shortsRepository;
     private final ShortsCommentRepository shortsCommentRepository;
     private final ShortsQueryRepository shortsQueryRepository;
-
-    @Transactional
-    public Response<Void> dislike(final User user, final ShortsDislikeRequestDto dto) {
-        final Long shortsId = dto.shortsId();
-
-        shortsRepository.findById(shortsId).orElseThrow(() -> new BusinessException(SHORTS_NOT_FOUND));
-
-        final ShortsLikeTimeLog shortsLikeTimeLog = shortsLikeTimeLogRepository.findByUserIdAndShortsId(user.getId(),shortsId)
-                .orElseThrow(() -> new BusinessException(SHORTS_LIKED_NOT_FOUND));
-
-        shortsLikeTimeLogRepository.deleteById(shortsLikeTimeLog.getId());
-        shortsRepository.decreaseLike(shortsId);
-
-        return Response.ok(null);
-    }
 
     @Transactional
     public Response<Void> createShortsComment(CreateShortsCommentRequestDto requestDto, User user) {
