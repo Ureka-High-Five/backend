@@ -31,7 +31,7 @@ OTT 서비스의 대표적인 문제인 **개인 취향에 맞는 콘텐츠를 �
 
 ### 🏗 시스템 아키텍처
 
-<img width="936" height="705" alt="image" src="https://github.com/user-attachments/assets/56ddb581-ba1b-481a-a553-9bee4d01e5fb" />
+<img width="720" height="405" alt="리드미_아키텍처" src="https://github.com/user-attachments/assets/56077070-cdb9-406b-bbbc-068f63104401" />
 
 
 
