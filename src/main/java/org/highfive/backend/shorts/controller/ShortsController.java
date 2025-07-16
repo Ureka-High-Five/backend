@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.shorts.dto.request.ShortsDislikeRequestDto;
 import org.highfive.backend.shorts.dto.request.ShortsLikeRequestDto;
+import org.highfive.backend.shorts.dto.response.GetShortsCommentResponseDto;
 import org.highfive.backend.shorts.dto.response.RecommendShortsResponseDto;
 import org.highfive.backend.shorts.dto.request.CreateShortsCommentRequestDto;
 import org.highfive.backend.shorts.service.ShortsService;
@@ -50,5 +51,13 @@ public class ShortsController {
     @PostMapping("/dislike")
     public Response<Void> dislike(@AuthenticationPrincipal final User user, @RequestBody @Valid final ShortsDislikeRequestDto dto) {
         return shortsService.dislike(user, dto);
+    }
+
+    @GetMapping("/comment")
+    public Response<GetShortsCommentResponseDto> getOneShortsComment(
+            @RequestParam final Long shortsId,
+            @RequestParam final Long time
+    ){
+        return shortsService.getOneShortsComment(shortsId, time);
     }
 }
