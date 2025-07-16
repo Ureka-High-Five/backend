@@ -7,24 +7,18 @@ import org.highfive.backend.content.dto.response.ContentDetailResponseDto;
 import org.highfive.backend.content.dto.response.ContentVideoResponseDto;
 import org.highfive.backend.content.dto.response.SearchContentResponseDto;
 import org.highfive.backend.content.entity.Content;
-import org.highfive.backend.content.entity.metadata.MetaInfo;
-import org.highfive.backend.content.entity.metadata.MetaInfoContents;
-import org.highfive.backend.content.entity.metadata.MetaType;
+import org.highfive.backend.metadata.entity.MetaInfo;
+import org.highfive.backend.metadata.entity.MetaInfoContents;
+import org.highfive.backend.metadata.entity.MetaType;
 import org.highfive.backend.content.exception.ContentErrorCode;
-import org.highfive.backend.content.repository.ContentRepository;
-import org.highfive.backend.content.repository.QueryDslContentRepository;
+import org.highfive.backend.content.repository.jpa.ContentRepository;
+import org.highfive.backend.content.repository.querydsl.ContentQueryRepositoryImpl;
 import org.highfive.backend.global.dto.CursorPageResponse;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -39,11 +33,11 @@ public class ContentService {
     private final String LIKE = "%";
 
     private final ContentRepository contentRepository;
-    private final QueryDslContentRepository queryDslContentRepository;
+    private final ContentQueryRepositoryImpl contentQueryRepositoryImpl;
 
     public Response<ContentDetailResponseDto> getContentDetail(final Long contentId) {
 
-        final Content content = queryDslContentRepository.findWithMetaInfoById(contentId)
+        final Content content = contentQueryRepositoryImpl.findWithMetaInfoById(contentId)
                 .orElseThrow(() -> new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND));
 
         final Map<MetaType, List<String>> metaMap = extractMetaInfoMap(content);

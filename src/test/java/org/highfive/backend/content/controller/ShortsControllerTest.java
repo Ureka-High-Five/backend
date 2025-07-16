@@ -5,9 +5,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.highfive.backend.content.dto.response.RecommendShortsResponseDto;
-import org.highfive.backend.content.service.ShortsService;
+import org.highfive.backend.shorts.dto.response.RecommendShortsResponseDto;
+import org.highfive.backend.shorts.service.ShortsService;
 import org.highfive.backend.global.dto.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

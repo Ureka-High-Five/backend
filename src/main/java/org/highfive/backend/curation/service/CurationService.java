@@ -4,7 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.content.exception.ContentErrorCode;
-import org.highfive.backend.content.repository.ContentRepository;
+import org.highfive.backend.content.repository.jpa.ContentRepository;
 import org.highfive.backend.curation.dto.request.CreateCurationRequestDto;
 import org.highfive.backend.curation.dto.request.CurationUpdateRequestDto;
 import org.highfive.backend.curation.dto.response.CurationDetailResponseDto;

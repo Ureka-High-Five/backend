@@ -1,7 +1,7 @@
 package org.highfive.backend.common.fixture;
 
-import org.highfive.backend.content.entity.metadata.MetaInfo;
-import org.highfive.backend.content.entity.metadata.MetaType;
+import org.highfive.backend.metadata.entity.MetaInfo;
+import org.highfive.backend.metadata.entity.MetaType;
 
 public class MetaInfoFixture {
 

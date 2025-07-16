@@ -17,12 +17,12 @@ import org.highfive.backend.content.dto.response.MostPopularContentPerGenreDto;
 import org.highfive.backend.content.dto.response.OnboardingContentDto;
 import org.highfive.backend.content.dto.response.OnboardingInitContentsResponseDto;
 import org.highfive.backend.content.dto.response.OnboardingSelectContentResponseDto;
-import org.highfive.backend.content.entity.metadata.MetaInfo;
-import org.highfive.backend.content.entity.metadata.MetaType;
+import org.highfive.backend.metadata.entity.MetaInfo;
+import org.highfive.backend.metadata.entity.MetaType;
 import org.highfive.backend.content.exception.ContentErrorCode;
-import org.highfive.backend.content.repository.ContentRepository;
-import org.highfive.backend.content.repository.QueryDslContentRepository;
-import org.highfive.backend.content.repository.jpa.MetaInfoRepository;
+import org.highfive.backend.content.repository.jpa.ContentRepository;
+import org.highfive.backend.content.repository.querydsl.ContentQueryRepositoryImpl;
+import org.highfive.backend.metadata.repository.jpa.MetaInfoRepository;
 import org.highfive.backend.global.client.fastapi.FastApiClient;
 import org.highfive.backend.global.client.fastapi.dto.response.FastApiOnboardingResponseDto;
 import org.highfive.backend.global.code.SuccessCode;
@@ -54,11 +54,11 @@ public class OnboardingService {
     private final UserRepository userRepository;
     private final ContentRepository contentRepository;
     private final PreferMetaInfoRepository preferMetaInfoRepository;
-    private final QueryDslContentRepository queryDslContentRepository;
+    private final ContentQueryRepositoryImpl contentQueryRepositoryImpl;
     private final MetaInfoRepository metaInfoRepository;
 
     public Response<List<OnboardingSelectContentResponseDto>> getContentBySelectedContent(final OnboardingSelectContentRequestDto request) {
-        List<GenreCountDto> topGenresByContentIds = queryDslContentRepository.findTopGenresByContentIds(request.selectedContentIds());
+        List<GenreCountDto> topGenresByContentIds = contentQueryRepositoryImpl.findTopGenresByContentIds(request.selectedContentIds());
         List<OnboardingSelectContentResponseDto> contents = getOnboardingSelectContentResponseDtos(
                 topGenresByContentIds.stream().map((GenreCountDto::genre)).toList(), request);
 
@@ -104,7 +104,7 @@ public class OnboardingService {
     }
 
     private List<OnboardingSelectContentResponseDto> getOnboardingSelectContentResponseDtos(List<String> topGenres, OnboardingSelectContentRequestDto request) {
-        List<OnboardingContentDto> result = queryDslContentRepository.findContentsByGenresOrderByMatchCountDesc(topGenres);
+        List<OnboardingContentDto> result = contentQueryRepositoryImpl.findContentsByGenresOrderByMatchCountDesc(topGenres);
         result = duplicateFilter(result, request);
         return result.stream().map(
                 c -> new OnboardingSelectContentResponseDto(c.id(), c.postUrl(), c.title(), c.openDate().getYear()))
@@ -147,7 +147,7 @@ public class OnboardingService {
     private Map<String, Integer> countGenre(final List<Long> contentIds) {
         final Map<String, Integer> genreCount = new HashMap<>();
 
-        List<Map<String, Object>> results = queryDslContentRepository.findContentGenresByContentIds(contentIds);
+        List<Map<String, Object>> results = contentQueryRepositoryImpl.findContentGenresByContentIds(contentIds);
 
         for (Map<String, Object> row : results) {
             String genreName = (String) row.get("genreName");
