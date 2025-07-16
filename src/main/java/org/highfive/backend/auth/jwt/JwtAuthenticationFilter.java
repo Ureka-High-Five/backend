@@ -33,10 +33,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final String ONBOARDING_INIT = "/content/init";
     private final String ONBOARDING_SELECT = "/content/recommend";
     private final String CONTENT_SEARCH = "/content/search";
+    private final String PROMETHEUS = "/actuator/prometheus";
     private final String OPTIONS = "OPTIONS";
 
     private final ObjectMapper objectMapper;
     private final TokenService tokenService;
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        return super.shouldNotFilter(request);
+    }
 
     @Override
     protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain) throws ServletException, IOException {
@@ -55,6 +61,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 || requestURI.equals(REISSUE)
                 || requestURI.equals(ONBOARDING_INIT)
                 || requestURI.equals(CONTENT_SEARCH)
+                || requestURI.startsWith(PROMETHEUS)
                 || isOnboardingSelect(request, requestURI)) {
             filterChain.doFilter(request, response);
             return;
