@@ -1,12 +1,8 @@
 package org.highfive.backend.shorts.service;
 
 
-import static org.highfive.backend.shorts.dto.mapper.ShortsLikeTimeLogMapper.toShorts;
-import static org.highfive.backend.shorts.exception.ShortsErrorCode.SHORTS_ALREADY_LIKED;
-import static org.highfive.backend.shorts.exception.ShortsErrorCode.SHORTS_LIKED_NOT_FOUND;
-import static org.highfive.backend.shorts.exception.ShortsErrorCode.SHORTS_NOT_FOUND;
-
 import jakarta.transaction.Transactional;
+import java.util.Objects;
 import jakarta.validation.constraints.Positive;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +14,7 @@ import org.highfive.backend.shorts.dto.mapper.ShortsCommentMapper;
 import org.highfive.backend.shorts.dto.request.CreateShortsCommentRequestDto;
 import org.highfive.backend.shorts.dto.request.ShortsDislikeRequestDto;
 import org.highfive.backend.shorts.dto.request.ShortsLikeRequestDto;
+import org.highfive.backend.shorts.dto.response.GetShortsCommentResponseDto;
 import org.highfive.backend.shorts.dto.response.RecommendShortsResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsAndLikedItemDto;
 import org.highfive.backend.shorts.dto.response.ShortsCommentsByTimeResponseDto;
@@ -29,8 +26,15 @@ import org.highfive.backend.shorts.repository.jpa.ShortsCommentRepository;
 import org.highfive.backend.shorts.repository.jpa.ShortsLikeTimeLogRepository;
 import org.highfive.backend.shorts.repository.jpa.ShortsRepository;
 import org.highfive.backend.shorts.repository.querydsl.ShortsQueryRepository;
+import org.highfive.backend.global.dto.Response;
+import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.user.entity.User;
 import org.springframework.stereotype.Service;
+
+import static org.highfive.backend.shorts.dto.mapper.ShortsLikeTimeLogMapper.toShorts;
+import static org.highfive.backend.shorts.exception.ShortsErrorCode.SHORTS_ALREADY_LIKED;
+import static org.highfive.backend.shorts.exception.ShortsErrorCode.SHORTS_LIKED_NOT_FOUND;
+import static org.highfive.backend.shorts.exception.ShortsErrorCode.SHORTS_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +44,7 @@ public class ShortsService {
     private final ShortsRepository shortsRepository;
     private final ShortsCommentRepository shortsCommentRepository;
     private final ShortsQueryRepository shortsQueryRepository;
-  
+
     @Transactional
     public Response<Void> dislike(final User user, final ShortsDislikeRequestDto dto) {
         final Long shortsId = dto.shortsId();
@@ -99,6 +103,19 @@ public class ShortsService {
             boolean liked = shortsLikeTimeLogRepository.existsByUserIdAndShortsId(user.getId(), item.shortsId());
             return new ShortsAndLikedItemDto(item.contentId(), item.contentTitle(), item.shortsId(), item.shortsUrl(), liked);
         }).toList();
+    }
+
+    public Response<GetShortsCommentResponseDto> getOneShortsComment(final Long shortsId,final Long time) {
+
+        final ShortsComment existedShortsComment = shortsCommentRepository.findFirstByShortsIdAndTimeOrderByCreatedAtDesc(shortsId,time).orElse(null);
+
+        if(Objects.isNull(existedShortsComment)){
+            return Response.ok(null);
+        }
+
+        GetShortsCommentResponseDto responseDto = ShortsCommentMapper.toGetShortsCommentResponseDto(existedShortsComment);
+
+        return Response.ok(responseDto);
     }
 
     public Response<List<ShortsCommentsByTimeResponseDto>> commentsByTime(Long shortsId, int time, int duration) {

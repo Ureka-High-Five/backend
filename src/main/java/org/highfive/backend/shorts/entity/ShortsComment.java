@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.highfive.backend.global.entity.BaseEntity;
 import org.highfive.backend.user.entity.User;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Builder
+@Getter
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
