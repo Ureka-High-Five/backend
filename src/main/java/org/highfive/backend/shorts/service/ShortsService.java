@@ -5,7 +5,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.content.dto.VideoType;
 import org.highfive.backend.shorts.dto.mapper.ShortsCommentMapper;
-import org.highfive.backend.content.dto.request.CreateShortsCommentRequestDto;
+import org.highfive.backend.shorts.dto.request.CreateShortsCommentRequestDto;
 import org.highfive.backend.shorts.dto.request.ShortsLikeRequestDto;
 import org.highfive.backend.shorts.dto.response.RecommendShortsResponseDto;
 import org.highfive.backend.shorts.entity.Shorts;

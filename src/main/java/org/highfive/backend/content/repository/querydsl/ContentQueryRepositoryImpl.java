@@ -13,8 +13,8 @@ import org.highfive.backend.content.dto.response.OnboardingContentDto;
 import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.content.entity.QContent;
 import org.highfive.backend.metadata.entity.MetaType;
-import org.highfive.backend.content.entity.metadata.QMetaInfo;
-import org.highfive.backend.content.entity.metadata.QMetaInfoContents;
+import org.highfive.backend.metadata.entity.QMetaInfo;
+import org.highfive.backend.metadata.entity.QMetaInfoContents;
 import org.springframework.stereotype.Repository;
 
 @Repository

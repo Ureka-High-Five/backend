@@ -6,7 +6,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.shorts.dto.mapper.ShortsMapper;
 import org.highfive.backend.shorts.dto.response.ShortsItemDto;
-import org.highfive.backend.content.entity.shorts.QShorts;
+import org.highfive.backend.shorts.entity.QShorts;
 import org.highfive.backend.shorts.entity.Shorts;
 import org.highfive.backend.global.dto.CursorPageResponse;
 import org.springframework.stereotype.Repository;

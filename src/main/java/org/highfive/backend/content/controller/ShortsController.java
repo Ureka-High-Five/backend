@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.shorts.dto.request.ShortsLikeRequestDto;
 import org.highfive.backend.shorts.dto.response.RecommendShortsResponseDto;
-import org.highfive.backend.content.dto.request.CreateShortsCommentRequestDto;
+import org.highfive.backend.shorts.dto.request.CreateShortsCommentRequestDto;
 import org.highfive.backend.shorts.service.ShortsService;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.user.entity.User;

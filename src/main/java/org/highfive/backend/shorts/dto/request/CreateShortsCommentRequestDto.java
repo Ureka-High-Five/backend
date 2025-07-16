@@ -1,4 +1,4 @@
-package org.highfive.backend.content.dto.request;
+package org.highfive.backend.shorts.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

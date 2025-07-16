@@ -6,10 +6,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
-import org.highfive.backend.content.dto.response.QReviewSimpleResponseDto;
+import org.highfive.backend.review.dto.response.QReviewSimpleResponseDto;
 import org.highfive.backend.review.dto.response.ReviewSimpleResponseDto;
-import org.highfive.backend.content.entity.review.QReview;
 import org.highfive.backend.global.dto.CursorPageResponse;
+import org.highfive.backend.review.entity.QReview;
 import org.highfive.backend.user.entity.User;
 import org.springframework.stereotype.Repository;
 

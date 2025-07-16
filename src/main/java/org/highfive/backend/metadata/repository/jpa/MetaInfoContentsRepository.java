@@ -1,4 +1,4 @@
-package org.highfive.backend.content.repository;
+package org.highfive.backend.metadata.repository.jpa;
 
 import java.util.List;
 import org.highfive.backend.metadata.entity.MetaInfoContents;

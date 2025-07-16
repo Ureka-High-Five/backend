@@ -22,7 +22,7 @@ import org.highfive.backend.metadata.entity.MetaType;
 import org.highfive.backend.content.exception.ContentErrorCode;
 import org.highfive.backend.content.repository.jpa.ContentRepository;
 import org.highfive.backend.content.repository.querydsl.ContentQueryRepositoryImpl;
-import org.highfive.backend.content.repository.jpa.MetaInfoRepository;
+import org.highfive.backend.metadata.repository.jpa.MetaInfoRepository;
 import org.highfive.backend.global.client.fastapi.FastApiClient;
 import org.highfive.backend.global.client.fastapi.dto.response.FastApiOnboardingResponseDto;
 import org.highfive.backend.global.code.SuccessCode;
