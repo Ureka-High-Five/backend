@@ -4,6 +4,7 @@ package org.highfive.backend.shorts.service;
 import jakarta.transaction.Transactional;
 import java.util.Objects;
 import jakarta.validation.constraints.Positive;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.content.dto.VideoType;
@@ -98,6 +99,27 @@ public class ShortsService {
         return Response.ok(null);
     }
 
+    public Response<List<ShortsCommentsByTimeResponseDto>> commentsByTime(long shortsId, long time, int duration) {
+        List<ShortsCommentsByTimeResponseDto> response = new ArrayList<>();
+        for (long targetTime = time; targetTime < targetTime + duration; targetTime += duration / 5) {
+            List<ShortsCommentsByTimeResponseDto> result = shortsCommentRepository.findByShortsIdAndTimeOrderByCreatedAtDesc(shortsId, targetTime)
+                    .stream()
+                    .map(ShortsCommentMapper::toShortsCommentsByTimeResponseDto)
+                    .toList();
+            if (addCommentsUntilLimit(response, result)) {
+                break;
+            }
+        }
+
+        return Response.ok(response);
+    }
+
+    private boolean addCommentsUntilLimit(List<ShortsCommentsByTimeResponseDto> response, List<ShortsCommentsByTimeResponseDto> result) {
+        int remain = 5 - response.size();
+        response.addAll(result.subList(0, remain - 1));
+        return response.size() == 5;
+    }
+
     private List<ShortsAndLikedItemDto> getRecommendResult(User user, CursorPageResponse<ShortsItemDto> recommend) {
         return recommend.items().stream().map(item -> {
             boolean liked = shortsLikeTimeLogRepository.existsByUserIdAndShortsId(user.getId(), item.shortsId());
@@ -116,10 +138,5 @@ public class ShortsService {
         GetShortsCommentResponseDto responseDto = ShortsCommentMapper.toGetShortsCommentResponseDto(existedShortsComment);
 
         return Response.ok(responseDto);
-    }
-
-    public Response<List<ShortsCommentsByTimeResponseDto>> commentsByTime(Long shortsId, int time, int duration) {
-        List<ShortsCommentsByTimeResponseDto> result = shortsCommentRepository.findByTimeAndDuration(shortsId, time, duration);
-        return Response.ok(result);
     }
 }
