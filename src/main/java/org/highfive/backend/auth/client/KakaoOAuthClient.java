@@ -56,7 +56,7 @@ public class KakaoOAuthClient {
                 kakaoUserInfoClient.post()
                         .uri(uriBuilder -> uriBuilder
                                 .path(USER_INFO_URL)
-                                .queryParam("property_keys", "[\"kakao_account.profile\"]")
+                                .queryParam("property_keys", "[\"kakao_account.profile\", \"kakao_account.email\"]")
                                 .build())
                         .header(HttpHeaders.AUTHORIZATION, BEARER + accessToken)
                         .retrieve(),
