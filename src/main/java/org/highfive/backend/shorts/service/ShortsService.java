@@ -2,12 +2,16 @@ package org.highfive.backend.shorts.service;
 
 
 import jakarta.transaction.Transactional;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.content.dto.VideoType;
+import org.highfive.backend.global.dto.CursorPageResponse;
 import org.highfive.backend.shorts.dto.mapper.ShortsCommentMapper;
 import org.highfive.backend.shorts.dto.request.CreateShortsCommentRequestDto;
 import org.highfive.backend.shorts.dto.request.ShortsLikeRequestDto;
 import org.highfive.backend.shorts.dto.response.RecommendShortsResponseDto;
+import org.highfive.backend.shorts.dto.response.ShortsAndLikedItemDto;
+import org.highfive.backend.shorts.dto.response.ShortsItemDto;
 import org.highfive.backend.shorts.entity.Shorts;
 import org.highfive.backend.shorts.entity.ShortsComment;
 import org.highfive.backend.shorts.exception.ShortsErrorCode;
@@ -45,9 +49,12 @@ public class ShortsService {
         return Response.ok(null);
     }
 
-    public Response<RecommendShortsResponseDto> recommendShorts(final Long cursor, final Integer size) {
+    public Response<RecommendShortsResponseDto> recommendShorts(final Long cursor, final Integer size, final User user) {
+        CursorPageResponse<ShortsItemDto> recommend = shortsQueryRepository.findByCursor(cursor == null ? null : cursor.toString(), size);
+        List<ShortsAndLikedItemDto> result = getRecommendResult(user, recommend);
+        CursorPageResponse<ShortsAndLikedItemDto> response = new CursorPageResponse<>(result, recommend.hasNext(), recommend.nextCursor());
         return Response.ok(new RecommendShortsResponseDto(
-                shortsQueryRepository.findByCursor(cursor == null ? null : cursor.toString(), size),
+                response,
                 VideoType.SHORTS.name())
         );
     }
@@ -65,5 +72,12 @@ public class ShortsService {
         shortsRepository.increaseLike(shortsId);
 
         return Response.ok(null);
+    }
+
+    private List<ShortsAndLikedItemDto> getRecommendResult(User user, CursorPageResponse<ShortsItemDto> recommend) {
+        return recommend.items().stream().map(item -> {
+            boolean liked = shortsLikeTimeLogRepository.existsByUserIdAndShortsId(user.getId(), item.shortsId());
+            return new ShortsAndLikedItemDto(item.contentId(), item.contentTitle(), item.shortsId(), item.shortsUrl(), liked);
+        }).toList();
     }
 }
