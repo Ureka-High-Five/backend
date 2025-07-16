@@ -7,8 +7,9 @@ public class UserFixture {
 
     public static User createEmbeddingUser() {
         return User.builder()
-                .id(1L)
                 .embedding("test-embedding")
+                .age(25)
+                .averageRating(10)
                 .build();
   }
   
