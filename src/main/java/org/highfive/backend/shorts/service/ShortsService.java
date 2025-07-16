@@ -2,11 +2,13 @@ package org.highfive.backend.shorts.service;
 
 
 import jakarta.transaction.Transactional;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.content.dto.VideoType;
 import org.highfive.backend.shorts.dto.mapper.ShortsCommentMapper;
 import org.highfive.backend.shorts.dto.request.CreateShortsCommentRequestDto;
 import org.highfive.backend.shorts.dto.request.ShortsLikeRequestDto;
+import org.highfive.backend.shorts.dto.response.GetShortsCommentResponseDto;
 import org.highfive.backend.shorts.dto.response.RecommendShortsResponseDto;
 import org.highfive.backend.shorts.entity.Shorts;
 import org.highfive.backend.shorts.entity.ShortsComment;
@@ -65,5 +67,18 @@ public class ShortsService {
         shortsRepository.increaseLike(shortsId);
 
         return Response.ok(null);
+    }
+
+    public Response<GetShortsCommentResponseDto> getOneShortsComment(final Long shortsId,final Long time) {
+
+        final ShortsComment existedShortsComment = shortsCommentRepository.findFirstByShortsIdAndTimeOrderByCreatedAtDesc(shortsId,time).orElseGet(null);
+
+        if(Objects.isNull(existedShortsComment)){
+            return Response.ok(null);
+        }
+
+        GetShortsCommentResponseDto responseDto = ShortsCommentMapper.toGetShortsCommentResponseDto(existedShortsComment);
+
+        return Response.ok(responseDto);
     }
 }
