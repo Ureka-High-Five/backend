@@ -37,11 +37,12 @@ class ShortsCommentRepositoryTest {
     @Autowired
     private ContentRepository contentRepository;
 
-    User testUser = UserFixture.createDefaultUser();
+    User testUser;
     Shorts savedShorts;
 
     @BeforeEach
     void beforeEach() {
+        testUser = UserFixture.createDefaultUser();
         userRepository.save(testUser);
         Content content = ContentFixture.createDefaultContent();
         contentRepository.save(content);

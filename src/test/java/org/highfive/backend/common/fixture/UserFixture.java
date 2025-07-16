@@ -1,5 +1,6 @@
 package org.highfive.backend.common.fixture;
 
+import org.highfive.backend.user.entity.Gender;
 import org.highfive.backend.user.entity.User;
 import org.highfive.backend.user.entity.UserRole;
 
@@ -22,6 +23,12 @@ public class UserFixture {
                 .age(25)
                 .averageRating(10)
                 .kakaoUserId("test-kakao-id")
+                .email("test-email")
+                .gender(Gender.MALE)
+                .averageViewTime(10L)
+                .shortsLikeTimeLogs(null)
+                .viewCount(10L)
+                .preferMetaInfos(null)
                 .build();
     }
   
