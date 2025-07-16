@@ -2,7 +2,7 @@ package org.highfive.backend.content.integration;
 
 import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.shorts.dto.request.ShortsDislikeRequestDto;
-import org.highfive.backend.shorts.dto.request.ShortsLikeRequestDto;
+import org.highfive.backend.shorts.dto.request.ShortsLikeCreateRequestDto;
 import org.highfive.backend.shorts.entity.Shorts;
 import org.highfive.backend.shorts.repository.jpa.ShortsLikeTimeLogRepository;
 import org.highfive.backend.shorts.repository.jpa.ShortsRepository;
@@ -84,7 +84,7 @@ class ShortsIntegrationTest {
             executorService.execute(() -> {
                 try {
                     User user = testUsers.get(userIndex);
-                    ShortsLikeRequestDto dto = new ShortsLikeRequestDto(testShorts.getId(), 123L);
+                    ShortsLikeCreateRequestDto dto = new ShortsLikeCreateRequestDto(testShorts.getId(), 123L);
                     shortsService.like(user, dto);
                 } catch (Exception e) {
                     System.out.println(e);
@@ -107,7 +107,7 @@ class ShortsIntegrationTest {
 
             // given
         for (User user : testUsers) {
-            ShortsLikeRequestDto likeDto = new ShortsLikeRequestDto(testShorts.getId(), 123L);
+            ShortsLikeCreateRequestDto likeDto = new ShortsLikeCreateRequestDto(testShorts.getId(), 123L);
             shortsService.like(user, likeDto);
         }
 

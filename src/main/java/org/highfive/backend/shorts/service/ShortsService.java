@@ -2,8 +2,6 @@ package org.highfive.backend.shorts.service;
 
 
 import jakarta.transaction.Transactional;
-import java.util.Objects;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.content.dto.VideoType;
 import org.highfive.backend.global.dto.CursorPageResponse;
@@ -12,11 +10,8 @@ import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.shorts.dto.mapper.ShortsCommentMapper;
 import org.highfive.backend.shorts.dto.request.CreateShortsCommentRequestDto;
 import org.highfive.backend.shorts.dto.request.ShortsDislikeRequestDto;
-import org.highfive.backend.shorts.dto.request.ShortsLikeRequestDto;
-import org.highfive.backend.shorts.dto.response.GetShortsCommentResponseDto;
-import org.highfive.backend.shorts.dto.response.RecommendShortsResponseDto;
-import org.highfive.backend.shorts.dto.response.ShortsAndLikedItemDto;
-import org.highfive.backend.shorts.dto.response.ShortsItemDto;
+import org.highfive.backend.shorts.dto.request.ShortsLikeCreateRequestDto;
+import org.highfive.backend.shorts.dto.response.*;
 import org.highfive.backend.shorts.entity.Shorts;
 import org.highfive.backend.shorts.entity.ShortsComment;
 import org.highfive.backend.shorts.entity.ShortsLikeTimeLog;
@@ -24,15 +19,15 @@ import org.highfive.backend.shorts.repository.jpa.ShortsCommentRepository;
 import org.highfive.backend.shorts.repository.jpa.ShortsLikeTimeLogRepository;
 import org.highfive.backend.shorts.repository.jpa.ShortsRepository;
 import org.highfive.backend.shorts.repository.querydsl.ShortsQueryRepository;
-import org.highfive.backend.global.dto.Response;
-import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.user.entity.User;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Objects;
+
 import static org.highfive.backend.shorts.dto.mapper.ShortsLikeTimeLogMapper.toShorts;
-import static org.highfive.backend.shorts.exception.ShortsErrorCode.SHORTS_ALREADY_LIKED;
-import static org.highfive.backend.shorts.exception.ShortsErrorCode.SHORTS_LIKED_NOT_FOUND;
-import static org.highfive.backend.shorts.exception.ShortsErrorCode.SHORTS_NOT_FOUND;
+import static org.highfive.backend.shorts.dto.mapper.ShortsLikeTimeLogMapper.toShortsLikeTimeLineDto;
+import static org.highfive.backend.shorts.exception.ShortsErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -42,21 +37,6 @@ public class ShortsService {
     private final ShortsRepository shortsRepository;
     private final ShortsCommentRepository shortsCommentRepository;
     private final ShortsQueryRepository shortsQueryRepository;
-
-    @Transactional
-    public Response<Void> dislike(final User user, final ShortsDislikeRequestDto dto) {
-        final Long shortsId = dto.shortsId();
-
-        shortsRepository.findById(shortsId).orElseThrow(() -> new BusinessException(SHORTS_NOT_FOUND));
-
-        final ShortsLikeTimeLog shortsLikeTimeLog = shortsLikeTimeLogRepository.findByUserIdAndShortsId(user.getId(),shortsId)
-                .orElseThrow(() -> new BusinessException(SHORTS_LIKED_NOT_FOUND));
-
-        shortsLikeTimeLogRepository.deleteById(shortsLikeTimeLog.getId());
-        shortsRepository.decreaseLike(shortsId);
-
-        return Response.ok(null);
-    }
 
     @Transactional
     public Response<Void> createShortsComment(CreateShortsCommentRequestDto requestDto, User user) {
@@ -82,7 +62,7 @@ public class ShortsService {
     }
 
     @Transactional
-    public Response<Void> like(final User user, final ShortsLikeRequestDto dto) {
+    public Response<Void> like(final User user, final ShortsLikeCreateRequestDto dto) {
         final Long shortsId = dto.shortsId();
         final long time = dto.time();
         final Shorts shorts = shortsRepository.findById(shortsId).orElseThrow(() -> new BusinessException(SHORTS_NOT_FOUND));
@@ -95,6 +75,22 @@ public class ShortsService {
 
         return Response.ok(null);
     }
+
+    @Transactional
+    public Response<Void> dislike(final User user, final ShortsDislikeRequestDto dto) {
+        final Long shortsId = dto.shortsId();
+
+        shortsRepository.findById(shortsId).orElseThrow(() -> new BusinessException(SHORTS_NOT_FOUND));
+
+        final ShortsLikeTimeLog shortsLikeTimeLog = shortsLikeTimeLogRepository.findByUserIdAndShortsId(user.getId(),shortsId)
+                .orElseThrow(() -> new BusinessException(SHORTS_LIKED_NOT_FOUND));
+
+        shortsLikeTimeLogRepository.deleteById(shortsLikeTimeLog.getId());
+        shortsRepository.decreaseLike(shortsId);
+
+        return Response.ok(null);
+    }
+
 
     private List<ShortsAndLikedItemDto> getRecommendResult(User user, CursorPageResponse<ShortsItemDto> recommend) {
         return recommend.items().stream().map(item -> {
@@ -114,5 +110,13 @@ public class ShortsService {
         GetShortsCommentResponseDto responseDto = ShortsCommentMapper.toGetShortsCommentResponseDto(existedShortsComment);
 
         return Response.ok(responseDto);
+    }
+
+    public Response<ShortsLikeTimeResponseDto> getShortsLike(final long shortsId, final int duration) {
+        shortsRepository.findById(shortsId).orElseThrow(() -> new BusinessException(SHORTS_NOT_FOUND));
+        List<Object[]> results = shortsLikeTimeLogRepository.findAllShortsLikeWithTime(shortsId, duration);
+        List<ShortsLikeTimeResponseDto.ShortsLikeTimeLineDto> data = toShortsLikeTimeLineDto(results);
+
+        return Response.ok(new ShortsLikeTimeResponseDto(data));
     }
 }
