@@ -44,13 +44,21 @@ public class ShortsController {
     }
 
     @PostMapping("/like")
-    public Response<Void> like(@AuthenticationPrincipal final User user, @RequestBody @Valid final ShortsLikeRequestDto dto) {
+    public Response<Void> like(@AuthenticationPrincipal final User user,
+                               @RequestBody @Valid final ShortsLikeCreateRequestDto dto) {
         return shortsService.like(user, dto);
     }
 
     @PostMapping("/dislike")
-    public Response<Void> dislike(@AuthenticationPrincipal final User user, @RequestBody @Valid final ShortsDislikeRequestDto dto) {
+    public Response<Void> dislike(@AuthenticationPrincipal final User user,
+                                  @RequestBody @Valid final ShortsDislikeRequestDto dto) {
         return shortsService.dislike(user, dto);
+    }
+
+    @GetMapping("/like")
+    public Response<ShortsLikeTimeResponseDto> getShortsLike(@RequestParam long shortsId,
+                                                             @RequestParam @Positive int duration) {
+        return shortsService.getShortsLike(shortsId, duration);
     }
 
     @GetMapping("/comment")
