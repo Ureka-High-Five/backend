@@ -16,9 +16,9 @@ public record SubmitOnboardingRequestDto(
         List<Long> selectedContentIds,
 
         @Min(1900)
-        @Max(2017)
+        @Max(2025)
         @NotNull
-        Integer year,
+        Integer birthYear,
 
         @NotNull(message = "성별은 필수입니다.")
         Gender gender,
