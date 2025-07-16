@@ -6,6 +6,6 @@ public record ShortsLikeRequestDto(
         @NotNull
         long shortsId,
         @NotNull
-        long time
+        int duration
 ) {
 }
