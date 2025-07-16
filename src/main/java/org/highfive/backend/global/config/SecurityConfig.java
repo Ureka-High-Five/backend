@@ -45,7 +45,8 @@ public class SecurityConfig {
                                 "/auth/logout",
                                 "/user/info",
                                 "/content/init",
-                                "/content/recommend"
+                                "/content/recommend",
+                                "/content/search"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
