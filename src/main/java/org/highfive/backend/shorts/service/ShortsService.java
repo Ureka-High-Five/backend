@@ -71,7 +71,7 @@ public class ShortsService {
 
     public Response<GetShortsCommentResponseDto> getOneShortsComment(final Long shortsId,final Long time) {
 
-        final ShortsComment existedShortsComment = shortsCommentRepository.findFirstByShortsIdAndTimeOrderByCreatedAtDesc(shortsId,time).orElseGet(null);
+        final ShortsComment existedShortsComment = shortsCommentRepository.findFirstByShortsIdAndTimeOrderByCreatedAtDesc(shortsId,time).orElse(null);
 
         if(Objects.isNull(existedShortsComment)){
             return Response.ok(null);
