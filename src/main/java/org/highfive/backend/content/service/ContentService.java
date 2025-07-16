@@ -57,10 +57,6 @@ public class ContentService {
 
         List<Content> contents = contentRepository.searchByInput(keyword, cursor, Pageable.ofSize(size + 1));
 
-        if (contents.isEmpty()) {
-            throw new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND);
-        }
-
         final boolean hasNext = contents.size() > size;
         contents = hasNext ? contents.subList(0, size) : contents;
         final String nextCursor = hasNext ? contents.get(contents.size() - 1).getId().toString() : null;
