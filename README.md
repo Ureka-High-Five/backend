@@ -36,8 +36,8 @@ OTT 서비스의 대표적인 문제인 **개인 취향에 맞는 콘텐츠를 �
 ##
 
 ### 🗃 ERD
+<img width="3104" height="1711" alt="리드미_Erd" src="https://github.com/user-attachments/assets/393a3217-bbc0-444a-81d9-593f520e25d8" />
 
-<img width="1542" height="858" alt="image" src="https://github.com/user-attachments/assets/b876599c-4d52-4582-84d0-b32186370787" />
 
 
 >[▶️ERD CLOUD 바로가기](https://www.erdcloud.com/d/GLGXxrdRRm9f6ZaKE)
