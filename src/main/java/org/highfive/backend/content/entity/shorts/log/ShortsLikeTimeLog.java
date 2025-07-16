@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.highfive.backend.content.entity.shorts.Shorts;
+import org.highfive.backend.global.entity.BaseEntity;
 import org.highfive.backend.user.entity.User;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -17,7 +18,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ShortsLikeTimeLog {
+public class ShortsLikeTimeLog extends BaseEntity {
 
     @Id @GeneratedValue
     private Long id;
