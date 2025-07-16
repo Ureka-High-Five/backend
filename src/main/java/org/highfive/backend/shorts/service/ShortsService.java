@@ -7,6 +7,7 @@ import static org.highfive.backend.shorts.exception.ShortsErrorCode.SHORTS_LIKED
 import static org.highfive.backend.shorts.exception.ShortsErrorCode.SHORTS_NOT_FOUND;
 
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.Positive;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.content.dto.VideoType;
@@ -19,6 +20,7 @@ import org.highfive.backend.shorts.dto.request.ShortsDislikeRequestDto;
 import org.highfive.backend.shorts.dto.request.ShortsLikeRequestDto;
 import org.highfive.backend.shorts.dto.response.RecommendShortsResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsAndLikedItemDto;
+import org.highfive.backend.shorts.dto.response.ShortsCommentsByTimeResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsItemDto;
 import org.highfive.backend.shorts.entity.Shorts;
 import org.highfive.backend.shorts.entity.ShortsComment;
@@ -97,5 +99,10 @@ public class ShortsService {
             boolean liked = shortsLikeTimeLogRepository.existsByUserIdAndShortsId(user.getId(), item.shortsId());
             return new ShortsAndLikedItemDto(item.contentId(), item.contentTitle(), item.shortsId(), item.shortsUrl(), liked);
         }).toList();
+    }
+
+    public Response<List<ShortsCommentsByTimeResponseDto>> commentsByTime(Long shortsId, int time, int duration) {
+        List<ShortsCommentsByTimeResponseDto> result = shortsCommentRepository.findByTimeAndDuration(shortsId, time, duration);
+        return Response.ok(result);
     }
 }

@@ -48,9 +48,9 @@ public class ShortsController {
     @GetMapping("/{shortsId}/comments")
     public Response<List<ShortsCommentsByTimeResponseDto>> commentsByTime(
         @PathVariable Long shortsId,
-        @RequestParam @Positive Integer duration,
-        @RequestParam @Positive Integer time) {
-        return shortsService.commentsByTime(shortsId, duration, time);
+        @RequestParam @Positive Integer time,
+        @RequestParam @Positive Integer duration) {
+        return shortsService.commentsByTime(shortsId, time, duration);
     }
 
     @PostMapping("/like")
