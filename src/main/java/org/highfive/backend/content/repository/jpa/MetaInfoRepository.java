@@ -1,8 +1,8 @@
 package org.highfive.backend.content.repository.jpa;
 
 import java.util.List;
-import org.highfive.backend.content.entity.metadata.MetaInfo;
-import org.highfive.backend.content.entity.metadata.MetaType;
+import org.highfive.backend.metadata.entity.MetaInfo;
+import org.highfive.backend.metadata.entity.MetaType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

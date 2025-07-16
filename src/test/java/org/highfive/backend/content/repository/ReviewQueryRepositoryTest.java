@@ -8,7 +8,7 @@
 //import org.highfive.backend.common.fixture.ContentFixture;
 //import org.highfive.backend.common.fixture.ReviewFixture;
 //import org.highfive.backend.common.fixture.UserFixture;
-//import org.highfive.backend.content.dto.response.ReviewSimpleResponseDto;
+//import org.highfive.backend.review.dto.response.ReviewSimpleResponseDto;
 //import org.highfive.backend.content.entity.Content;
 //import org.highfive.backend.global.dto.CursorPageResponse;
 //import org.highfive.backend.user.entity.User;

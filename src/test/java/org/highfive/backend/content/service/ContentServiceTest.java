@@ -12,13 +12,11 @@ import org.highfive.backend.common.fixture.MetaInfoContentsFixture;
 import org.highfive.backend.common.fixture.MetaInfoFixture;
 import org.highfive.backend.content.dto.response.ContentDetailResponseDto;
 import org.highfive.backend.content.entity.Content;
-import org.highfive.backend.content.entity.metadata.MetaInfo;
-import org.highfive.backend.content.entity.metadata.MetaInfoContents;
-import org.highfive.backend.content.entity.metadata.MetaType;
-import org.highfive.backend.content.repository.MetaInfoContentsRepository;
+import org.highfive.backend.metadata.entity.MetaInfo;
+import org.highfive.backend.metadata.entity.MetaInfoContents;
+import org.highfive.backend.metadata.entity.MetaType;
 import org.highfive.backend.content.exception.ContentErrorCode;
-import org.highfive.backend.content.repository.ContentRepository;
-import org.highfive.backend.content.repository.QueryDslContentRepository;
+import org.highfive.backend.content.repository.querydsl.ContentQueryRepositoryImpl;
 import org.highfive.backend.global.code.SuccessCode;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
@@ -33,7 +31,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class ContentServiceTest {
 
     @Mock
-    private QueryDslContentRepository queryDslContentRepository;
+    private ContentQueryRepositoryImpl contentQueryRepositoryImpl;
 
     @InjectMocks
     private ContentService contentService;
@@ -60,7 +58,7 @@ public class ContentServiceTest {
 
         Content contentWithMeta = ContentFixture.createContentWithMetaInfo(content, metaInfoContents);
 
-        when(queryDslContentRepository.findWithMetaInfoById(contentId)).thenReturn(Optional.of(contentWithMeta));
+        when(contentQueryRepositoryImpl.findWithMetaInfoById(contentId)).thenReturn(Optional.of(contentWithMeta));
 
         //when
         Response<ContentDetailResponseDto> response = contentService.getContentDetail(contentId);
@@ -83,7 +81,7 @@ public class ContentServiceTest {
     public void getContentDetail_noContentId() {
         //given
         Long contentId = 93498579L;
-        when(queryDslContentRepository.findWithMetaInfoById(contentId)).thenReturn(Optional.empty());
+        when(contentQueryRepositoryImpl.findWithMetaInfoById(contentId)).thenReturn(Optional.empty());
 
         //when
         BusinessException exception = assertThrows(BusinessException.class, () -> {

@@ -4,10 +4,10 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 import org.highfive.backend.content.dto.request.AdminUpdateContentRequestDto;
-import org.highfive.backend.content.entity.metadata.Episode;
-import org.highfive.backend.content.entity.metadata.MetaInfoContents;
-import org.highfive.backend.content.entity.metadata.Series;
-import org.highfive.backend.content.entity.shorts.Shorts;
+import org.highfive.backend.metadata.entity.Episode;
+import org.highfive.backend.metadata.entity.MetaInfoContents;
+import org.highfive.backend.metadata.entity.Series;
+import org.highfive.backend.shorts.entity.Shorts;
 import org.highfive.backend.global.entity.BaseEntity;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 

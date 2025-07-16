@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
-import org.highfive.backend.content.entity.metadata.MetaType;
+import org.highfive.backend.metadata.entity.MetaType;
 import org.highfive.backend.content.entity.metadata.QMetaInfo;
 import org.highfive.backend.content.entity.metadata.QMetaInfoContents;
 import org.springframework.stereotype.Component;

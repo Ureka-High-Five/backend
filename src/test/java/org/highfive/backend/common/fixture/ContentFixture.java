@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.content.entity.ContentType;
-import org.highfive.backend.content.entity.metadata.MetaInfoContents;
+import org.highfive.backend.metadata.entity.MetaInfoContents;
 
 public class ContentFixture {
 

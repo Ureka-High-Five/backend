@@ -22,12 +22,12 @@ import org.highfive.backend.content.dto.response.MostPopularContentPerGenreDto;
 import org.highfive.backend.content.dto.response.OnboardingContentDto;
 import org.highfive.backend.content.dto.response.OnboardingInitContentsResponseDto;
 import org.highfive.backend.content.dto.response.OnboardingSelectContentResponseDto;
-import org.highfive.backend.content.entity.metadata.MetaInfo;
-import org.highfive.backend.content.entity.metadata.MetaType;
+import org.highfive.backend.metadata.entity.MetaInfo;
+import org.highfive.backend.metadata.entity.MetaType;
 import org.highfive.backend.content.exception.ContentErrorCode;
-import org.highfive.backend.content.repository.ContentRepository;
+import org.highfive.backend.content.repository.jpa.ContentRepository;
 import org.highfive.backend.content.repository.MetaInfoContentsRepository;
-import org.highfive.backend.content.repository.QueryDslContentRepository;
+import org.highfive.backend.content.repository.querydsl.ContentQueryRepositoryImpl;
 import org.highfive.backend.content.repository.jpa.MetaInfoRepository;
 import org.highfive.backend.global.client.fastapi.FastApiClient;
 import org.highfive.backend.global.client.fastapi.dto.response.FastApiOnboardingResponseDto;
@@ -52,7 +52,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class OnboardingServiceTest {
 
     @Mock
-    QueryDslContentRepository queryDslRepo;
+    ContentQueryRepositoryImpl queryDslRepo;
     @InjectMocks
     OnboardingService onboardingService;
     @Mock
