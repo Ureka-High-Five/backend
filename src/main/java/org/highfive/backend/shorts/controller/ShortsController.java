@@ -1,4 +1,4 @@
-package org.highfive.backend.content.controller;
+package org.highfive.backend.shorts.controller;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;

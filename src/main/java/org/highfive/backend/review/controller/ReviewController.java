@@ -1,4 +1,4 @@
-package org.highfive.backend.content.controller;
+package org.highfive.backend.review.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
