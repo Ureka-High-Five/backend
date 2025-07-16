@@ -29,6 +29,7 @@ import java.util.Objects;
 
 import static org.highfive.backend.shorts.dto.mapper.ShortsLikeTimeLogMapper.toShorts;
 import static org.highfive.backend.shorts.dto.mapper.ShortsLikeTimeLogMapper.toShortsLikeTimeLineDto;
+import static org.highfive.backend.shorts.dto.mapper.ShortsMapper.*;
 import static org.highfive.backend.shorts.exception.ShortsErrorCode.*;
 
 @Service
@@ -128,10 +129,8 @@ public class ShortsService {
             results = results.subList(0, size);
         }
 
-        String nextCursor = hasNext ? results.get(results.size() - 1).getId().toString() : null;
-        final List<ShortsLikedUserItemDto> shortsLikedUserItemDtos = ShortsMapper.toShortsLikedUserResponseDtos(results);
-
-        return Response.ok(new CursorPageResponse<>(shortsLikedUserItemDtos , hasNext, nextCursor));
+        final String nextCursor = hasNext ? results.get(results.size() - 1).getId().toString() : null;
+        return Response.ok(new CursorPageResponse<>(toShortsLikedUserResponseDtos(results) , hasNext, nextCursor));
     }
 
     private List<ShortsAndLikedItemDto> getRecommendResult(final User user, final CursorPageResponse<ShortsItemDto> recommend) {
