@@ -49,7 +49,7 @@ public class ShortsController {
     @GetMapping("/{shortsId}/comments")
     public Response<List<ShortsCommentsByTimeResponseDto>> commentsByTime(
         @PathVariable Long shortsId,
-        @RequestParam @Positive Integer time,
+        @RequestParam @Positive Long time,
         @RequestParam @Positive Integer duration) {
         return shortsService.commentsByTime(shortsId, time, duration);
     }
