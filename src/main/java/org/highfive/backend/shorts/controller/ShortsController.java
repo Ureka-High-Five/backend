@@ -35,9 +35,10 @@ public class ShortsController {
     @GetMapping
     public Response<RecommendShortsResponseDto> recommendShorts(
             @RequestParam(required = false) @Positive final Long cursor,
-            @RequestParam(defaultValue = "5") @Positive final Integer size
+            @RequestParam(defaultValue = "5", required = false) @Positive final Integer size,
+            @AuthenticationPrincipal User user
     ) {
-        return shortsService.recommendShorts(cursor, size);
+        return shortsService.recommendShorts(cursor, size, user);
     }
 
     @PostMapping("/like")
