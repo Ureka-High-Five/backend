@@ -2,11 +2,13 @@ package org.highfive.backend.shorts.controller;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.shorts.dto.request.ShortsDislikeRequestDto;
 import org.highfive.backend.shorts.dto.request.ShortsLikeRequestDto;
 import org.highfive.backend.shorts.dto.response.RecommendShortsResponseDto;
 import org.highfive.backend.shorts.dto.request.CreateShortsCommentRequestDto;
+import org.highfive.backend.shorts.dto.response.ShortsCommentsByTimeResponseDto;
 import org.highfive.backend.shorts.service.ShortsService;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.user.entity.User;
@@ -44,7 +46,7 @@ public class ShortsController {
     }
 
     @GetMapping("/{shortsId}/comments")
-    public Response<ShortsCommentsByTimeResponseDto> commentsByTime(
+    public Response<List<ShortsCommentsByTimeResponseDto>> commentsByTime(
         @PathVariable Long shortsId,
         @RequestParam @Positive Integer duration,
         @RequestParam @Positive Integer time) {
