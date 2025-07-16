@@ -10,4 +10,8 @@ public interface ShortsRepository extends JpaRepository<Shorts, Long> {
     @Modifying
     @Query("update Shorts s set s.likeCount = s.likeCount + 1 where s.id = :id")
     void increaseLike(Long id);
+
+    @Modifying
+    @Query("update Shorts s set s.likeCount = s.likeCount - 1 where s.id = :id and s.likeCount > 0")
+    void decreaseLike(Long id);
 }

@@ -1,15 +1,13 @@
 package org.highfive.backend.shorts.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.highfive.backend.global.entity.BaseEntity;
 import org.highfive.backend.user.entity.User;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
+@Getter
 @Builder
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)

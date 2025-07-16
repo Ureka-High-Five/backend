@@ -3,6 +3,7 @@ package org.highfive.backend.shorts.controller;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
+import org.highfive.backend.shorts.dto.request.ShortsDislikeRequestDto;
 import org.highfive.backend.shorts.dto.request.ShortsLikeRequestDto;
 import org.highfive.backend.shorts.dto.response.GetShortsCommentResponseDto;
 import org.highfive.backend.shorts.dto.response.RecommendShortsResponseDto;
@@ -36,14 +37,20 @@ public class ShortsController {
     @GetMapping
     public Response<RecommendShortsResponseDto> recommendShorts(
             @RequestParam(required = false) @Positive final Long cursor,
-            @RequestParam(defaultValue = "5") @Positive final Integer size
+            @RequestParam(defaultValue = "5", required = false) @Positive final Integer size,
+            @AuthenticationPrincipal User user
     ) {
-        return shortsService.recommendShorts(cursor, size);
+        return shortsService.recommendShorts(cursor, size, user);
     }
 
     @PostMapping("/like")
     public Response<Void> like(@AuthenticationPrincipal final User user, @RequestBody @Valid final ShortsLikeRequestDto dto) {
         return shortsService.like(user, dto);
+    }
+
+    @PostMapping("/dislike")
+    public Response<Void> dislike(@AuthenticationPrincipal final User user, @RequestBody @Valid final ShortsDislikeRequestDto dto) {
+        return shortsService.dislike(user, dto);
     }
 
     @GetMapping("/comment")
