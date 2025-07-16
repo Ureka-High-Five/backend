@@ -8,6 +8,7 @@ import org.highfive.backend.global.dto.CursorPageResponse;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.shorts.dto.mapper.ShortsCommentMapper;
+import org.highfive.backend.shorts.dto.mapper.ShortsMapper;
 import org.highfive.backend.shorts.dto.request.CreateShortsCommentRequestDto;
 import org.highfive.backend.shorts.dto.request.ShortsDislikeRequestDto;
 import org.highfive.backend.shorts.dto.request.ShortsLikeCreateRequestDto;
@@ -20,6 +21,7 @@ import org.highfive.backend.shorts.repository.jpa.ShortsLikeTimeLogRepository;
 import org.highfive.backend.shorts.repository.jpa.ShortsRepository;
 import org.highfive.backend.shorts.repository.querydsl.ShortsQueryRepository;
 import org.highfive.backend.user.entity.User;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -91,14 +93,6 @@ public class ShortsService {
         return Response.ok(null);
     }
 
-
-    private List<ShortsAndLikedItemDto> getRecommendResult(User user, CursorPageResponse<ShortsItemDto> recommend) {
-        return recommend.items().stream().map(item -> {
-            boolean liked = shortsLikeTimeLogRepository.existsByUserIdAndShortsId(user.getId(), item.shortsId());
-            return new ShortsAndLikedItemDto(item.contentId(), item.contentTitle(), item.shortsId(), item.shortsUrl(), liked);
-        }).toList();
-    }
-
     public Response<GetShortsCommentResponseDto> getOneShortsComment(final Long shortsId,final Long time) {
 
         final ShortsComment existedShortsComment = shortsCommentRepository.findFirstByShortsIdAndTimeOrderByCreatedAtDesc(shortsId,time).orElse(null);
@@ -118,5 +112,32 @@ public class ShortsService {
         List<ShortsLikeTimeResponseDto.ShortsLikeTimeLineDto> data = toShortsLikeTimeLineDto(results);
 
         return Response.ok(new ShortsLikeTimeResponseDto(data));
+    }
+
+    public Response<CursorPageResponse<ShortsLikedUserItemDto>> likedShorts(final User user, final String cursor, final int size) {
+        Long cursorId = (cursor != null) ? Long.parseLong(cursor) : Long.MAX_VALUE;
+
+        List<Shorts> results = shortsLikeTimeLogRepository.findLikedShorts(
+                user.getId(),
+                cursorId,
+                PageRequest.of(0, size + 1)
+        );
+
+        final boolean hasNext = results.size() > size;
+        if (hasNext) {
+            results = results.subList(0, size);
+        }
+
+        String nextCursor = hasNext ? results.get(results.size() - 1).getId().toString() : null;
+        final List<ShortsLikedUserItemDto> shortsLikedUserItemDtos = ShortsMapper.toShortsLikedUserResponseDtos(results);
+
+        return Response.ok(new CursorPageResponse<>(shortsLikedUserItemDtos , hasNext, nextCursor));
+    }
+
+    private List<ShortsAndLikedItemDto> getRecommendResult(final User user, final CursorPageResponse<ShortsItemDto> recommend) {
+        return recommend.items().stream().map(item -> {
+            boolean liked = shortsLikeTimeLogRepository.existsByUserIdAndShortsId(user.getId(), item.shortsId());
+            return new ShortsAndLikedItemDto(item.contentId(), item.contentTitle(), item.shortsId(), item.shortsUrl(), liked);
+        }).toList();
     }
 }
