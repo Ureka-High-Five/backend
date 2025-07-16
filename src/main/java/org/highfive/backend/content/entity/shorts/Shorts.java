@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.content.entity.shorts.log.ShortsLikeTimeLog;
+import org.highfive.backend.global.entity.BaseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Shorts {
+public class Shorts extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -17,6 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 import org.highfive.backend.content.entity.Content;
+import org.highfive.backend.global.entity.BaseEntity;
 import org.highfive.backend.user.entity.User;
 
 @Entity
@@ -26,7 +27,7 @@ import org.highfive.backend.user.entity.User;
 @AllArgsConstructor
 @DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Review {
+public class Review extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,14 +46,6 @@ public class Review {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "content_id")
     private Content content;
-
-    @Builder
-    private Review(int rating, String reviewText, User user, Content content) {
-        this.rating = rating;
-        this.reviewText = reviewText;
-        this.user = user;
-        this.content = content;
-    }
 
     public static Review of(int rating, String reviewText, User user, Content content) {
         return Review.builder()

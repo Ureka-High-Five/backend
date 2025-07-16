@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 import org.highfive.backend.content.entity.Content;
+import org.highfive.backend.global.entity.BaseEntity;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
@@ -15,7 +16,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @DynamicUpdate
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Series {
+public class Series extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

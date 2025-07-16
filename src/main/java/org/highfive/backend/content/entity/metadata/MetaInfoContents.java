@@ -13,13 +13,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.highfive.backend.content.entity.Content;
+import org.highfive.backend.global.entity.BaseEntity;
 
 @Entity
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MetaInfoContents {
+public class MetaInfoContents extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
