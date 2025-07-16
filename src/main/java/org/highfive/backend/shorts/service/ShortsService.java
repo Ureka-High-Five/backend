@@ -7,10 +7,12 @@ import org.highfive.backend.content.dto.VideoType;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.shorts.dto.mapper.ShortsCommentMapper;
+import org.highfive.backend.shorts.dto.mapper.ShortsLikeTimeLogMapper;
 import org.highfive.backend.shorts.dto.request.CreateShortsCommentRequestDto;
 import org.highfive.backend.shorts.dto.request.ShortsDislikeRequestDto;
-import org.highfive.backend.shorts.dto.request.ShortsLikeRequestDto;
+import org.highfive.backend.shorts.dto.request.ShortsLikeCreateRequestDto;
 import org.highfive.backend.shorts.dto.response.RecommendShortsResponseDto;
+import org.highfive.backend.shorts.dto.response.ShortsLikeTimeResponseDto;
 import org.highfive.backend.shorts.entity.Shorts;
 import org.highfive.backend.shorts.entity.ShortsComment;
 import org.highfive.backend.shorts.entity.ShortsLikeTimeLog;
@@ -20,6 +22,8 @@ import org.highfive.backend.shorts.repository.jpa.ShortsRepository;
 import org.highfive.backend.shorts.repository.querydsl.ShortsQueryRepository;
 import org.highfive.backend.user.entity.User;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 import static org.highfive.backend.shorts.dto.mapper.ShortsLikeTimeLogMapper.toShorts;
 import static org.highfive.backend.shorts.exception.ShortsErrorCode.*;
@@ -54,7 +58,7 @@ public class ShortsService {
     }
 
     @Transactional
-    public Response<Void> like(final User user, final ShortsLikeRequestDto dto) {
+    public Response<Void> like(final User user, final ShortsLikeCreateRequestDto dto) {
         final Long shortsId = dto.shortsId();
         final long time = dto.time();
         final Shorts shorts = shortsRepository.findById(shortsId).orElseThrow(() -> new BusinessException(SHORTS_NOT_FOUND));
@@ -81,5 +85,13 @@ public class ShortsService {
         shortsRepository.decreaseLike(shortsId);
 
         return Response.ok(null);
+    }
+
+    public Response<ShortsLikeTimeResponseDto> getShortsLike(final long shortsId, final int duration) {
+        shortsRepository.findById(shortsId).orElseThrow(() -> new BusinessException(SHORTS_NOT_FOUND));
+        List<Object[]> results = shortsLikeTimeLogRepository.findAllShortsLikeWithTime(shortsId, duration);
+        List<ShortsLikeTimeResponseDto.ShortsLikeTimeLineDto> data = ShortsLikeTimeLogMapper.toShortsLikeTimeLineDto(results);
+
+        return Response.ok(new ShortsLikeTimeResponseDto(data));
     }
 }
