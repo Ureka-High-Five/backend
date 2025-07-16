@@ -6,26 +6,27 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.content.dto.VideoType;
 import org.highfive.backend.global.dto.CursorPageResponse;
+import org.highfive.backend.global.dto.Response;
+import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.shorts.dto.mapper.ShortsCommentMapper;
 import org.highfive.backend.shorts.dto.request.CreateShortsCommentRequestDto;
+import org.highfive.backend.shorts.dto.request.ShortsDislikeRequestDto;
 import org.highfive.backend.shorts.dto.request.ShortsLikeRequestDto;
 import org.highfive.backend.shorts.dto.response.RecommendShortsResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsAndLikedItemDto;
 import org.highfive.backend.shorts.dto.response.ShortsItemDto;
 import org.highfive.backend.shorts.entity.Shorts;
 import org.highfive.backend.shorts.entity.ShortsComment;
-import org.highfive.backend.shorts.exception.ShortsErrorCode;
+import org.highfive.backend.shorts.entity.ShortsLikeTimeLog;
 import org.highfive.backend.shorts.repository.jpa.ShortsCommentRepository;
 import org.highfive.backend.shorts.repository.jpa.ShortsLikeTimeLogRepository;
 import org.highfive.backend.shorts.repository.jpa.ShortsRepository;
 import org.highfive.backend.shorts.repository.querydsl.ShortsQueryRepository;
-import org.highfive.backend.global.dto.Response;
-import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.user.entity.User;
 import org.springframework.stereotype.Service;
 
 import static org.highfive.backend.shorts.dto.mapper.ShortsLikeTimeLogMapper.toShorts;
-import static org.highfive.backend.shorts.exception.ShortsErrorCode.SHORTS_NOT_FOUND;
+import static org.highfive.backend.shorts.exception.ShortsErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +36,21 @@ public class ShortsService {
     private final ShortsRepository shortsRepository;
     private final ShortsCommentRepository shortsCommentRepository;
     private final ShortsQueryRepository shortsQueryRepository;
+  
+    @Transactional
+    public Response<Void> dislike(final User user, final ShortsDislikeRequestDto dto) {
+        final Long shortsId = dto.shortsId();
+
+        shortsRepository.findById(shortsId).orElseThrow(() -> new BusinessException(SHORTS_NOT_FOUND));
+
+        final ShortsLikeTimeLog shortsLikeTimeLog = shortsLikeTimeLogRepository.findByUserIdAndShortsId(user.getId(),shortsId)
+                .orElseThrow(() -> new BusinessException(SHORTS_LIKED_NOT_FOUND));
+
+        shortsLikeTimeLogRepository.deleteById(shortsLikeTimeLog.getId());
+        shortsRepository.decreaseLike(shortsId);
+
+        return Response.ok(null);
+    }
 
     @Transactional
     public Response<Void> createShortsComment(CreateShortsCommentRequestDto requestDto, User user) {
@@ -62,11 +78,11 @@ public class ShortsService {
     @Transactional
     public Response<Void> like(final User user, final ShortsLikeRequestDto dto) {
         final Long shortsId = dto.shortsId();
-        final Long time = dto.time();
-        final Shorts shorts = shortsRepository.findById(shortsId).orElseThrow(() -> new BusinessException(ShortsErrorCode.SHORTS_NOT_FOUND));
+        final long time = dto.time();
+        final Shorts shorts = shortsRepository.findById(shortsId).orElseThrow(() -> new BusinessException(SHORTS_NOT_FOUND));
 
-        if(shortsLikeTimeLogRepository.existsByUserIdAndShortsId(user.getId(), shortsId)) {
-            throw new BusinessException(ShortsErrorCode.SHORTS_ALREADY_LIKED);
+        if (shortsLikeTimeLogRepository.existsByUserIdAndShortsId(user.getId(), shortsId)) {
+            throw new BusinessException(SHORTS_ALREADY_LIKED);
         }
         shortsLikeTimeLogRepository.save(toShorts(user, shorts, time));
         shortsRepository.increaseLike(shortsId);
