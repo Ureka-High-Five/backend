@@ -9,7 +9,8 @@ public record KakaoUserResponseDto(
         KakaoAccount kakaoAccount
 ) {
         public record KakaoAccount(
-                KakaoProfile profile
+                KakaoProfile profile,
+                String email
         ) {}
 
         public record KakaoProfile(

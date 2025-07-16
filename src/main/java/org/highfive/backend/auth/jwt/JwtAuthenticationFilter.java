@@ -32,6 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final String REISSUE = "/auth/reissue";
     private final String ONBOARDING_INIT = "/content/init";
     private final String ONBOARDING_SELECT = "/content/recommend";
+    private final String CONTENT_SEARCH = "/content/search";
     private final String OPTIONS = "OPTIONS";
 
     private final ObjectMapper objectMapper;
@@ -53,6 +54,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 || requestURI.equals(USER_INFO)
                 || requestURI.equals(REISSUE)
                 || requestURI.equals(ONBOARDING_INIT)
+                || requestURI.equals(CONTENT_SEARCH)
                 || isOnboardingSelect(request, requestURI)) {
             filterChain.doFilter(request, response);
             return;

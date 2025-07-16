@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -282,7 +281,7 @@ class AuthServiceTest {
 
     private void mockKakaoUser() {
         KakaoUserResponseDto.KakaoProfile profile = new KakaoUserResponseDto.KakaoProfile(NICKNAME, "http://image.url");
-        KakaoUserResponseDto.KakaoAccount account = new KakaoUserResponseDto.KakaoAccount(profile);
+        KakaoUserResponseDto.KakaoAccount account = new KakaoUserResponseDto.KakaoAccount(profile, "abc@abc.com");
         KakaoUserResponseDto userInfo = new KakaoUserResponseDto(KAKAO_USER_ID, account);
         when(kakaoOAuthClient.requestUser(ACCESS_TOKEN)).thenReturn(userInfo);
     }
