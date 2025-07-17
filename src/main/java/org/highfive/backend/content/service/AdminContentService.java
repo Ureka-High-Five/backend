@@ -147,7 +147,11 @@ public class AdminContentService {
 
     public Response<Void> deleteContent(long contentId) {
         Content content = contentRepository.findById(contentId).orElseThrow(() -> new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND));
-        content.delete();
+        boolean isDeleted = content.delete();
+        if (!isDeleted) {
+            throw new BusinessException(ContentErrorCode.CONTENT_ALREADY_DELETED);
+        }
+        
         return Response.ok(null);
     }
 }
