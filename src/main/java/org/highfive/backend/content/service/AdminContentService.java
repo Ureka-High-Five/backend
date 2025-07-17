@@ -144,4 +144,10 @@ public class AdminContentService {
             throw new BusinessException(GlobalErrorCode.ACCESS_DENIED);
         }
     }
+
+    public Response<Void> deleteContent(long contentId) {
+        Content content = contentRepository.findById(contentId).orElseThrow(() -> new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND));
+        content.delete();
+        return Response.ok(null);
+    }
 }
