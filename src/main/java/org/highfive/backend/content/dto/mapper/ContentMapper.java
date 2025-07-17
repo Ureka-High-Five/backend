@@ -20,7 +20,7 @@ public class ContentMapper {
     }
 
     public static SearchContentResponseDto toSearchContentResponseDto(final Content content) {
-        return new SearchContentResponseDto(content.getId(), content.getPostUrl(), content.getTitle(), content.getOpenDate().getYear());
+        return new SearchContentResponseDto(content.getId(), content.getThumbnailUrl(), content.getTitle(), content.getOpenDate().getYear());
     }
 
     public static CursorPageResponse<SearchContentResponseDto> toSearchContentResponseDto(final List<Content> contents, final boolean hasNext, final String nextCursor) {
