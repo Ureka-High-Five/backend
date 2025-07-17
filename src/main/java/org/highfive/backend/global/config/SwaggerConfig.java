@@ -20,7 +20,7 @@ import org.springframework.http.HttpHeaders;
         ),
 
         servers = {
-                @Server(url = "https://lead-me.site", description = "Deploy Server URL"),
+                @Server(url = "https://api.lead-me.site", description = "Deploy Server URL"),
                 @Server(url = "http://localhost:8080", description = "Local Host URL")}
 )
 @Configuration

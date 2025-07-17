@@ -62,6 +62,7 @@ class ShortsIntegrationTest {
         for (int i = 0; i < NUMBER_OF_THREADS; i++) {
             User user = userRepository.save(User.builder()
                     .name("User " + i)
+                            .email("user" + i + "@example.com")
                     .kakaoUserId("test-user-" + i)
                     .userRole(UserRole.USER)
                     .profileUrl("https://example.com/profile.jpg")

@@ -13,7 +13,8 @@ public record HomeContentsResponseDto(
             Long contentId,
             String posterUrl,
             String description,
-            List<String> genre
+            List<String> genre,
+            String title
     ) {}
 
     public record PersonalRecommendDto(

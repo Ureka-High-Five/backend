@@ -41,11 +41,12 @@ public class AuthService {
         final String token = kakaoOAuthClient.requestToken(code).accessToken();
         final KakaoUserResponseDto userInfo = kakaoOAuthClient.requestUser(token);
         final String kakaoUserId = userInfo.id();
+        final String email = userInfo.kakaoAccount().email();
 
         User user = userRepository.findByKakaoUserId(kakaoUserId).orElse(null);
 
         if (user == null) {
-            user = saveUser(userInfo, UserRole.TEMP_USER);
+            user = saveUser(userInfo, UserRole.TEMP_USER, email);
             String nickname = userInfo.kakaoAccount().profile().nickname();
             return onboardingResponse(user.getId(), nickname);
         }
@@ -87,8 +88,8 @@ public class AuthService {
         return new Response<>(OK.getCode(), null, OK.getMessage());
     }
 
-    private User saveUser(final KakaoUserResponseDto userInfo, final UserRole role) {
-        final User user = UserMapper.from(userInfo, role);
+    private User saveUser(final KakaoUserResponseDto userInfo, final UserRole role, final String email) {
+        final User user = UserMapper.from(userInfo, role, email);
         return userRepository.save(user);
     }
 

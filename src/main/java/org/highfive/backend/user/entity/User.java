@@ -44,6 +44,9 @@ public class User extends BaseEntity {
 
     private String embedding;
 
+    @Column(nullable = false)
+    private String email;
+
     private float averageRating;
 
     private Long viewCount;

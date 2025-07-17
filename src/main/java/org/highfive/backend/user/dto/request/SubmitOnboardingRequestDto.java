@@ -12,7 +12,7 @@ public record SubmitOnboardingRequestDto(
         Long userId,
 
         @NotNull(message = "작품 선택은 필수입니다.")
-        @Size(min = 10, max = 10, message = "총 10개의 작품을 선택해야 합니다.")
+        @Size(min = 10, message = "최소 10개의 작품을 선택해야 합니다.")
         List<Long> selectedContentIds,
 
         @Min(1900)
