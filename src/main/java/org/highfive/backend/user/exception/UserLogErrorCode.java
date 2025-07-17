@@ -1,19 +1,17 @@
-package org.highfive.backend.content.exception;
+package org.highfive.backend.user.exception;
 
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.global.code.ErrorCode;
-import org.springframework.boot.autoconfigure.graphql.GraphQlProperties.Http;
 import org.springframework.http.HttpStatus;
 
 @RequiredArgsConstructor
-public enum ContentErrorCode implements ErrorCode {
+public enum UserLogErrorCode implements ErrorCode {
 
-    CONTENT_NOT_FOUND(40402, "존재하지 않는 컨텐츠입니다.", HttpStatus.NOT_FOUND),
-    VIDEO_TYPE_NOT_FOUND(40411, "존재하지 않는 Video Type입니다.", HttpStatus.NOT_FOUND);
+    INVALID_WATCH_TIME(40003,"시청시간이 컨텐츠의 러닝 타임보다 깁니다.", HttpStatus.BAD_REQUEST);
 
     private final int code;
     private final String message;
-    private final HttpStatus httpStatus;
+    private final HttpStatus status;
 
     @Override
     public int getCode() {
@@ -27,6 +25,6 @@ public enum ContentErrorCode implements ErrorCode {
 
     @Override
     public HttpStatus getHttpStatus() {
-        return this.httpStatus;
+        return this.status;
     }
 }
