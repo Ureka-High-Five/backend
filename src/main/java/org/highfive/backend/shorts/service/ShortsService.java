@@ -162,13 +162,6 @@ public class ShortsService {
         response.addAll(result.subList(0, Math.min(result.size(), remain)));
         return response.size() == 5;
     }
-  
-    private List<ShortsAndLikedItemDto> getRecommendResult(User user, CursorPageResponse<ShortsItemDto> recommend) {
-        return recommend.items().stream().map(item -> {
-            boolean liked = shortsLikeTimeLogRepository.existsByUserIdAndShortsId(user.getId(), item.shortsId());
-            return new ShortsAndLikedItemDto(item.contentId(), item.contentTitle(), item.shortsId(), item.shortsUrl(), liked);
-        }).toList();
-    }
 
     private List<ShortsAndLikedItemDto> getRecommendResult(final User user, final CursorPageResponse<ShortsItemDto> recommend) {
         return recommend.items().stream().map(item -> {
