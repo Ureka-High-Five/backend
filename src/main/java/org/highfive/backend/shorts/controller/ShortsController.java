@@ -96,8 +96,8 @@ public class ShortsController {
     @GetMapping("/shorts/{shortsId}/comments")
     public Response<CursorPageResponse<ShortsCommentsByIdResponseDto>> commentsById(
             @PathVariable Long shortsId,
-            @RequestParam @Positive Long cursor,
-            @RequestParam @Positive Integer size
+            @RequestParam(required = false) @Positive Long cursor,
+            @RequestParam(required = false, defaultValue = "10") @Positive Integer size
     ) {
         return shortsService.commentsByIdAndCursor(shortsId, cursor, size);
     }
