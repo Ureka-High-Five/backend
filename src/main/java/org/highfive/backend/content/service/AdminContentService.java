@@ -66,6 +66,17 @@ public class AdminContentService {
         return Response.ok(new AdminUpdateContentResponseDto(content.getId()));
     }
 
+    @Transactional
+    public Response<Void> deleteContent(long contentId) {
+        Content content = contentRepository.findById(contentId).orElseThrow(() -> new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND));
+        boolean isDeleted = content.delete();
+        if (!isDeleted) {
+            throw new BusinessException(ContentErrorCode.CONTENT_ALREADY_DELETED);
+        }
+
+        return Response.ok(null);
+    }
+
     private Content updateContent(final AdminUpdateContentRequestDto request) {
         final Content content = contentRepository.findById(request.contentId()).orElseThrow(() -> new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND));
         content.updateFromDto(request);
@@ -143,15 +154,5 @@ public class AdminContentService {
         if (!user.isAdmin()) {
             throw new BusinessException(GlobalErrorCode.ACCESS_DENIED);
         }
-    }
-
-    public Response<Void> deleteContent(long contentId) {
-        Content content = contentRepository.findById(contentId).orElseThrow(() -> new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND));
-        boolean isDeleted = content.delete();
-        if (!isDeleted) {
-            throw new BusinessException(ContentErrorCode.CONTENT_ALREADY_DELETED);
-        }
-        
-        return Response.ok(null);
     }
 }
