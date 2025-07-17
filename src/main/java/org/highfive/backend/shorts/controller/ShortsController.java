@@ -14,6 +14,7 @@ import org.highfive.backend.shorts.dto.request.ShortsLikeCreateRequestDto;
 import org.highfive.backend.shorts.dto.response.GetShortsCommentResponseDto;
 import org.highfive.backend.shorts.dto.response.RecommendShortsResponseDto;
 import org.highfive.backend.shorts.dto.request.CreateShortsCommentRequestDto;
+import org.highfive.backend.shorts.dto.response.ShortsCommentsByIdResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsCommentsByTimeResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsLikeTimeResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsLikedUserItemDto;
