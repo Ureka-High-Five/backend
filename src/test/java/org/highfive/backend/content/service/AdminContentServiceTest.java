@@ -83,7 +83,7 @@ class AdminContentServiceTest {
         AdminAddContentRequestDto request = AdminDtoFixture.getAdminAddContentRequestDto();
 
         // when
-        Response<AdminAddContentResponseDto> response = adminContentService.addContent(request, UserFixture.createAdmin(1L));
+        Response<AdminAddContentResponseDto> response = adminContentService.addContent(request);
 
         // then
         Long contentId = response.content().contentId();
@@ -99,25 +99,9 @@ class AdminContentServiceTest {
                 .willThrow(new IllegalArgumentException("unknown genre"));
 
         AdminAddContentRequestDto req = AdminDtoFixture.getAdminAddContentRequestDto();
-        assertThrows(IllegalArgumentException.class, () -> adminContentService.addContent(req, UserFixture.createAdmin(1L)));
+        assertThrows(IllegalArgumentException.class, () -> adminContentService.addContent(req));
 
         verify(fastApiClient).vectorFromGenres(List.of("thriller"));
-    }
-
-    @Test
-    @DisplayName("컨텐츠 추가 - 어드민이 아닌 경우 예외를 반환합니다.")
-    void contentAddAccessDenied_test() {
-        // given
-        User user = UserFixture.createUser(1L);
-        AdminAddContentRequestDto req = AdminDtoFixture.getAdminAddContentRequestDto();
-
-        // when, then
-        BusinessException ex = assertThrows(
-                BusinessException.class,
-                () -> adminContentService.addContent(req, user)
-        );
-
-        assert ex.getErrorCode() == GlobalErrorCode.ACCESS_DENIED;
     }
 
     @Test
@@ -142,7 +126,7 @@ class AdminContentServiceTest {
         User admin = UserFixture.createAdmin(1L);
 
         // when
-        Response<AdminUpdateContentResponseDto> response = adminContentService.updateContent(request, admin);
+        Response<AdminUpdateContentResponseDto> response = adminContentService.updateContent(request);
         ArgumentCaptor<MetaInfoContents> captor = ArgumentCaptor.forClass(MetaInfoContents.class);
 
         // then
@@ -163,22 +147,6 @@ class AdminContentServiceTest {
     void contentUpdateInvalidGenreName_test() {
 
         AdminUpdateContentRequestDto req = AdminDtoFixture.getInvalidAdminUpdateContentRequestDto();
-        assertThrows(BusinessException.class, () -> adminContentService.updateContent(req, UserFixture.createAdmin(1L)));
-    }
-
-    @Test
-    @DisplayName("컨텐츠 수정 - 어드민이 아닌 경우 예외를 반환합니다.")
-    void contentUpdateAccessDenied_test() {
-        // given
-        User user = UserFixture.createUser(1L);
-        AdminUpdateContentRequestDto req = AdminDtoFixture.getValidAdminUpdateContentRequestDto();
-
-        // when, then
-        BusinessException ex = assertThrows(
-                BusinessException.class,
-                () -> adminContentService.updateContent(req, user)
-        );
-
-        assert ex.getErrorCode() == GlobalErrorCode.ACCESS_DENIED;
+        assertThrows(BusinessException.class, () -> adminContentService.updateContent(req));
     }
 }
