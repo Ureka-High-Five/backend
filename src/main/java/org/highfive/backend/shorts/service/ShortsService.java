@@ -50,7 +50,7 @@ public class ShortsService {
     private final ShortsRepository shortsRepository;
     private final ShortsCommentRepository shortsCommentRepository;
     private final ShortsQueryRepository shortsQueryRepository;
-    private final ShortsCommentQueryRepository shortsCommentQueryRepository
+    private final ShortsCommentQueryRepository shortsCommentQueryRepository;
 
     @Transactional
     public Response<Void> createShortsComment(CreateShortsCommentRequestDto requestDto, User user) {
