@@ -2,6 +2,7 @@ package org.highfive.backend.content.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.highfive.backend.auth.aop.AdminOnly;
 import org.highfive.backend.content.dto.request.AdminAddContentRequestDto;
 import org.highfive.backend.content.dto.request.AdminUpdateContentRequestDto;
 import org.highfive.backend.content.dto.response.AdminAddContentResponseDto;
@@ -25,18 +26,19 @@ public class AdminContentController {
 
     private final AdminContentService adminContentService;
 
+    @AdminOnly
     @PostMapping
-    public Response<AdminAddContentResponseDto> adminAddContent(@Valid @RequestBody final AdminAddContentRequestDto request,
-                                                                @AuthenticationPrincipal final User user) {
-        return adminContentService.addContent(request, user);
+    public Response<AdminAddContentResponseDto> adminAddContent(@Valid @RequestBody final AdminAddContentRequestDto request) {
+        return adminContentService.addContent(request);
     }
 
+    @AdminOnly
     @PatchMapping
-    public Response<AdminUpdateContentResponseDto> adminUpdateContent(@Valid @RequestBody final AdminUpdateContentRequestDto request,
-                                                                      @AuthenticationPrincipal final User user) {
-        return adminContentService.updateContent(request, user);
+    public Response<AdminUpdateContentResponseDto> adminUpdateContent(@Valid @RequestBody final AdminUpdateContentRequestDto request) {
+        return adminContentService.updateContent(request);
     }
 
+    @AdminOnly
     @DeleteMapping("/{contentId}")
     public Response<Void> adminDeleteContent(@PathVariable Long contentId) {
         return adminContentService.deleteContent(contentId);
