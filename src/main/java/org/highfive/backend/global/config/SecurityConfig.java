@@ -61,7 +61,8 @@ public class SecurityConfig {
                 "http://localhost:5173",
                 "https://lead-me.site",
                 "https://www.lead-me.site",
-                "http://localhost:8080"
+                "http://localhost:8080",
+                "https://api.lead-me.site"
         ));
 
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
