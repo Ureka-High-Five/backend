@@ -14,6 +14,7 @@ import org.highfive.backend.shorts.dto.request.ShortsLikeCreateRequestDto;
 import org.highfive.backend.shorts.dto.response.GetShortsCommentResponseDto;
 import org.highfive.backend.shorts.dto.response.RecommendShortsResponseDto;
 import org.highfive.backend.shorts.dto.request.CreateShortsCommentRequestDto;
+import org.highfive.backend.shorts.dto.response.ShortsCommentsByIdResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsCommentsByTimeResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsLikeTimeResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsLikedUserItemDto;
@@ -90,5 +91,14 @@ public class ShortsController {
     @GetMapping("/liked")
     public Response<CursorPageResponse<ShortsLikedUserItemDto>> likedShorts(final @AuthenticationPrincipal User user, @RequestParam @Nullable final String cursor, @RequestParam(value = "5") final int size) {
         return shortsService.likedShorts(user, cursor, size);
+    }
+
+    @GetMapping("/{shortsId}/comments/id")
+    public Response<CursorPageResponse<ShortsCommentsByIdResponseDto>> commentsById(
+            @PathVariable Long shortsId,
+            @RequestParam @Positive Long cursor,
+            @RequestParam(required = false, defaultValue = "10") @Positive Integer size
+    ) {
+        return shortsService.commentsByIdAndCursor(shortsId, cursor, size);
     }
 }
