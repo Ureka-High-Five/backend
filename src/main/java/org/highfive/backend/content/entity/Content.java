@@ -100,4 +100,8 @@ public class Content extends BaseEntity {
 
         return this;
     }
+
+    public void delete() {
+        this.deletedAt = LocalDateTime.now();
+    }
 }
