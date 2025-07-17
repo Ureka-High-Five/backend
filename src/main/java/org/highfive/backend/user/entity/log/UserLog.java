@@ -30,7 +30,7 @@ public class UserLog extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ActorType actorType;
+    private ActionType actionType;
 
     private int watchTime;
 

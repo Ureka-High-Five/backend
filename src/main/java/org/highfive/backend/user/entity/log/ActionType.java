@@ -1,5 +1,5 @@
 package org.highfive.backend.user.entity.log;
 
-public enum ActorType {
+public enum ActionType {
     CLICK, RATING, VIEW
 }
