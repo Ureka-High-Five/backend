@@ -2,6 +2,10 @@ package org.highfive.backend.shorts.service;
 
 
 import jakarta.transaction.Transactional;
+import java.util.Objects;
+import jakarta.validation.constraints.Positive;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.content.dto.VideoType;
 import org.highfive.backend.global.dto.CursorPageResponse;
@@ -10,6 +14,12 @@ import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.shorts.dto.mapper.ShortsCommentMapper;
 import org.highfive.backend.shorts.dto.request.CreateShortsCommentRequestDto;
 import org.highfive.backend.shorts.dto.request.ShortsDislikeRequestDto;
+import org.highfive.backend.shorts.dto.request.ShortsLikeRequestDto;
+import org.highfive.backend.shorts.dto.response.GetShortsCommentResponseDto;
+import org.highfive.backend.shorts.dto.response.RecommendShortsResponseDto;
+import org.highfive.backend.shorts.dto.response.ShortsAndLikedItemDto;
+import org.highfive.backend.shorts.dto.response.ShortsCommentsByTimeResponseDto;
+import org.highfive.backend.shorts.dto.response.ShortsItemDto;
 import org.highfive.backend.shorts.dto.request.ShortsLikeCreateRequestDto;
 import org.highfive.backend.shorts.dto.response.*;
 import org.highfive.backend.shorts.entity.Shorts;
@@ -78,6 +88,21 @@ public class ShortsService {
         return Response.ok(null);
     }
 
+    public Response<List<ShortsCommentsByTimeResponseDto>> commentsByTime(long shortsId, long time, int duration) {
+        List<ShortsCommentsByTimeResponseDto> response = new ArrayList<>();
+        for (long targetTime = time; targetTime < targetTime + duration; targetTime += duration / 5) {
+            List<ShortsCommentsByTimeResponseDto> result = shortsCommentRepository.findByShortsIdAndTimeOrderByCreatedAtDesc(shortsId, targetTime)
+                    .stream()
+                    .map(ShortsCommentMapper::toShortsCommentsByTimeResponseDto)
+                    .toList();
+            if (addCommentsUntilLimit(response, result)) {
+                break;
+            }
+        }
+
+        return Response.ok(response);
+    }
+
     @Transactional
     public Response<Void> dislike(final User user, final ShortsDislikeRequestDto dto) {
         final Long shortsId = dto.shortsId();
@@ -92,7 +117,7 @@ public class ShortsService {
 
         return Response.ok(null);
     }
-
+  
     public Response<GetShortsCommentResponseDto> getOneShortsComment(final Long shortsId,final Long time) {
 
         final ShortsComment existedShortsComment = shortsCommentRepository.findFirstByShortsIdAndTimeOrderByCreatedAtDesc(shortsId,time).orElse(null);
@@ -130,6 +155,19 @@ public class ShortsService {
 
         final String nextCursor = hasNext ? results.get(results.size() - 1).getId().toString() : null;
         return Response.ok(new CursorPageResponse<>(toShortsLikedUserResponseDtos(results) , hasNext, nextCursor));
+    }
+
+    private boolean addCommentsUntilLimit(List<ShortsCommentsByTimeResponseDto> response, List<ShortsCommentsByTimeResponseDto> result) {
+        int remain = 5 - response.size();
+        response.addAll(result.subList(0, Math.min(result.size(), remain)));
+        return response.size() == 5;
+    }
+  
+    private List<ShortsAndLikedItemDto> getRecommendResult(User user, CursorPageResponse<ShortsItemDto> recommend) {
+        return recommend.items().stream().map(item -> {
+            boolean liked = shortsLikeTimeLogRepository.existsByUserIdAndShortsId(user.getId(), item.shortsId());
+            return new ShortsAndLikedItemDto(item.contentId(), item.contentTitle(), item.shortsId(), item.shortsUrl(), liked);
+        }).toList();
     }
 
     private List<ShortsAndLikedItemDto> getRecommendResult(final User user, final CursorPageResponse<ShortsItemDto> recommend) {
