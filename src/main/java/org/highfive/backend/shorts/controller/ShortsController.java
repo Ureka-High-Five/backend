@@ -91,4 +91,13 @@ public class ShortsController {
     public Response<CursorPageResponse<ShortsLikedUserItemDto>> likedShorts(final @AuthenticationPrincipal User user, @RequestParam @Nullable final String cursor, @RequestParam(value = "5") final int size) {
         return shortsService.likedShorts(user, cursor, size);
     }
+
+    @GetMapping("/shorts/{shortsId}/comments")
+    public Response<CursorPageResponse<ShortsCommentsByIdResponseDto>> commentsById(
+            @PathVariable Long shortsId,
+            @RequestParam @Positive Long cursor,
+            @RequestParam @Positive Integer size
+    ) {
+        return shortsService.commentsByIdAndCursor(shortsId, cursor, size);
+    }
 }
