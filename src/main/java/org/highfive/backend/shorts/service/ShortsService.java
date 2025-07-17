@@ -169,4 +169,8 @@ public class ShortsService {
             return new ShortsAndLikedItemDto(item.contentId(), item.contentTitle(), item.shortsId(), item.shortsUrl(), liked);
         }).toList();
     }
+
+    public Response<CursorPageResponse<ShortsCommentsByIdResponseDto>> commentsByIdAndCursor(Long shortsId, Long cursor, Integer size) {
+        return Response.ok(new CursorPageResponse<>(shortsCommentRepository.findByIdAndCursor(shortsId, cursor, size)));
+    }
 }
