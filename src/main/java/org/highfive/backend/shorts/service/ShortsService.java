@@ -103,7 +103,7 @@ public class ShortsService {
 
     private boolean addCommentsUntilLimit(List<ShortsCommentsByTimeResponseDto> response, List<ShortsCommentsByTimeResponseDto> result) {
         int remain = 5 - response.size();
-        response.addAll(result.subList(0, remain - 1));
+        response.addAll(result.subList(0, Math.min(result.size(), remain)));
         return response.size() == 5;
     }
 
