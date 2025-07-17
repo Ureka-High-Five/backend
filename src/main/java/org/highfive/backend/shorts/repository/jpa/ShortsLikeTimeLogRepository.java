@@ -1,6 +1,8 @@
 package org.highfive.backend.shorts.repository.jpa;
 
+import org.highfive.backend.shorts.entity.Shorts;
 import org.highfive.backend.shorts.entity.ShortsLikeTimeLog;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -26,4 +28,7 @@ public interface ShortsLikeTimeLogRepository extends JpaRepository<ShortsLikeTim
     );
 
     Optional<ShortsLikeTimeLog> findByUserIdAndShortsId(Long userId, Long shortsId);
+
+    @Query("SELECT s FROM ShortsLikeTimeLog sl JOIN sl.shorts s WHERE sl.user.id = :userId AND s.id < :cursor ORDER BY s.id DESC")
+    List<Shorts> findLikedShorts(Long userId, Long cursor, Pageable pageable);
 }
