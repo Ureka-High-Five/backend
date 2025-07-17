@@ -35,6 +35,9 @@ public class Shorts extends BaseEntity {
     @Column(nullable = false)
     private String thumbnailUrl;
 
+    @Column(nullable = false)
+    private int runningTime;
+
     @Builder.Default
     @OneToMany(mappedBy = "shorts", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ShortsLikeTimeLog> shortsLikeTimeLogs = new ArrayList<>();
