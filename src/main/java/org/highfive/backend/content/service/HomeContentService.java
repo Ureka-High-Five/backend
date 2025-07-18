@@ -56,11 +56,8 @@ public class HomeContentService {
             long contentId = dto.id();
             Content content = contentRepository.findById(contentId)
                     .orElseThrow(() -> new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND));
-            // todo 썸네일 url이 아직 없기 때문에 포스터 url 임시로 전달
-            String postUrl = content.getPostUrl();
-            PersonalRecommendDto resultDto = new PersonalRecommendDto(contentId, postUrl);
-//            String thumbnailUrl = content.getThumbnailUrl();
-//            PersonalRecommendDto resultDto = new PersonalRecommendDto(contentId, thumbnailUrl);
+            String thumbnailUrl = content.getThumbnailUrl();
+            PersonalRecommendDto resultDto = new PersonalRecommendDto(contentId, thumbnailUrl);
             result.add(resultDto);
         }
         return result;
