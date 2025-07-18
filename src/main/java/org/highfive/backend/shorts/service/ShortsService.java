@@ -67,17 +67,14 @@ public class ShortsService {
         return Response.ok(null);
     }
 
-    public Response<RecommendShortsResponseDto> recommendShorts(final Long cursor, final Integer size, final User user) {
+    public Response<CursorPageResponse<ShortsResponseDto>> recommendShorts(final Long cursor, final Integer size, final User user) {
         List<Shorts> recommend = shortsQueryRepository.findByCursor(cursor == null ? null : cursor.toString(), size);
         List<ShortsResponseDto> result = getRecommendResult(user, recommend);
         boolean hasNext = result.size() > size;
         Long nextCursor = hasNext ? recommend.getLast().getId() : null;
         result = new ArrayList<>(result.subList(0, Math.min(5, result.size())));
         CursorPageResponse<ShortsResponseDto> response = new CursorPageResponse<>(result, hasNext, String.valueOf(nextCursor));
-        return Response.ok(new RecommendShortsResponseDto(
-                response,
-                VideoType.SHORTS.name())
-        );
+        return Response.ok(response);
     }
 
     @Transactional
