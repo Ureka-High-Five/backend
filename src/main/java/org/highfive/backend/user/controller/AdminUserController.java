@@ -2,6 +2,7 @@ package org.highfive.backend.user.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.auth.aop.AdminOnly;
+import org.highfive.backend.global.dto.CursorPageResponse;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.user.dto.response.GetAllUserResponseDto;
 import org.highfive.backend.user.service.AdminUserService;
@@ -17,7 +18,7 @@ public class AdminUserController {
 
     @AdminOnly
     @GetMapping("/user")
-    public Response<GetAllUserResponseDto> getAllUser(
+    public Response<CursorPageResponse<GetAllUserResponseDto>> getAllUser(
             @RequestParam(required = false) Long cursor,
             @RequestParam(required = false, defaultValue = "10") Integer size
     ) {
