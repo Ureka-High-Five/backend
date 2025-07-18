@@ -107,7 +107,7 @@ public class OnboardingService {
         List<OnboardingContentDto> result = contentQueryRepositoryImpl.findContentsByGenresOrderByMatchCountDesc(topGenres);
         result = duplicateFilter(result, request);
         return result.stream().map(
-                c -> new OnboardingSelectContentResponseDto(c.id(), c.postUrl(), c.title(), c.openDate().getYear()))
+                c -> new OnboardingSelectContentResponseDto(c.id(), c.thumbnailUrl(), c.title(), c.openDate().getYear()))
                 .toList();
     }
 
