@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class AdminOnlyAspect {
 
-    @Before("@annotation(org.highfive.backend.auth.aop.AdminOnly) && within(org.highfive.backend.content.controller..*)")
+    @Before("@annotation(org.highfive.backend.auth.aop.AdminOnly) && within(org.highfive.backend..controller..*)")
     public void isValid() {
         final Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
