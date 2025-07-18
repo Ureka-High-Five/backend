@@ -30,7 +30,11 @@ public class AdminUserController {
 
     @AdminOnly
     @GetMapping("/user/{username}")
-    public Response<List<SearchUserResponseDto>> searchUser(@PathVariable String username) {
-        return adminUserService.searchUser(username);
+    public Response<CursorPageResponse<SearchUserResponseDto>> searchUser(
+            @PathVariable String username,
+            @RequestParam(required = false) Long cursor,
+            @RequestParam(required = false, defaultValue = "10") Integer size
+            ) {
+        return adminUserService.searchUser(username, cursor, size);
     }
 }
