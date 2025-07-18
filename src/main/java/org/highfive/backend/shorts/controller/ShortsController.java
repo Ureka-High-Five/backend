@@ -50,7 +50,7 @@ public class ShortsController {
     }
 
     @GetMapping
-    public Response<RecommendShortsResponseDto> recommendShorts(
+    public Response<CursorPageResponse<ShortsResponseDto>> recommendShorts(
             @RequestParam(required = false) @Positive final Long cursor,
             @RequestParam(defaultValue = "5", required = false) @Positive final Integer size,
             @AuthenticationPrincipal User user
