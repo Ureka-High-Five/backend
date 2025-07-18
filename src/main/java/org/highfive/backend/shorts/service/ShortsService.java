@@ -12,6 +12,7 @@ import org.highfive.backend.global.dto.CursorPageResponse;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.shorts.dto.mapper.ShortsCommentMapper;
+import org.highfive.backend.shorts.dto.mapper.ShortsMapper;
 import org.highfive.backend.shorts.dto.request.CreateShortsCommentRequestDto;
 import org.highfive.backend.shorts.dto.request.ShortsDislikeRequestDto;
 import org.highfive.backend.shorts.dto.request.ShortsLikeRequestDto;
@@ -174,5 +175,14 @@ public class ShortsService {
 
     public Response<CursorPageResponse<ShortsCommentsByIdResponseDto>> commentsByIdAndCursor(Long shortsId, Long cursor, Integer size) {
         return Response.ok(shortsCommentQueryRepository.findByIdAndCursor(shortsId, cursor, size));
+    }
+
+    public Response<ShortsResponseDto> getShortsByContent(final Long contentId) {
+        Shorts randomShorts = shortsRepository.findRandomByContentId(contentId)
+                .orElseThrow(()-> new BusinessException(SHORTS_NOT_FOUND));
+
+        ShortsResponseDto response = ShortsMapper.toShortsResponseDto(randomShorts);
+
+        return Response.ok(response);
     }
 }
