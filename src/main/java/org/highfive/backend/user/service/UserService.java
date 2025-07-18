@@ -24,7 +24,7 @@ public class UserService {
     }
 
     public Response<CursorPageResponse<RatedContentResponseDto>> getMyReviews(final User user, final String cursor, final int size) {
-        final List<RatedContentResponseDto> ratedContentResponseDtos = reviewRepository.findByUser(user.getId(), cursor, Pageable.ofSize(size + 1));
+        final List<RatedContentResponseDto> ratedContentResponseDtos = reviewRepository.findByUser(user.getId(), cursor, size + 1);
 
         boolean hasNext = ratedContentResponseDtos.size() > size;
         String nextCursor = null;
