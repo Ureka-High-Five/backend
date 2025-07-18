@@ -4,7 +4,6 @@ import static org.highfive.backend.content.exception.ContentErrorCode.CONTENT_NO
 import static org.highfive.backend.content.exception.ContentErrorCode.VIDEO_TYPE_NOT_FOUND;
 import static org.highfive.backend.user.exception.UserLogErrorCode.INVALID_WATCH_TIME;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.content.dto.VideoType;
 import org.highfive.backend.user.dto.request.CreateContentWatchLogRequestDto;
@@ -17,7 +16,7 @@ import org.highfive.backend.shorts.repository.jpa.ShortsRepository;
 import org.highfive.backend.user.dto.mapper.UserLogMapper;
 import org.highfive.backend.user.entity.User;
 import org.highfive.backend.user.entity.log.UserLog;
-import org.highfive.backend.user.repository.UserLogRepository;
+import org.highfive.backend.user.repository.jpa.UserLogRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

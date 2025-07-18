@@ -1,4 +1,4 @@
-package org.highfive.backend.user.repository;
+package org.highfive.backend.user.repository.jpa;
 
 import org.highfive.backend.user.entity.log.UserLog;
 import org.springframework.data.jpa.repository.JpaRepository;

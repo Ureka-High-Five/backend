@@ -15,7 +15,7 @@ import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.user.entity.User;
 import org.highfive.backend.user.entity.UserRole;
-import org.highfive.backend.user.repository.UserRepository;
+import org.highfive.backend.user.repository.jpa.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

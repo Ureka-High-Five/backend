@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.highfive.backend.auth.repository.redis.TokenRedisRepository;
 import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.user.entity.User;
-import org.highfive.backend.user.repository.UserRepository;
+import org.highfive.backend.user.repository.jpa.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
