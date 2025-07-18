@@ -29,7 +29,10 @@ public class ShortsCommentQueryRepository {
                 .fetch();
         boolean hasNext = findComments.size() > size;
         Long nextCursor = hasNext ? findComments.getLast().getId() : null;
-        List<ShortsCommentsByIdResponseDto> result = findComments.stream().map(ShortsCommentMapper::toShortsCommentsByIdResponseDto).toList();
+        List<ShortsCommentsByIdResponseDto> result = findComments.stream()
+                .map(ShortsCommentMapper::toShortsCommentsByIdResponseDto)
+                .limit(size)
+                .toList();
         return new CursorPageResponse<>(result, hasNext, String.valueOf(nextCursor));
     }
 

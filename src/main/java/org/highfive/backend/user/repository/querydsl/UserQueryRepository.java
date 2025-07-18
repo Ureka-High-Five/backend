@@ -28,7 +28,10 @@ public class UserQueryRepository {
 
         boolean hasNext = findByCursor.size() > size;
         Long nextCursor = hasNext ? findByCursor.getLast().getId() : null;
-        List<GetAllUserResponseDto> result = findByCursor.stream().map(UserMapper::toGetAllUserResponseDto).toList();
+        List<GetAllUserResponseDto> result = findByCursor.stream()
+                .map(UserMapper::toGetAllUserResponseDto)
+                .limit(size)
+                .toList();
         return new CursorPageResponse<>(result, hasNext, String.valueOf(nextCursor));
     }
 
