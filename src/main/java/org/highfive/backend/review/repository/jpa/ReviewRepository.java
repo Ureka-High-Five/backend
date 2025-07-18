@@ -6,7 +6,6 @@ import org.highfive.backend.user.dto.response.RatedContentResponseDto;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,8 +27,8 @@ public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewQue
                 ORDER BY r.id DESC
             """)
     List<RatedContentResponseDto> findByUser(
-            @Param("userId") Long userId,
-            @Param("cursor") String cursor,
+            Long userId,
+            String cursor,
             Pageable pageable
     );
 }
