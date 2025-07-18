@@ -12,6 +12,20 @@ public class ShortsFixture {
                 .shortsUrl("test-url")
                 .thumbnailUrl("test-url")
                 .shortsLikeTimeLogs(List.of())
+                .likeCount(10)
+                .runningTime(100)
+                .build();
+    }
+
+    public static Shorts createShortsById(Content content, Long id) {
+        return Shorts.builder()
+                .id(id)
+                .content(content)
+                .shortsUrl("test-url")
+                .thumbnailUrl("test-url")
+                .shortsLikeTimeLogs(List.of())
+                .likeCount(10)
+                .runningTime(100)
                 .build();
     }
 }
