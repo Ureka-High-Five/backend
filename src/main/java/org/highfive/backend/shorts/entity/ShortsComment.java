@@ -1,17 +1,10 @@
 package org.highfive.backend.shorts.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.highfive.backend.global.entity.BaseEntity;
 import org.highfive.backend.user.entity.User;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Builder
@@ -37,9 +30,6 @@ public class ShortsComment extends BaseEntity {
 
     @Column(nullable = false)
     private Long time;
-
-    @CreatedDate
-    private LocalDateTime createdAt;
 
     public static ShortsComment of(User user, Shorts shorts, String message, Long time){
         return ShortsComment.builder()
