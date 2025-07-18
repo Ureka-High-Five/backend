@@ -1,6 +1,6 @@
 package org.highfive.backend.shorts.dto.mapper;
 
-import org.highfive.backend.shorts.controller.ShortsGetByIdResponseDto;
+import org.highfive.backend.shorts.dto.response.ShortsResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsItemDto;
 import org.highfive.backend.shorts.dto.response.ShortsLikedUserItemDto;
 import org.highfive.backend.shorts.entity.Shorts;
@@ -18,7 +18,7 @@ public class ShortsMapper {
         return shorts.stream().map(value -> new ShortsLikedUserItemDto(value.getId(), value.getThumbnailUrl())).collect(Collectors.toList());
     }
 
-    public static ShortsGetByIdResponseDto toShortsGetByIdResponseDto(Shorts shorts) {
-        return new ShortsGetByIdResponseDto(shorts.getShortsUrl(), shorts.getContent().getId(), shorts.getContent().getTitle());
+    public static ShortsResponseDto toShortsGetByIdResponseDto(Shorts shorts) {
+        return new ShortsResponseDto(shorts.getId(), shorts.getShortsUrl(), shorts.getContent().getId(), shorts.getContent().getTitle());
     }
 }

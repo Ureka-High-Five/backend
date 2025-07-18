@@ -3,21 +3,18 @@ package org.highfive.backend.shorts.service;
 
 import jakarta.transaction.Transactional;
 import java.util.Objects;
-import jakarta.validation.constraints.Positive;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.content.dto.VideoType;
 import org.highfive.backend.global.dto.CursorPageResponse;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
-import org.highfive.backend.shorts.controller.ShortsGetByIdResponseDto;
+import org.highfive.backend.shorts.dto.response.ShortsResponseDto;
 import org.highfive.backend.shorts.dto.mapper.ShortsCommentMapper;
 import org.highfive.backend.shorts.dto.mapper.ShortsMapper;
 import org.highfive.backend.shorts.dto.request.CreateShortsCommentRequestDto;
 import org.highfive.backend.shorts.dto.request.ShortsDislikeRequestDto;
-import org.highfive.backend.shorts.dto.request.ShortsLikeRequestDto;
 import org.highfive.backend.shorts.dto.response.GetShortsCommentResponseDto;
 import org.highfive.backend.shorts.dto.response.RecommendShortsResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsAndLikedItemDto;
@@ -28,7 +25,6 @@ import org.highfive.backend.shorts.dto.response.*;
 import org.highfive.backend.shorts.entity.Shorts;
 import org.highfive.backend.shorts.entity.ShortsComment;
 import org.highfive.backend.shorts.entity.ShortsLikeTimeLog;
-import org.highfive.backend.shorts.exception.ShortsErrorCode;
 import org.highfive.backend.shorts.repository.jpa.ShortsCommentRepository;
 import org.highfive.backend.shorts.repository.jpa.ShortsLikeTimeLogRepository;
 import org.highfive.backend.shorts.repository.jpa.ShortsRepository;
@@ -37,9 +33,6 @@ import org.highfive.backend.shorts.repository.querydsl.ShortsQueryRepository;
 import org.highfive.backend.user.entity.User;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Objects;
 
 import static org.highfive.backend.shorts.dto.mapper.ShortsLikeTimeLogMapper.toShorts;
 import static org.highfive.backend.shorts.dto.mapper.ShortsLikeTimeLogMapper.toShortsLikeTimeLineDto;
@@ -167,7 +160,7 @@ public class ShortsService {
         return Response.ok(shortsCommentQueryRepository.findByIdAndCursor(shortsId, cursor, size));
     }
 
-    public Response<ShortsGetByIdResponseDto> getById(long shortsId) {
+    public Response<ShortsResponseDto> getById(long shortsId) {
         Shorts shorts = shortsRepository.findById(shortsId).orElseThrow(() -> new BusinessException(SHORTS_NOT_FOUND));
         return Response.ok(ShortsMapper.toShortsGetByIdResponseDto(shorts));
     }
