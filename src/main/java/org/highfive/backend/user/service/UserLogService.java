@@ -31,7 +31,7 @@ public class UserLogService {
     private final UserLogRepository userLogRepository;
 
     @Transactional
-    public Response<Void> createContentWatchLog(@Valid CreateContentWatchLogRequestDto request, User user) {
+    public Response<Void> createContentWatchLog(CreateContentWatchLogRequestDto request, User user) {
         VideoType videoType = VideoType.valueOf(request.type());
 
         Content content;
