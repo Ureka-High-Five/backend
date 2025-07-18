@@ -42,6 +42,7 @@ public class User extends BaseEntity {
 
     private Long averageViewTime;
 
+    @Column(columnDefinition = "TEXT")
     private String embedding;
 
     @Column(nullable = false)
