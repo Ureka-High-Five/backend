@@ -45,6 +45,11 @@ public class ShortsController {
         return shortsService.createShortsComment(requestDto, user);
     }
 
+    @GetMapping("/{shortsId}")
+    public Response<ShortsGetByIdResponseDto> getById(@PathVariable Long shortsId) {
+        return shortsService.getById(shortsId);
+    }
+
     @GetMapping
     public Response<RecommendShortsResponseDto> recommendShorts(
             @RequestParam(required = false) @Positive final Long cursor,
