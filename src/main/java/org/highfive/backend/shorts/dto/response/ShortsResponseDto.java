@@ -4,6 +4,7 @@ public record ShortsResponseDto(
         Long shortsId,
         String shortsUrl,
         Long contentId,
-        String contentTitle
+        String contentTitle,
+        boolean liked
 ) {
 }
