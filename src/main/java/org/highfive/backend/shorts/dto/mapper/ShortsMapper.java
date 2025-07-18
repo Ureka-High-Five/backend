@@ -20,6 +20,6 @@ public class ShortsMapper {
     }
 
     public static ShortsResponseDto toShortsResponseDto(Shorts shorts, boolean liked) {
-        return new ShortsResponseDto(shorts.getId(), shorts.getShortsUrl(), shorts.getContent().getId(), shorts.getContent().getTitle(), liked);
+        return ShortsResponseDto.of(shorts.getId(), shorts.getShortsUrl(), shorts.getContent().getId(), shorts.getContent().getTitle(), liked);
     }
 }
