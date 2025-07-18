@@ -44,8 +44,8 @@ public class ShortsController {
     }
 
     @GetMapping("/{shortsId}")
-    public Response<ShortsResponseDto> getById(@PathVariable Long shortsId) {
-        return shortsService.getById(shortsId);
+    public Response<ShortsResponseDto> getShortsById(@PathVariable Long shortsId) {
+        return shortsService.getShortsById(shortsId);
     }
 
     @GetMapping

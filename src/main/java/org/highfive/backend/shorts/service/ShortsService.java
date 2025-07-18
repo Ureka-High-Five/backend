@@ -160,7 +160,7 @@ public class ShortsService {
         return Response.ok(shortsCommentQueryRepository.findByIdAndCursor(shortsId, cursor, size));
     }
 
-    public Response<ShortsResponseDto> getById(long shortsId) {
+    public Response<ShortsResponseDto> getShortsById(long shortsId) {
         Shorts shorts = shortsRepository.findById(shortsId).orElseThrow(() -> new BusinessException(SHORTS_NOT_FOUND));
         return Response.ok(ShortsMapper.toShortsResponseDto(shorts));
     }
