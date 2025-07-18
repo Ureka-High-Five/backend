@@ -1,5 +1,6 @@
 package org.highfive.backend.user.controller;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.auth.aop.AdminOnly;
 import org.highfive.backend.global.dto.CursorPageResponse;
@@ -29,7 +30,7 @@ public class AdminUserController {
 
     @AdminOnly
     @GetMapping("/user/{username}")
-    public Response<SearchUserResponseDto> searchUser(@PathVariable String username) {
+    public Response<List<SearchUserResponseDto>> searchUser(@PathVariable String username) {
         return adminUserService.searchUser(username);
     }
 }
