@@ -16,7 +16,7 @@ import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.user.dto.mapper.UserMapper;
 import org.highfive.backend.user.entity.User;
 import org.highfive.backend.user.entity.UserRole;
-import org.highfive.backend.user.repository.UserRepository;
+import org.highfive.backend.user.repository.jpa.UserRepository;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 

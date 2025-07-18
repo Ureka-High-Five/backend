@@ -9,7 +9,7 @@ import org.highfive.backend.shorts.repository.jpa.ShortsRepository;
 import org.highfive.backend.shorts.service.ShortsService;
 import org.highfive.backend.user.entity.User;
 import org.highfive.backend.user.entity.UserRole;
-import org.highfive.backend.user.repository.UserRepository;
+import org.highfive.backend.user.repository.jpa.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
