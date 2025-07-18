@@ -33,7 +33,7 @@ public class Content extends BaseEntity {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false, length = 1000)
+    @Column(nullable = false, length = 1024)
     private String description;
 
     @Column(nullable = false, length = 1024)

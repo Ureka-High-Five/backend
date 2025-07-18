@@ -38,9 +38,6 @@ public class ShortsComment extends BaseEntity {
     @Column(nullable = false)
     private Long time;
 
-    @CreatedDate
-    private LocalDateTime createdAt;
-
     public static ShortsComment of(User user, Shorts shorts, String message, Long time){
         return ShortsComment.builder()
                 .user(user)

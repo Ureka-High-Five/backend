@@ -43,10 +43,4 @@ public class Episode extends BaseEntity {
 
     @Column(nullable = false)
     private int runningTime;
-
-    @CreatedDate
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
 }
