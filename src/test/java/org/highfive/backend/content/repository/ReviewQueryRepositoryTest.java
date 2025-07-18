@@ -12,7 +12,7 @@
 //import org.highfive.backend.content.entity.Content;
 //import org.highfive.backend.global.dto.CursorPageResponse;
 //import org.highfive.backend.user.entity.User;
-//import org.highfive.backend.user.repository.UserRepository;
+//import org.highfive.backend.user.repository.jpa.UserRepository;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.DisplayName;
 //import org.junit.jupiter.api.Test;
