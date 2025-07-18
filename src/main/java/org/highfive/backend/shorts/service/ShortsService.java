@@ -6,12 +6,15 @@ import java.util.Objects;
 import jakarta.validation.constraints.Positive;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.content.dto.VideoType;
 import org.highfive.backend.global.dto.CursorPageResponse;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
+import org.highfive.backend.shorts.controller.ShortsGetByIdResponseDto;
 import org.highfive.backend.shorts.dto.mapper.ShortsCommentMapper;
+import org.highfive.backend.shorts.dto.mapper.ShortsMapper;
 import org.highfive.backend.shorts.dto.request.CreateShortsCommentRequestDto;
 import org.highfive.backend.shorts.dto.request.ShortsDislikeRequestDto;
 import org.highfive.backend.shorts.dto.request.ShortsLikeRequestDto;
@@ -25,6 +28,7 @@ import org.highfive.backend.shorts.dto.response.*;
 import org.highfive.backend.shorts.entity.Shorts;
 import org.highfive.backend.shorts.entity.ShortsComment;
 import org.highfive.backend.shorts.entity.ShortsLikeTimeLog;
+import org.highfive.backend.shorts.exception.ShortsErrorCode;
 import org.highfive.backend.shorts.repository.jpa.ShortsCommentRepository;
 import org.highfive.backend.shorts.repository.jpa.ShortsLikeTimeLogRepository;
 import org.highfive.backend.shorts.repository.jpa.ShortsRepository;
@@ -159,6 +163,15 @@ public class ShortsService {
         return Response.ok(new CursorPageResponse<>(toShortsLikedUserResponseDtos(results) , hasNext, nextCursor));
     }
 
+    public Response<CursorPageResponse<ShortsCommentsByIdResponseDto>> commentsByIdAndCursor(Long shortsId, Long cursor, Integer size) {
+        return Response.ok(shortsCommentQueryRepository.findByIdAndCursor(shortsId, cursor, size));
+    }
+
+    public Response<ShortsGetByIdResponseDto> getById(long shortsId) {
+        Shorts shorts = shortsRepository.findById(shortsId).orElseThrow(() -> new BusinessException(SHORTS_NOT_FOUND));
+        return Response.ok(ShortsMapper.toShortsGetByIdResponseDto(shorts));
+    }
+
     private boolean addCommentsUntilLimit(List<ShortsCommentsByTimeResponseDto> response, List<ShortsCommentsByTimeResponseDto> result) {
         int remain = 5 - response.size();
         response.addAll(result.subList(0, Math.min(result.size(), remain)));
@@ -170,9 +183,5 @@ public class ShortsService {
             boolean liked = shortsLikeTimeLogRepository.existsByUserIdAndShortsId(user.getId(), item.shortsId());
             return new ShortsAndLikedItemDto(item.contentId(), item.contentTitle(), item.shortsId(), item.shortsUrl(), liked);
         }).toList();
-    }
-
-    public Response<CursorPageResponse<ShortsCommentsByIdResponseDto>> commentsByIdAndCursor(Long shortsId, Long cursor, Integer size) {
-        return Response.ok(shortsCommentQueryRepository.findByIdAndCursor(shortsId, cursor, size));
     }
 }
