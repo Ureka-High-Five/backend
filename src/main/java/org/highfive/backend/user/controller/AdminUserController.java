@@ -1,14 +1,18 @@
 package org.highfive.backend.user.controller;
 
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.auth.aop.AdminOnly;
 import org.highfive.backend.global.dto.CursorPageResponse;
 import org.highfive.backend.global.dto.Response;
+import org.highfive.backend.user.dto.request.UpdateUserRoleRequestDto;
 import org.highfive.backend.user.dto.response.GetAllUserResponseDto;
 import org.highfive.backend.user.dto.response.SearchUserResponseDto;
 import org.highfive.backend.user.service.AdminUserService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,5 +40,13 @@ public class AdminUserController {
             @RequestParam(required = false, defaultValue = "10") Integer size
             ) {
         return adminUserService.searchUser(username, cursor, size);
+    }
+
+    @AdminOnly
+    @PatchMapping("/user/role")
+    public Response<Void> updateUserRole(
+            @Valid @RequestBody UpdateUserRoleRequestDto request
+    ){
+        return adminUserService.updateUserRole(request);
     }
 }

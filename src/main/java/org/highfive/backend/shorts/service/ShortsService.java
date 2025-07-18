@@ -16,12 +16,8 @@ import org.highfive.backend.shorts.dto.mapper.ShortsCommentMapper;
 import org.highfive.backend.shorts.dto.mapper.ShortsMapper;
 import org.highfive.backend.shorts.dto.request.CreateShortsCommentRequestDto;
 import org.highfive.backend.shorts.dto.request.ShortsDislikeRequestDto;
-import org.highfive.backend.shorts.dto.request.ShortsLikeRequestDto;
 import org.highfive.backend.shorts.dto.response.GetShortsCommentResponseDto;
-import org.highfive.backend.shorts.dto.response.RecommendShortsResponseDto;
-import org.highfive.backend.shorts.dto.response.ShortsAndLikedItemDto;
 import org.highfive.backend.shorts.dto.response.ShortsCommentsByTimeResponseDto;
-import org.highfive.backend.shorts.dto.response.ShortsItemDto;
 import org.highfive.backend.shorts.dto.request.ShortsLikeCreateRequestDto;
 import org.highfive.backend.shorts.dto.response.*;
 import org.highfive.backend.shorts.entity.Shorts;
@@ -67,17 +63,14 @@ public class ShortsService {
         return Response.ok(null);
     }
 
-    public Response<RecommendShortsResponseDto> recommendShorts(final Long cursor, final Integer size, final User user) {
+    public Response<CursorPageResponse<ShortsResponseDto>> recommendShorts(final Long cursor, final Integer size, final User user) {
         List<Shorts> recommend = shortsQueryRepository.findByCursor(cursor == null ? null : cursor.toString(), size);
         List<ShortsResponseDto> result = getRecommendResult(user, recommend);
         boolean hasNext = result.size() > size;
         Long nextCursor = hasNext ? recommend.getLast().getId() : null;
         result = new ArrayList<>(result.subList(0, Math.min(5, result.size())));
         CursorPageResponse<ShortsResponseDto> response = new CursorPageResponse<>(result, hasNext, String.valueOf(nextCursor));
-        return Response.ok(new RecommendShortsResponseDto(
-                response,
-                VideoType.SHORTS.name())
-        );
+        return Response.ok(response);
     }
 
     @Transactional

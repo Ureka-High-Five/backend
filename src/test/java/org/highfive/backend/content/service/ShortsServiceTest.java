@@ -13,9 +13,6 @@ import org.highfive.backend.content.dto.VideoType;
 import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.global.dto.CursorPageResponse;
 import org.highfive.backend.global.dto.Response;
-import org.highfive.backend.shorts.dto.response.RecommendShortsResponseDto;
-import org.highfive.backend.shorts.dto.response.ShortsAndLikedItemDto;
-import org.highfive.backend.shorts.dto.response.ShortsItemDto;
 import org.highfive.backend.shorts.dto.response.ShortsResponseDto;
 import org.highfive.backend.shorts.entity.Shorts;
 import org.highfive.backend.shorts.repository.jpa.ShortsLikeTimeLogRepository;
@@ -59,17 +56,16 @@ public class ShortsServiceTest {
         given(likeTimeLogRepo.existsByUserIdAndShortsId(testUser.getId(), 2L)).willReturn(false);
 
         // when
-        Response<RecommendShortsResponseDto> resp = shortsService.recommendShorts(null, 5, testUser);
+        Response<CursorPageResponse<ShortsResponseDto>> resp = shortsService.recommendShorts(null, 5, testUser);
 
         // then
-        RecommendShortsResponseDto dto = resp.content();
-        assertThat(dto.videoType()).isEqualTo(VideoType.SHORTS.name());
+        List<ShortsResponseDto> dto = resp.content().items();
+        assertThat(dto.getFirst().videoType()).isEqualTo(VideoType.SHORTS);
 
-        List<ShortsResponseDto> items = dto.shorts().items();
-        assertThat(items.size()).isEqualTo(2);
+        assertThat(dto.size()).isEqualTo(2);
 
-        ShortsResponseDto likedItem = items.get(0);
-        ShortsResponseDto notLikedItem = items.get(1);
+        ShortsResponseDto likedItem = dto.get(0);
+        ShortsResponseDto notLikedItem = dto.get(1);
 
         assertThat(likedItem.shortsId()).isEqualTo(1L);
         assertThat(likedItem.liked()).isTrue();

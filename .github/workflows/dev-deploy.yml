@@ -103,6 +103,9 @@ jobs:
             echo "JWT_REFRESH_TOKEN_EXPIRATION=${{ secrets.JWT_REFRESH_TOKEN_EXPIRATION }}" >> .env
             echo "RECOMMEND_SERVER_URL=${{ secrets.RECOMMEND_SERVER_URL }}" >> .env
             echo "RECOMMEND_SERVER_PORT=${{ secrets.RECOMMEND_SERVER_PORT }}" >> .env
+            echo "MONGO_DB_NAME=${{ secrets.MONGO_DB_NAME }}" >> .env
+            echo "MONGO_DB_HOST=${{ secrets.MONGO_DB_HOST }}" >> .env
+            echo "MONGO_DB_PORT=${{ secrets.MONGO_DB_PORT }}" >> .env
             docker-compose --env-file .env -f docker-compose-dev.yml down -v
             docker image prune -f
             docker-compose --env-file .env -f docker-compose-dev.yml up -d --build

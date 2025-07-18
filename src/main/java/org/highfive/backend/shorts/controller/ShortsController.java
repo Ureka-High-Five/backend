@@ -11,13 +11,11 @@ import org.highfive.backend.shorts.dto.request.CreateShortsCommentRequestDto;
 import org.highfive.backend.shorts.dto.request.ShortsDislikeRequestDto;
 import org.highfive.backend.shorts.dto.request.ShortsLikeCreateRequestDto;
 import org.highfive.backend.shorts.dto.response.GetShortsCommentResponseDto;
-import org.highfive.backend.shorts.dto.response.RecommendShortsResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsCommentsByIdResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsCommentsByTimeResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsLikeTimeResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsLikedUserItemDto;
-import org.highfive.backend.shorts.dto.response.ShortsResponseDto;
 import org.highfive.backend.shorts.service.ShortsService;
 import org.highfive.backend.user.entity.User;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -50,7 +48,7 @@ public class ShortsController {
     }
 
     @GetMapping
-    public Response<RecommendShortsResponseDto> recommendShorts(
+    public Response<CursorPageResponse<ShortsResponseDto>> recommendShorts(
             @RequestParam(required = false) @Positive final Long cursor,
             @RequestParam(defaultValue = "5", required = false) @Positive final Integer size,
             @AuthenticationPrincipal User user
