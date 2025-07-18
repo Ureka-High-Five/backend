@@ -45,8 +45,8 @@ public class ShortsController {
     }
 
     @GetMapping("/{shortsId}")
-    public Response<ShortsResponseDto> getShortsById(@PathVariable Long shortsId) {
-        return shortsService.getShortsById(shortsId);
+    public Response<ShortsResponseDto> getShortsById(@PathVariable Long shortsId, @AuthenticationPrincipal User user) {
+        return shortsService.getShortsById(shortsId, user);
     }
 
     @GetMapping
@@ -108,8 +108,9 @@ public class ShortsController {
 
     @GetMapping("/content/{contentId}")
     public Response<ShortsResponseDto> getShortsByContent(
-            @PathVariable Long contentId
+            @PathVariable Long contentId,
+            @AuthenticationPrincipal User user
     ){
-        return shortsService.getShortsByContent(contentId);
+        return shortsService.getShortsByContent(contentId, user);
     }
 }
