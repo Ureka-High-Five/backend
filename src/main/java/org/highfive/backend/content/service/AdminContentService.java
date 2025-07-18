@@ -146,10 +146,4 @@ public class AdminContentService {
     private String getEmbeddingByGenres(final List<String> genres) {
         return fastApiClient.vectorFromGenres(genres).vector();
     }
-
-    private void validateAdmin(final User user) {
-        if (!user.isAdmin()) {
-            throw new BusinessException(GlobalErrorCode.ACCESS_DENIED);
-        }
-    }
 }
