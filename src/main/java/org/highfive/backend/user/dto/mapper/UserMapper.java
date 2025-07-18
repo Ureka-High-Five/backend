@@ -24,6 +24,6 @@ public class UserMapper {
     }
 
     public static GetAllUserResponseDto toGetAllUserResponseDto(User user) {
-        return new GetAllUserResponseDto(user.getProfileUrl(), user.getName(), user.getEmail(), user.getUserRole().toString());
+        return new GetAllUserResponseDto(user.getId(), user.getProfileUrl(), user.getName(), user.getEmail(), user.getUserRole().toString());
     }
 }
