@@ -183,7 +183,7 @@ public class ShortsService {
     private List<ShortsResponseDto> getRecommendResult(final User user, final List<Shorts> recommend) {
         return recommend.stream().map(item -> {
             boolean liked = shortsLikeTimeLogRepository.existsByUserIdAndShortsId(user.getId(), item.getId());
-            return new ShortsResponseDto(item.getId(), item.getShortsUrl(), item.getContent().getId(), item.getContent().getTitle(), liked);
+            return ShortsMapper.toShortsResponseDto(item, liked);
         }).toList();
     }
 
