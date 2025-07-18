@@ -17,6 +17,7 @@ import org.highfive.backend.shorts.dto.response.ShortsCommentsByTimeResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsLikeTimeResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsLikedUserItemDto;
+import org.highfive.backend.shorts.dto.response.ShortsResponseDto;
 import org.highfive.backend.shorts.service.ShortsService;
 import org.highfive.backend.user.entity.User;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -103,5 +104,12 @@ public class ShortsController {
             @RequestParam(required = false, defaultValue = "10") @Positive Integer size
     ) {
         return shortsService.commentsByIdAndCursor(shortsId, cursor, size);
+    }
+
+    @GetMapping("/content/{contentId}")
+    public Response<ShortsResponseDto> getShortsByContent(
+            @PathVariable Long contentId
+    ){
+        return shortsService.getShortsByContent(contentId);
     }
 }
