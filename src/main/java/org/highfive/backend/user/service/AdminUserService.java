@@ -12,7 +12,7 @@ import org.highfive.backend.user.dto.request.UpdateUserRoleRequestDto;
 import org.highfive.backend.user.dto.response.GetAllUserResponseDto;
 import org.highfive.backend.user.entity.User;
 import org.highfive.backend.user.entity.UserRole;
-import org.highfive.backend.user.repository.UserRepository;
+import org.highfive.backend.user.repository.jpa.UserRepository;
 import org.highfive.backend.user.repository.querydsl.UserQueryRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
