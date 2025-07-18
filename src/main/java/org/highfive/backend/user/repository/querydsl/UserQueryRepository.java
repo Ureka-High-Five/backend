@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.highfive.backend.global.dto.CursorPageResponse;
 import org.highfive.backend.user.dto.mapper.UserMapper;
 import org.highfive.backend.user.dto.response.GetAllUserResponseDto;
+import org.highfive.backend.user.dto.response.SearchUserResponseDto;
 import org.highfive.backend.user.entity.QUser;
 import org.highfive.backend.user.entity.User;
 import org.springframework.stereotype.Repository;
@@ -30,6 +31,23 @@ public class UserQueryRepository {
         Long nextCursor = hasNext ? findByCursor.getLast().getId() : null;
         List<GetAllUserResponseDto> result = findByCursor.stream()
                 .map(UserMapper::toGetAllUserResponseDto)
+                .limit(size)
+                .toList();
+        return new CursorPageResponse<>(result, hasNext, String.valueOf(nextCursor));
+    }
+
+    public CursorPageResponse<SearchUserResponseDto> findByNameContaining(String username, Long cursor, int size) {
+        List<User> findUsers = jpaQueryFactory.selectFrom(user)
+                .where(
+                        user.name.like("%" + username + "%"),
+                        cursorFilter(cursor)
+                ).orderBy(user.name.asc())
+                .limit(size + 1)
+                .fetch();
+        boolean hasNext = findUsers.size() > size;
+        Long nextCursor = hasNext ? findUsers.getLast().getId() : null;
+        List<SearchUserResponseDto> result = findUsers.stream()
+                .map(UserMapper::toSearchUserResponseDto)
                 .limit(size)
                 .toList();
         return new CursorPageResponse<>(result, hasNext, String.valueOf(nextCursor));

@@ -10,6 +10,7 @@ import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.user.dto.request.UpdateUserRoleRequestDto;
 import org.highfive.backend.user.dto.response.GetAllUserResponseDto;
+import org.highfive.backend.user.dto.response.SearchUserResponseDto;
 import org.highfive.backend.user.entity.User;
 import org.highfive.backend.user.entity.UserRole;
 import org.highfive.backend.user.repository.jpa.UserRepository;
@@ -42,5 +43,9 @@ public class AdminUserService {
         existedUser.updateUserRole(request.role());
 
         return Response.ok(null);
+    }
+
+    public Response<CursorPageResponse<SearchUserResponseDto>> searchUser(String username, Long cursor, int size) {
+        return Response.ok(userQueryRepository.findByNameContaining(username, cursor, size));
     }
 }
