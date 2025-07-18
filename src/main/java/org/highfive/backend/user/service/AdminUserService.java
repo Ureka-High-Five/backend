@@ -23,9 +23,7 @@ public class AdminUserService {
         return Response.ok(userQueryRepository.findByCursor(cursor, size));
     }
 
-    public Response<List<SearchUserResponseDto>> searchUser(String username) {
-        List<User> users = userRepository.findByNameContaining(username);
-        List<SearchUserResponseDto> result = users.stream().map(UserMapper::toSearchUserResponseDto).toList();
-        return Response.ok(result);
+    public Response<CursorPageResponse<SearchUserResponseDto>> searchUser(String username, Long cursor, int size) {
+        return Response.ok(userQueryRepository.findByNameContaining(username, cursor, size));
     }
 }
