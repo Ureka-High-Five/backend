@@ -24,4 +24,12 @@ public class AdminUserController {
     ) {
         return adminUserService.getAllUser(cursor, size);
     }
+
+    @AdminOnly
+    @GetMapping("/user/role")
+    public Response<Void> updateUserRole(
+            @RequestParam Long userId
+    ){
+        return adminUserService.updateUserRole(userId);
+    }
 }
