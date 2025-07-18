@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 public record OnboardingContentDto(
         Long id,
-        String postUrl,
+        String thumbnailUrl,
         String title,
         LocalDateTime openDate,
         Long genreMatchCount

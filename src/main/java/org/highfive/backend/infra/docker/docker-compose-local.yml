@@ -22,8 +22,23 @@ services:
     networks:
       - local-net
 
+  mongo:
+    image: mongo:6.0
+    container_name: local-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: localdb
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpass
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - local-net
+
 volumes:
   db-data:
+  mongo-data:
 
 networks:
   local-net:

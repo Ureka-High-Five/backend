@@ -18,8 +18,8 @@ public class ShortsQueryRepository {
     private final JPAQueryFactory jpaQueryFactory;
     private final QShorts shorts = QShorts.shorts;
 
-    public CursorPageResponse<ShortsItemDto> findByCursor(final String cursor, final int size) {
-        List<Shorts> findShorts = jpaQueryFactory
+    public List<Shorts> findByCursor(final String cursor, final int size) {
+        return jpaQueryFactory
                 .select(shorts)
                 .from(shorts)
                 .where(
@@ -27,18 +27,6 @@ public class ShortsQueryRepository {
                 ).orderBy(shorts.id.asc())
                 .limit(size + 1)
                 .fetch();
-        final boolean hasNext = findShorts.size() > size;
-        final String nextCursor = hasNext ? findShorts.getLast().getId().toString() : null;
-        final List<ShortsItemDto> shortsItemDtos = getShortsItemDto(findShorts);
-        return new CursorPageResponse<>(shortsItemDtos, hasNext, nextCursor);
-    }
-
-    private List<ShortsItemDto> getShortsItemDto(List<Shorts> findShorts) {
-        final int resultSize = Math.max(findShorts.size() - 1, 0);
-        return findShorts.stream()
-                .limit(resultSize)
-                .map(ShortsMapper::toShortsItemDto)
-                .toList();
     }
 
     private BooleanExpression cursorFilter(String cursor) {

@@ -15,7 +15,7 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
     @Query(value = """
         SELECT *
         FROM (
-          SELECT c.id, c.post_url, c.title, c.popularity, m.name,
+          SELECT c.id, c.thumbnail_url, c.title, c.popularity, m.name,
               ROW_NUMBER() OVER (PARTITION BY m.name ORDER BY c.popularity DESC) AS rn, YEAR(c.open_date)
           FROM contents c
           JOIN meta_info_contents mic ON mic.content_id = c.id
@@ -36,7 +36,7 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
     List<Map<String, Object>> findContentGenresByContentIds(@Param("contentIds") List<Long> contentIds);
 
     @Query(value = """
-    SELECT c.id, c.post_url
+    SELECT c.id, c.thumbnail_url
     FROM contents c
     JOIN meta_info_contents mic ON mic.content_id = c.id
     JOIN meta_info m ON m.id = mic.meta_info_id

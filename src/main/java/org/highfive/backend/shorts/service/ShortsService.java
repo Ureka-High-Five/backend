@@ -16,12 +16,8 @@ import org.highfive.backend.shorts.dto.mapper.ShortsCommentMapper;
 import org.highfive.backend.shorts.dto.mapper.ShortsMapper;
 import org.highfive.backend.shorts.dto.request.CreateShortsCommentRequestDto;
 import org.highfive.backend.shorts.dto.request.ShortsDislikeRequestDto;
-import org.highfive.backend.shorts.dto.request.ShortsLikeRequestDto;
 import org.highfive.backend.shorts.dto.response.GetShortsCommentResponseDto;
-import org.highfive.backend.shorts.dto.response.RecommendShortsResponseDto;
-import org.highfive.backend.shorts.dto.response.ShortsAndLikedItemDto;
 import org.highfive.backend.shorts.dto.response.ShortsCommentsByTimeResponseDto;
-import org.highfive.backend.shorts.dto.response.ShortsItemDto;
 import org.highfive.backend.shorts.dto.request.ShortsLikeCreateRequestDto;
 import org.highfive.backend.shorts.dto.response.*;
 import org.highfive.backend.shorts.entity.Shorts;
@@ -67,14 +63,14 @@ public class ShortsService {
         return Response.ok(null);
     }
 
-    public Response<RecommendShortsResponseDto> recommendShorts(final Long cursor, final Integer size, final User user) {
-        CursorPageResponse<ShortsItemDto> recommend = shortsQueryRepository.findByCursor(cursor == null ? null : cursor.toString(), size);
-        List<ShortsAndLikedItemDto> result = getRecommendResult(user, recommend);
-        CursorPageResponse<ShortsAndLikedItemDto> response = new CursorPageResponse<>(result, recommend.hasNext(), recommend.nextCursor());
-        return Response.ok(new RecommendShortsResponseDto(
-                response,
-                VideoType.SHORTS.name())
-        );
+    public Response<CursorPageResponse<ShortsResponseDto>> recommendShorts(final Long cursor, final Integer size, final User user) {
+        List<Shorts> recommend = shortsQueryRepository.findByCursor(cursor == null ? null : cursor.toString(), size);
+        List<ShortsResponseDto> result = getRecommendResult(user, recommend);
+        boolean hasNext = result.size() > size;
+        Long nextCursor = hasNext ? recommend.getLast().getId() : null;
+        result = new ArrayList<>(result.subList(0, Math.min(5, result.size())));
+        CursorPageResponse<ShortsResponseDto> response = new CursorPageResponse<>(result, hasNext, String.valueOf(nextCursor));
+        return Response.ok(response);
     }
 
     @Transactional
@@ -165,9 +161,10 @@ public class ShortsService {
         return Response.ok(shortsCommentQueryRepository.findByIdAndCursor(shortsId, cursor, size));
     }
 
-    public Response<ShortsResponseDto> getShortsById(long shortsId) {
+    public Response<ShortsResponseDto> getShortsById(long shortsId, User user) {
         Shorts shorts = shortsRepository.findById(shortsId).orElseThrow(() -> new BusinessException(SHORTS_NOT_FOUND));
-        return Response.ok(ShortsMapper.toShortsResponseDto(shorts));
+        boolean liked = shortsLikeTimeLogRepository.existsByUserIdAndShortsId(user.getId(), shorts.getId());
+        return Response.ok(ShortsMapper.toShortsResponseDto(shorts, liked));
     }
 
     private boolean addCommentsUntilLimit(List<ShortsCommentsByTimeResponseDto> response, List<ShortsCommentsByTimeResponseDto> result) {
@@ -176,18 +173,18 @@ public class ShortsService {
         return response.size() == 5;
     }
 
-    private List<ShortsAndLikedItemDto> getRecommendResult(final User user, final CursorPageResponse<ShortsItemDto> recommend) {
-        return recommend.items().stream().map(item -> {
-            boolean liked = shortsLikeTimeLogRepository.existsByUserIdAndShortsId(user.getId(), item.shortsId());
-            return new ShortsAndLikedItemDto(item.contentId(), item.contentTitle(), item.shortsId(), item.shortsUrl(), liked);
+    private List<ShortsResponseDto> getRecommendResult(final User user, final List<Shorts> recommend) {
+        return recommend.stream().map(item -> {
+            boolean liked = shortsLikeTimeLogRepository.existsByUserIdAndShortsId(user.getId(), item.getId());
+            return ShortsMapper.toShortsResponseDto(item, liked);
         }).toList();
     }
 
-    public Response<ShortsResponseDto> getShortsByContent(final Long contentId) {
+    public Response<ShortsResponseDto> getShortsByContent(final Long contentId, User user) {
         Shorts randomShorts = shortsRepository.findRandomByContentId(contentId)
                 .orElseThrow(()-> new BusinessException(SHORTS_NOT_FOUND));
-
-        ShortsResponseDto response = ShortsMapper.toShortsResponseDto(randomShorts);
+        boolean liked = shortsLikeTimeLogRepository.existsByUserIdAndShortsId(user.getId(), randomShorts.getId());
+        ShortsResponseDto response = ShortsMapper.toShortsResponseDto(randomShorts, liked);
 
         return Response.ok(response);
     }

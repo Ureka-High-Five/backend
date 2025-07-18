@@ -11,13 +11,11 @@ import org.highfive.backend.shorts.dto.request.CreateShortsCommentRequestDto;
 import org.highfive.backend.shorts.dto.request.ShortsDislikeRequestDto;
 import org.highfive.backend.shorts.dto.request.ShortsLikeCreateRequestDto;
 import org.highfive.backend.shorts.dto.response.GetShortsCommentResponseDto;
-import org.highfive.backend.shorts.dto.response.RecommendShortsResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsCommentsByIdResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsCommentsByTimeResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsLikeTimeResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsLikedUserItemDto;
-import org.highfive.backend.shorts.dto.response.ShortsResponseDto;
 import org.highfive.backend.shorts.service.ShortsService;
 import org.highfive.backend.user.entity.User;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -45,12 +43,12 @@ public class ShortsController {
     }
 
     @GetMapping("/{shortsId}")
-    public Response<ShortsResponseDto> getShortsById(@PathVariable Long shortsId) {
-        return shortsService.getShortsById(shortsId);
+    public Response<ShortsResponseDto> getShortsById(@PathVariable Long shortsId, @AuthenticationPrincipal User user) {
+        return shortsService.getShortsById(shortsId, user);
     }
 
     @GetMapping
-    public Response<RecommendShortsResponseDto> recommendShorts(
+    public Response<CursorPageResponse<ShortsResponseDto>> recommendShorts(
             @RequestParam(required = false) @Positive final Long cursor,
             @RequestParam(defaultValue = "5", required = false) @Positive final Integer size,
             @AuthenticationPrincipal User user
@@ -108,8 +106,9 @@ public class ShortsController {
 
     @GetMapping("/content/{contentId}")
     public Response<ShortsResponseDto> getShortsByContent(
-            @PathVariable Long contentId
+            @PathVariable Long contentId,
+            @AuthenticationPrincipal User user
     ){
-        return shortsService.getShortsByContent(contentId);
+        return shortsService.getShortsByContent(contentId, user);
     }
 }
