@@ -1,5 +1,6 @@
 package org.highfive.backend.user.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.auth.aop.AdminOnly;
 import org.highfive.backend.global.dto.CursorPageResponse;
@@ -31,7 +32,7 @@ public class AdminUserController {
     @AdminOnly
     @PatchMapping("/user/role")
     public Response<Void> updateUserRole(
-            @RequestBody UpdateUserRoleRequestDto request
+            @Valid @RequestBody UpdateUserRoleRequestDto request
     ){
         return adminUserService.updateUserRole(request);
     }
