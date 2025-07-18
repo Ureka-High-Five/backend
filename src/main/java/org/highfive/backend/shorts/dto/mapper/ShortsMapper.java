@@ -1,5 +1,6 @@
 package org.highfive.backend.shorts.dto.mapper;
 
+import org.highfive.backend.shorts.dto.response.ShortsResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsItemDto;
 import org.highfive.backend.shorts.dto.response.ShortsLikedUserItemDto;
 import org.highfive.backend.shorts.dto.response.ShortsResponseDto;
