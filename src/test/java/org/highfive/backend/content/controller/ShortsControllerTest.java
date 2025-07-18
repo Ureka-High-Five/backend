@@ -10,9 +10,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.List;
 import org.highfive.backend.common.fixture.UserFixture;
+import org.highfive.backend.global.dto.CursorPageResponse;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.shorts.controller.ShortsController;
-import org.highfive.backend.shorts.dto.response.RecommendShortsResponseDto;
+import org.highfive.backend.shorts.dto.response.ShortsResponseDto;
 import org.highfive.backend.shorts.service.ShortsService;
 import org.highfive.backend.user.entity.User;
 import org.junit.jupiter.api.DisplayName;
@@ -39,8 +40,8 @@ class ShortsControllerTest {
 
     User userFixture = UserFixture.createEmbeddingUser();
 
-    private static Response<RecommendShortsResponseDto> dummyResponse() {
-        return Response.ok(new RecommendShortsResponseDto(null, "SHORTS"));
+    private static Response<CursorPageResponse<ShortsResponseDto>> dummyResponse() {
+        return Response.ok(new CursorPageResponse<>(null, false, null));
     }
 
     private static RequestPostProcessor withUser(User domainUser) {
