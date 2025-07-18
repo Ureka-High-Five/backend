@@ -18,7 +18,7 @@ public class ShortsMapper {
         return shorts.stream().map(value -> new ShortsLikedUserItemDto(value.getId(), value.getThumbnailUrl())).collect(Collectors.toList());
     }
 
-    public static ShortsResponseDto toShortsGetByIdResponseDto(Shorts shorts) {
+    public static ShortsResponseDto toShortsResponseDto(Shorts shorts) {
         return new ShortsResponseDto(shorts.getId(), shorts.getShortsUrl(), shorts.getContent().getId(), shorts.getContent().getTitle());
     }
 }

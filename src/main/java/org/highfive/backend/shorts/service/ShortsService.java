@@ -162,7 +162,7 @@ public class ShortsService {
 
     public Response<ShortsResponseDto> getById(long shortsId) {
         Shorts shorts = shortsRepository.findById(shortsId).orElseThrow(() -> new BusinessException(SHORTS_NOT_FOUND));
-        return Response.ok(ShortsMapper.toShortsGetByIdResponseDto(shorts));
+        return Response.ok(ShortsMapper.toShortsResponseDto(shorts));
     }
 
     private boolean addCommentsUntilLimit(List<ShortsCommentsByTimeResponseDto> response, List<ShortsCommentsByTimeResponseDto> result) {
