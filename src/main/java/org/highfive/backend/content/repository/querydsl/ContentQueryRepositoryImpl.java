@@ -76,7 +76,7 @@ public class ContentQueryRepositoryImpl implements ContentQueryRepository {
         return queryFactory
                 .select(Projections.constructor(OnboardingContentDto.class,
                         c.id,
-                        c.postUrl,
+                        c.thumbnailUrl,
                         c.title,
                         c.openDate,
                         m.name.countDistinct()
@@ -88,7 +88,7 @@ public class ContentQueryRepositoryImpl implements ContentQueryRepository {
                         m.type.eq(MetaType.GENRE),
                         m.name.in(genres)
                 )
-                .groupBy(c.id, c.postUrl, c.title, c.openDate)
+                .groupBy(c.id, c.thumbnailUrl, c.title, c.openDate)
                 .orderBy(m.name.countDistinct().desc())
                 .fetch();
     }@SuppressWarnings("unchecked")
