@@ -100,4 +100,12 @@ public class Content extends BaseEntity {
 
         return this;
     }
+
+    public boolean delete() {
+        if (deletedAt != null) {
+            return false;
+        }
+        this.deletedAt = LocalDateTime.now();
+        return true;
+    }
 }

@@ -36,9 +36,7 @@ public class AdminContentService {
     private final MetaInfoRepository metaInfoRepository;
 
     @Transactional
-    public Response<AdminAddContentResponseDto> addContent(final AdminAddContentRequestDto request, final User user) {
-        validateAdmin(user);
-
+    public Response<AdminAddContentResponseDto> addContent(final AdminAddContentRequestDto request) {
         final Content content = ContentMapper.fromAdminAddContentRequestDto(request);
         final String vector = getEmbeddingByGenres(request.genres());
         content.updateEmbedding(vector);
@@ -53,9 +51,8 @@ public class AdminContentService {
     }
 
     @Transactional
-    public Response<AdminUpdateContentResponseDto> updateContent(@Valid final AdminUpdateContentRequestDto request, final User user) {
-        validateAdmin(user);
-        final Content content = updateContent(request);
+    public Response<AdminUpdateContentResponseDto> updateContent(final AdminUpdateContentRequestDto request) {
+        final Content content = getUpdateContent(request);
 
         updateGenres(request, content);
         updateDirector(request, content);
@@ -66,7 +63,18 @@ public class AdminContentService {
         return Response.ok(new AdminUpdateContentResponseDto(content.getId()));
     }
 
-    private Content updateContent(final AdminUpdateContentRequestDto request) {
+    @Transactional
+    public Response<Void> deleteContent(long contentId) {
+        Content content = contentRepository.findById(contentId).orElseThrow(() -> new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND));
+        boolean isDeleted = content.delete();
+        if (!isDeleted) {
+            throw new BusinessException(ContentErrorCode.CONTENT_ALREADY_DELETED);
+        }
+
+        return Response.ok(null);
+    }
+
+    private Content getUpdateContent(final AdminUpdateContentRequestDto request) {
         final Content content = contentRepository.findById(request.contentId()).orElseThrow(() -> new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND));
         content.updateFromDto(request);
         contentRepository.save(content);

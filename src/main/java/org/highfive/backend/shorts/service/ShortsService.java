@@ -28,6 +28,7 @@ import org.highfive.backend.shorts.entity.ShortsLikeTimeLog;
 import org.highfive.backend.shorts.repository.jpa.ShortsCommentRepository;
 import org.highfive.backend.shorts.repository.jpa.ShortsLikeTimeLogRepository;
 import org.highfive.backend.shorts.repository.jpa.ShortsRepository;
+import org.highfive.backend.shorts.repository.querydsl.ShortsCommentQueryRepository;
 import org.highfive.backend.shorts.repository.querydsl.ShortsQueryRepository;
 import org.highfive.backend.user.entity.User;
 import org.springframework.data.domain.PageRequest;
@@ -49,6 +50,7 @@ public class ShortsService {
     private final ShortsRepository shortsRepository;
     private final ShortsCommentRepository shortsCommentRepository;
     private final ShortsQueryRepository shortsQueryRepository;
+    private final ShortsCommentQueryRepository shortsCommentQueryRepository;
 
     @Transactional
     public Response<Void> createShortsComment(CreateShortsCommentRequestDto requestDto, User user) {
@@ -168,5 +170,9 @@ public class ShortsService {
             boolean liked = shortsLikeTimeLogRepository.existsByUserIdAndShortsId(user.getId(), item.shortsId());
             return new ShortsAndLikedItemDto(item.contentId(), item.contentTitle(), item.shortsId(), item.shortsUrl(), liked);
         }).toList();
+    }
+
+    public Response<CursorPageResponse<ShortsCommentsByIdResponseDto>> commentsByIdAndCursor(Long shortsId, Long cursor, Integer size) {
+        return Response.ok(shortsCommentQueryRepository.findByIdAndCursor(shortsId, cursor, size));
     }
 }
