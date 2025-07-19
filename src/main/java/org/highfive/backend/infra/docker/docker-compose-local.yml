@@ -14,6 +14,20 @@ services:
     networks:
       - local-net
 
+  rabbitmq:
+    image: rabbitmq:3.12-management
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: spring_user
+      RABBITMQ_DEFAULT_PASS: spring_pass
+      RABBITMQ_DEFAULT_VHOST: /
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
   redis:
     image: redis:6
     container_name: local-redis
@@ -39,6 +53,7 @@ services:
 volumes:
   db-data:
   mongo-data:
+  rabbitmq_data:
 
 networks:
   local-net:
