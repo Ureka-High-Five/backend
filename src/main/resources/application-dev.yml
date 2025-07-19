@@ -13,6 +13,18 @@ spring:
       ssl:
         enabled: true
 
+  rabbitmq:
+    host: ${RABBITMQ_HOST}
+    port: ${RABBITMQ_PORT}
+    username: ${RABBITMQ_DEFAULT_USER}
+    password: ${RABBITMQ_DEFAULT_PASS}
+    listener:
+      simple:
+        acknowledge-mode: manual
+    mq:
+      queue:
+        user-action: user-action-queue
+
 jwt:
   secret: ${JWT_SECRET}
   accessToken-expiration: ${JWT_ACCESS_TOKEN_EXPIRATION}
@@ -32,6 +44,9 @@ kakao:
 fastapi:
   host: ${RECOMMEND_SERVER_URL}
   port: ${RECOMMEND_SERVER_PORT}
+
+queue:
+  name: recommendation.weight.update
 
 management:
   endpoints:
