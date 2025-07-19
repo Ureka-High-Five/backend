@@ -3,6 +3,8 @@ package org.highfive.backend.content.controller;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
+import org.highfive.backend.action.Action;
+import org.highfive.backend.action.ActionLogStamp;
 import org.highfive.backend.content.dto.response.ContentDetailResponseDto;
 import org.highfive.backend.content.dto.response.ContentVideoResponseDto;
 import org.highfive.backend.content.dto.response.SearchContentResponseDto;
@@ -18,6 +20,7 @@ public class ContentController {
 
     private final ContentService contentService;
 
+    @ActionLogStamp(Action.CLICK)
     @GetMapping("/{contentId}/detail")
     public Response<ContentDetailResponseDto> getContentDetail(
             @PathVariable final Long contentId) {
