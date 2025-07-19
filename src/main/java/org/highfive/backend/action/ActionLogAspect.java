@@ -7,7 +7,6 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.highfive.backend.auth.exception.AuthErrorCode;
 import org.highfive.backend.content.exception.ContentErrorCode;
 import org.highfive.backend.global.code.GlobalErrorCode;
 import org.highfive.backend.global.exception.BusinessException;
@@ -45,15 +44,30 @@ public class ActionLogAspect {
         ActionLogStamp actionLogStamp = method.getAnnotation(ActionLogStamp.class);
         Action action = actionLogStamp.value();
 
-        long userId = extractUserId();
-        long contentId = extractContentId(joinPoint);
-        long timestamp = System.currentTimeMillis();
-        return ActionLog.builder()
-                .userId(userId)
-                .contentId(contentId)
-                .action(action)
-                .timestamp(timestamp)
-                .build();
+        if (action == Action.CLICK) {
+            long userId = extractUserId();
+            long contentId = extractContentId(joinPoint);
+            long timestamp = System.currentTimeMillis();
+            return ActionLog.builder()
+                    .userId(userId)
+                    .contentId(contentId)
+                    .action(action)
+                    .value(1)
+                    .timestamp(timestamp)
+                    .build();
+        }
+
+        if (action == Action.WATCH) { // todo : 시청 시간 뽑고 시청 비율 계산
+
+        }
+
+        if (action == Action.RATING) { // todo : 평점 추출
+
+        }
+
+        if (action == Action.LIKE) {
+
+        }
     }
 
     private long extractUserId() {
@@ -70,7 +84,7 @@ public class ActionLogAspect {
     private long extractContentId(ProceedingJoinPoint joinPoint) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         String[] paramNames = signature.getParameterNames(); // 파라미터 이름
-        Object[] args = joinPoint.getArgs();                 // 파라미터 값
+        Object[] args = joinPoint.getArgs(); // 파라미터 값
 
         for (int i = 0; i < paramNames.length; i++) {
             if ("contentId".equals(paramNames[i])) {
