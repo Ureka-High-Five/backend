@@ -9,7 +9,8 @@ public enum AuthErrorCode implements ErrorCode {
     KAKAO_USERINFO_ERROR(50202, "카카오 유저 정보 요청 오류입니다.", HttpStatus.BAD_GATEWAY),
     ACCESS_TOKEN_ERROR(40101, "유효하지 않은 액세스 토큰입니다.", HttpStatus.UNAUTHORIZED),
     REFRESH_TOKEN_ERROR(40102, "유효하지 않은 리프레시 토큰입니다.", HttpStatus.UNAUTHORIZED),
-    TOKEN_MISMATCH_ERROR(40103, "리프레시 토큰이 일치하지 않습니다.", HttpStatus.UNAUTHORIZED);
+    TOKEN_MISMATCH_ERROR(40103, "리프레시 토큰이 일치하지 않습니다.", HttpStatus.UNAUTHORIZED),
+    ;
 
     private final int code;
     private final String message;
