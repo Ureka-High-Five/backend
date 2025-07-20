@@ -17,6 +17,7 @@ import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.user.entity.User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.highfive.backend.content.exception.ContentErrorCode.CONTENT_NOT_FOUND;
 import static org.highfive.backend.global.code.SuccessCode.CREATED;
@@ -30,6 +31,7 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final ContentRepository contentRepository;
 
+    @Transactional
     public Response<Void> createReview(final CreateReviewRequestDto requestDto, User user) {
 
         // TODO: review에 대한 금칙어 처리 추가 필요
@@ -50,6 +52,7 @@ public class ReviewService {
 
     }
 
+    @Transactional
     public Response<Void> updateReview(final Long reviewId, final UpdateReviewRequestDto requestDto, final User user) {
         // TODO: review에 대한 금칙어 처리 추가 필요
 
@@ -65,6 +68,7 @@ public class ReviewService {
 
     }
 
+    @Transactional
     public Response<Void> deleteReview(final Long reviewId, final User user) {
 
         Review existedReview = reviewRepository.findById(reviewId)
