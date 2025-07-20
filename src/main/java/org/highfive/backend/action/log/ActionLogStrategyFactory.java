@@ -26,7 +26,6 @@ public class ActionLogStrategyFactory {
 
     @PostConstruct
     public void init() {
-        // 자동 등록된 Bean들 중 각 Action에 해당하는 전략을 등록
         strategyMap.put(Action.CLICK, clickStrategy);
         strategyMap.put(Action.WATCH, watchStrategy);
         strategyMap.put(Action.RATING, ratingStrategy);
