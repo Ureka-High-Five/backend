@@ -8,6 +8,8 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.highfive.backend.action.log.ActionLog;
+import org.highfive.backend.action.log.ActionLogStrategyFactory;
+import org.highfive.backend.action.log.strategy.ActionLogStrategy;
 import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.content.exception.ContentErrorCode;
 import org.highfive.backend.content.repository.jpa.ContentRepository;
@@ -32,11 +34,7 @@ import org.springframework.stereotype.Component;
 public class ActionLogAspect {
 
     private final ActionLogService actionLogService;
-    private final ShortsRepository shortsRepository;
-    private final ContentRepository contentRepository;
-
-    private record ContentWatchLogInfo(long id, int watchTime, String type) {}
-    private record ContentReviewLogInfo(long contentId, int rating) {}
+    private final ActionLogStrategyFactory strategyFactory;
 
     @Around("@annotation(org.highfive.backend.action.ActionLogStamp)")
     public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -57,78 +55,12 @@ public class ActionLogAspect {
         Method method = signature.getMethod();
         ActionLogStamp actionLogStamp = method.getAnnotation(ActionLogStamp.class);
         Action action = actionLogStamp.value();
+
         long userId = extractUserId();
         long timestamp = System.currentTimeMillis();
 
-        if (action == Action.CLICK) {
-            long contentId = extractContentId(joinPoint);
-            return ActionLog.builder()
-                    .userId(userId)
-                    .contentId(contentId)
-                    .action(action)
-                    .value(1)
-                    .timestamp(timestamp)
-                    .build();
-        }
-
-        if (action == Action.WATCH) {
-            ContentWatchLogInfo info = extractContentWatchLogInfo(joinPoint);
-            long contentId;
-            double watchRate;
-            int watchTime = info.watchTime;
-            if (info.type.equals("SHORTS")) {
-                long shortsId = info.id;
-                Shorts shorts = shortsRepository.findById(shortsId).orElseThrow(() -> new BusinessException(ShortsErrorCode.SHORTS_NOT_FOUND));
-                contentId = shorts.getContent().getId();
-                watchRate = calcWatchRate(shorts.getRunningTime(), watchTime);
-            } else if (info.type.equals("VIDEO")) {
-                contentId = info.id;
-                Content content = contentRepository.findById(contentId).orElseThrow(() -> new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND));
-                watchRate = calcWatchRate(content.getRunningTime(), watchTime);
-            } else {
-                throw new BusinessException(ContentErrorCode.VIDEO_TYPE_NOT_FOUND);
-            }
-
-            return ActionLog.builder()
-                    .userId(userId)
-                    .contentId(contentId)
-                    .action(action)
-                    .value(watchRate)
-                    .timestamp(timestamp)
-                    .build();
-        }
-
-        if (action == Action.RATING) {
-            ContentReviewLogInfo info = extractContentReviewLogInfo(joinPoint);
-            return ActionLog.builder()
-                    .userId(userId)
-                    .contentId(info.contentId)
-                    .action(action)
-                    .value(info.rating)
-                    .timestamp(timestamp)
-                    .build();
-        }
-
-        if (action == Action.LIKE) {
-            long shortsId = extractShortsLikeCreateRequestDto(joinPoint);
-            long contentId = getContentIdByShortsId(shortsId);
-            return ActionLog.builder()
-                    .userId(userId)
-                    .contentId(contentId)
-                    .action(action)
-                    .value(1)
-                    .timestamp(timestamp)
-                    .build();
-        }
-
-        throw new BusinessException(GlobalErrorCode.BAD_REQUEST);
-    }
-
-    private double calcWatchRate(int runningTime, int watchTime) {
-        double ratio = (double) watchTime / runningTime;
-        double percent = ratio * 100.0;
-
-        return Math.round(percent * 1000.0) / 1000.0;
+        ActionLogStrategy strategy = strategyFactory.getStrategy(action);
+        return strategy.createLog(joinPoint, userId, timestamp);
     }
 
     private long extractUserId() {
@@ -138,58 +70,6 @@ public class ActionLogAspect {
         }
 
         Object principal = authentication.getPrincipal();
-
         return ((User) principal).getId();
-    }
-
-    private long extractContentId(ProceedingJoinPoint joinPoint) {
-        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        String[] paramNames = signature.getParameterNames(); // 파라미터 이름
-        Object[] args = joinPoint.getArgs(); // 파라미터 값
-
-        for (int i = 0; i < paramNames.length; i++) {
-            if ("contentId".equals(paramNames[i])) {
-                if (args[i] instanceof Long) {
-                    return (Long) args[i];
-                }
-                throw new BusinessException(ContentErrorCode.ID_CASTING_ERROR);
-            }
-        }
-        throw new BusinessException(GlobalErrorCode.BAD_REQUEST);
-    }
-
-    private ContentWatchLogInfo extractContentWatchLogInfo(ProceedingJoinPoint joinPoint) {
-        Object[] args = joinPoint.getArgs();
-        for (Object arg : args) {
-            if (arg instanceof CreateContentWatchLogRequestDto dto) {
-                return new ContentWatchLogInfo(dto.id(), dto.watchTime(), dto.type());
-            }
-        }
-        throw new BusinessException(GlobalErrorCode.BAD_REQUEST);
-    }
-
-    private ContentReviewLogInfo extractContentReviewLogInfo(ProceedingJoinPoint joinPoint) {
-        Object[] args = joinPoint.getArgs();
-        for (Object arg : args) {
-            if (arg instanceof CreateReviewRequestDto dto) {
-                return new ContentReviewLogInfo(dto.contentId(), dto.rating());
-            }
-        }
-        throw new BusinessException(GlobalErrorCode.BAD_REQUEST);
-    }
-
-    private long extractShortsLikeCreateRequestDto(ProceedingJoinPoint joinPoint) {
-        Object[] args = joinPoint.getArgs();
-        for (Object arg : args) {
-            if (arg instanceof ShortsLikeCreateRequestDto dto) {
-                return dto.shortsId();
-            }
-        }
-        throw new BusinessException(GlobalErrorCode.BAD_REQUEST);
-    }
-
-    private long getContentIdByShortsId(long shortsId) {
-        Shorts shorts = shortsRepository.findById(shortsId).orElseThrow(() -> new BusinessException(ShortsErrorCode.SHORTS_NOT_FOUND));
-        return shorts.getContent().getId();
     }
 }
