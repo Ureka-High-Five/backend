@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import static org.highfive.backend.content.exception.ContentErrorCode.CONTENT_NOT_FOUND;
 import static org.highfive.backend.global.code.SuccessCode.CREATED;
 import static org.highfive.backend.global.code.SuccessCode.OK;
+import static org.highfive.backend.review.exception.ReviewErrorCode.REVIEW_ALREADY_EXISTS;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +36,12 @@ public class ReviewService {
 
         Content content = contentRepository.findById(requestDto.contentId())
                 .orElseThrow(() -> new BusinessException(CONTENT_NOT_FOUND));
+
+        boolean alreadyCreateReview = reviewRepository.existsByUserIdAndContentId(user.getId(), requestDto.contentId());
+
+        if(alreadyCreateReview){
+            throw new BusinessException(REVIEW_ALREADY_EXISTS);
+        }
 
         Review review = ReviewMapper.toReview(requestDto, user, content);
         reviewRepository.save(review);
