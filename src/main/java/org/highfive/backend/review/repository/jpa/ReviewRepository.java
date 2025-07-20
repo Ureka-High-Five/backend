@@ -31,4 +31,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewQue
             String cursor,
             int limit
     );
+
+    boolean existsByUserIdAndContentId(Long userId, Long contentId);
 }
