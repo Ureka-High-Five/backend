@@ -5,6 +5,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.highfive.backend.action.Action;
+import org.highfive.backend.action.ActionLogStamp;
 import org.highfive.backend.global.dto.CursorPageResponse;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.shorts.dto.request.CreateShortsCommentRequestDto;
@@ -65,6 +67,7 @@ public class ShortsController {
     }
 
     @PostMapping("/like")
+    @ActionLogStamp(Action.LIKE)
     public Response<Void> like(@AuthenticationPrincipal final User user,
                                @RequestBody @Valid final ShortsLikeCreateRequestDto dto) {
         return shortsService.like(user, dto);

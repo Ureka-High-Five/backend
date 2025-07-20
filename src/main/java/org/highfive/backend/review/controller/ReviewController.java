@@ -2,6 +2,8 @@ package org.highfive.backend.review.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.highfive.backend.action.Action;
+import org.highfive.backend.action.ActionLogStamp;
 import org.highfive.backend.review.dto.request.CreateReviewRequestDto;
 import org.highfive.backend.review.dto.request.UpdateReviewRequestDto;
 import org.highfive.backend.review.dto.response.ContentMyReviewResponseDto;
@@ -29,8 +31,9 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @PostMapping
+    @ActionLogStamp(Action.RATING)
     public Response<Void> createReview(@Valid @RequestBody final CreateReviewRequestDto requestDto,
-                                    @AuthenticationPrincipal final User user) {
+                                       @AuthenticationPrincipal final User user) {
         return reviewService.createReview(requestDto, user);
     }
 
