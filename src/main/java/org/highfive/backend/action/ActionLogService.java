@@ -13,6 +13,6 @@ public class ActionLogService {
 
     public void saveLog(ActionLog actionLog) {
         log.info("ActionLog = {}", actionLog.toString());
-//        actionLogRepository.save(actionLog);
+        actionLogRepository.save(actionLog);
     }
 }
