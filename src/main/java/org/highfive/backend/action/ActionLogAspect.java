@@ -109,8 +109,25 @@ public class ActionLogAspect {
         }
 
         if (action == Action.LIKE) {
-
+            long shortsId = extractShortsLikeCreateRequestDto(joinPoint);
+            long contentId = getContentIdByShortsId(shortsId);
+            return ActionLog.builder()
+                    .userId(userId)
+                    .contentId(contentId)
+                    .action(action)
+                    .value(1)
+                    .timestamp(timestamp)
+                    .build();
         }
+
+        throw new BusinessException(GlobalErrorCode.BAD_REQUEST);
+    }
+
+    private double calcWatchRate(int runningTime, int watchTime) {
+        double ratio = (double) watchTime / runningTime;
+        double percent = ratio * 100.0;
+
+        return Math.round(percent * 1000.0) / 1000.0;
     }
 
     private long extractUserId() {
@@ -160,4 +177,18 @@ public class ActionLogAspect {
         throw new BusinessException(GlobalErrorCode.BAD_REQUEST);
     }
 
+    private long extractShortsLikeCreateRequestDto(ProceedingJoinPoint joinPoint) {
+        Object[] args = joinPoint.getArgs();
+        for (Object arg : args) {
+            if (arg instanceof ShortsLikeCreateRequestDto dto) {
+                return dto.shortsId();
+            }
+        }
+        throw new BusinessException(GlobalErrorCode.BAD_REQUEST);
+    }
+
+    private long getContentIdByShortsId(long shortsId) {
+        Shorts shorts = shortsRepository.findById(shortsId).orElseThrow(() -> new BusinessException(ShortsErrorCode.SHORTS_NOT_FOUND));
+        return shorts.getContent().getId();
+    }
 }
