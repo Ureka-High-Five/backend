@@ -2,6 +2,7 @@ package org.highfive.backend.action;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.highfive.backend.action.log.ActionLog;
 import org.springframework.stereotype.Service;
 
 @Slf4j
