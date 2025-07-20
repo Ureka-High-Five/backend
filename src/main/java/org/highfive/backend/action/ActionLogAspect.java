@@ -12,10 +12,10 @@ import org.highfive.backend.action.log.ActionLogStrategyFactory;
 import org.highfive.backend.action.log.strategy.ActionLogStrategy;
 import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.user.code.UserErrorCode;
+import org.highfive.backend.user.entity.User;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -62,7 +62,6 @@ public class ActionLogAspect {
         }
 
         Object principal = authentication.getPrincipal();
-        String username = ((User) principal).getUsername();
-        return 0;
+        return ((User) principal).getId();
     }
 }
