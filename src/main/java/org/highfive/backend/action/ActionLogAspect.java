@@ -10,26 +10,18 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.highfive.backend.action.log.ActionLog;
 import org.highfive.backend.action.log.ActionLogStrategyFactory;
 import org.highfive.backend.action.log.strategy.ActionLogStrategy;
-import org.highfive.backend.content.entity.Content;
-import org.highfive.backend.content.exception.ContentErrorCode;
-import org.highfive.backend.content.repository.jpa.ContentRepository;
-import org.highfive.backend.global.code.GlobalErrorCode;
 import org.highfive.backend.global.exception.BusinessException;
-import org.highfive.backend.review.dto.request.CreateReviewRequestDto;
-import org.highfive.backend.shorts.dto.request.ShortsLikeCreateRequestDto;
-import org.highfive.backend.shorts.entity.Shorts;
-import org.highfive.backend.shorts.exception.ShortsErrorCode;
-import org.highfive.backend.shorts.repository.jpa.ShortsRepository;
 import org.highfive.backend.user.code.UserErrorCode;
-import org.highfive.backend.user.dto.request.CreateContentWatchLogRequestDto;
-import org.highfive.backend.user.entity.User;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Aspect
 @Component
+@Profile("!test")
 @RequiredArgsConstructor
 public class ActionLogAspect {
 
@@ -70,6 +62,7 @@ public class ActionLogAspect {
         }
 
         Object principal = authentication.getPrincipal();
-        return ((User) principal).getId();
+        String username = ((User) principal).getUsername();
+        return 0;
     }
 }
