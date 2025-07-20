@@ -90,7 +90,7 @@ public class ShortsService {
 
     public Response<List<ShortsCommentsByTimeResponseDto>> commentsByTime(long shortsId, long time, int duration) {
         List<ShortsCommentsByTimeResponseDto> response = new ArrayList<>();
-        for (long targetTime = time; targetTime < targetTime + duration; targetTime += duration / 5) {
+        for (long targetTime = time; targetTime < time + duration; targetTime += duration / 5) {
             List<ShortsCommentsByTimeResponseDto> result = shortsCommentRepository.findByShortsIdAndTimeOrderByCreatedAtDesc(shortsId, targetTime)
                     .stream()
                     .map(ShortsCommentMapper::toShortsCommentsByTimeResponseDto)
