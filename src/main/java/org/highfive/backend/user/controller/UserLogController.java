@@ -2,6 +2,8 @@ package org.highfive.backend.user.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.highfive.backend.action.Action;
+import org.highfive.backend.action.ActionLogStamp;
 import org.highfive.backend.user.dto.request.CreateContentWatchLogRequestDto;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.user.entity.User;
@@ -17,6 +19,7 @@ public class UserLogController {
 
     private final UserLogService userLogService;
 
+    @ActionLogStamp(Action.WATCH)
     @PostMapping("/content/watch-log")
     public Response<Void> createContentWatchLog(
             @Valid @RequestBody final CreateContentWatchLogRequestDto request,
