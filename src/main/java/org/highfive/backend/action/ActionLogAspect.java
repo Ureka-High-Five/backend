@@ -70,7 +70,7 @@ public class ActionLogAspect {
                     .build();
         }
 
-        if (action == Action.WATCH) { // todo : 시청 시간 뽑고 시청 비율 계산
+        if (action == Action.WATCH) {
             ContentWatchLogInfo info = extractContentWatchLogInfo(joinPoint);
             long contentId;
             double watchRate;
@@ -97,7 +97,7 @@ public class ActionLogAspect {
                     .build();
         }
 
-        if (action == Action.RATING) { // todo : 평점 추출
+        if (action == Action.RATING) {
             ContentReviewLogInfo info = extractContentReviewLogInfo(joinPoint);
             return ActionLog.builder()
                     .userId(userId)
