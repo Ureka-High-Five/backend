@@ -4,18 +4,6 @@ spring:
       host: localhost
       port: 6379
 
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: spring_user
-    password: spring_pass
-    listener:
-      simple:
-        acknowledge-mode: manual
-    mq:
-      queue:
-        user-action: user-action-queue
-
   datasource:
     url: jdbc:h2:mem:testdb;MODE=MYSQL;DB_CLOSE_DELAY=-1
     driver-class-name: org.h2.Driver
@@ -25,6 +13,9 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create-drop
+
+  mq:
+    enabled: false
 
 kakao:
   client-id: abcdefghijklmnob
