@@ -75,6 +75,8 @@ dependencies {
 	implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
 	runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
 
+	implementation 'org.springframework.boot:spring-boot-starter-amqp'
+
 	compileOnly 'org.projectlombok:lombok'
 
 	runtimeOnly 'com.mysql:mysql-connector-j'
