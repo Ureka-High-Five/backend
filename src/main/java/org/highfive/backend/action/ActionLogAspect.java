@@ -98,7 +98,14 @@ public class ActionLogAspect {
         }
 
         if (action == Action.RATING) { // todo : 평점 추출
-
+            ContentReviewLogInfo info = extractContentReviewLogInfo(joinPoint);
+            return ActionLog.builder()
+                    .userId(userId)
+                    .contentId(info.contentId)
+                    .action(action)
+                    .value(info.rating)
+                    .timestamp(timestamp)
+                    .build();
         }
 
         if (action == Action.LIKE) {
@@ -132,4 +139,25 @@ public class ActionLogAspect {
         }
         throw new BusinessException(GlobalErrorCode.BAD_REQUEST);
     }
+
+    private ContentWatchLogInfo extractContentWatchLogInfo(ProceedingJoinPoint joinPoint) {
+        Object[] args = joinPoint.getArgs();
+        for (Object arg : args) {
+            if (arg instanceof CreateContentWatchLogRequestDto dto) {
+                return new ContentWatchLogInfo(dto.id(), dto.watchTime(), dto.type());
+            }
+        }
+        throw new BusinessException(GlobalErrorCode.BAD_REQUEST);
+    }
+
+    private ContentReviewLogInfo extractContentReviewLogInfo(ProceedingJoinPoint joinPoint) {
+        Object[] args = joinPoint.getArgs();
+        for (Object arg : args) {
+            if (arg instanceof CreateReviewRequestDto dto) {
+                return new ContentReviewLogInfo(dto.contentId(), dto.rating());
+            }
+        }
+        throw new BusinessException(GlobalErrorCode.BAD_REQUEST);
+    }
+
 }
