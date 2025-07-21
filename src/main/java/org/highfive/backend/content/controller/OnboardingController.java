@@ -5,8 +5,8 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.highfive.backend.auth.dto.response.TokenResponseDto;
-import org.highfive.backend.content.dto.response.OnboardingInitContentsResponseDto;
 import org.highfive.backend.content.dto.request.OnboardingSelectContentRequestDto;
+import org.highfive.backend.content.dto.response.OnboardingInitContentsResponseDto;
 import org.highfive.backend.content.dto.response.OnboardingSelectContentResponseDto;
 import org.highfive.backend.content.service.OnboardingService;
 import org.highfive.backend.global.dto.Response;
@@ -30,7 +30,8 @@ public class OnboardingController {
     }
 
     @PostMapping("/content/recommend")
-    public Response<List<OnboardingSelectContentResponseDto>> selectContent(@Valid @RequestBody final OnboardingSelectContentRequestDto request) {
+    public Response<List<OnboardingSelectContentResponseDto>> selectContent(
+            @Valid @RequestBody final OnboardingSelectContentRequestDto request) {
         return onboardingService.getContentBySelectedContent(request);
     }
 

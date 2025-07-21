@@ -1,5 +1,9 @@
 package org.highfive.backend.auth.service;
 
+import static org.highfive.backend.auth.exception.AuthErrorCode.ACCESS_TOKEN_ERROR;
+import static org.highfive.backend.auth.exception.AuthErrorCode.REFRESH_TOKEN_ERROR;
+import static org.highfive.backend.user.exception.UserErrorCode.USER_NOT_FOUND_ERROR;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -7,6 +11,13 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.highfive.backend.auth.repository.redis.TokenRedisRepository;
@@ -19,18 +30,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
-
-import java.nio.charset.StandardCharsets;
-import java.security.Key;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.highfive.backend.auth.exception.AuthErrorCode.ACCESS_TOKEN_ERROR;
-import static org.highfive.backend.auth.exception.AuthErrorCode.REFRESH_TOKEN_ERROR;
-import static org.highfive.backend.user.exception.UserErrorCode.USER_NOT_FOUND_ERROR;
 
 @Slf4j
 @Component
@@ -89,11 +88,11 @@ public class TokenService {
 
     public void validateToken(final String token, final TokenType tokenType) {
 
-        if(token == null) {
+        if (token == null) {
             throw new BusinessException(ACCESS_TOKEN_ERROR);
         }
 
-        if(isBlackListToken(token)) {
+        if (isBlackListToken(token)) {
             throw new BusinessException(ACCESS_TOKEN_ERROR);
         }
 
@@ -108,11 +107,12 @@ public class TokenService {
 
         List<GrantedAuthority> authorities = new ArrayList<>();
 
-        if(roles != null) {
+        if (roles != null) {
             authorities = roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
         }
 
-        final User user = userRepository.findByKakaoUserId(kakaoUserId).orElseThrow(() -> new BusinessException(USER_NOT_FOUND_ERROR));
+        final User user = userRepository.findByKakaoUserId(kakaoUserId)
+                .orElseThrow(() -> new BusinessException(USER_NOT_FOUND_ERROR));
         return new UsernamePasswordAuthenticationToken(user, null, authorities);
     }
 
@@ -120,7 +120,7 @@ public class TokenService {
 
         final String bearer = request.getHeader(AUTHORIZATION);
 
-        if(bearer != null && bearer.startsWith(BEARER)) {
+        if (bearer != null && bearer.startsWith(BEARER)) {
             return bearer.substring(BEARER_START_INDEX);
         }
 
@@ -145,7 +145,7 @@ public class TokenService {
                     .getBody();
         } catch (JwtException | IllegalArgumentException e) {
             log.error("JWT 인증 실패 : {}", e.getMessage(), e);
-            if(type.equals(TokenType.ACCESSTOKEN)) {
+            if (type.equals(TokenType.ACCESSTOKEN)) {
                 throw new BusinessException(ACCESS_TOKEN_ERROR);
             }
             throw new BusinessException(REFRESH_TOKEN_ERROR);

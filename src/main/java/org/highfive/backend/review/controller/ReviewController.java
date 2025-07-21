@@ -4,13 +4,13 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.action.Action;
 import org.highfive.backend.action.ActionLogStamp;
+import org.highfive.backend.global.dto.CursorPageResponse;
+import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.review.dto.request.CreateReviewRequestDto;
 import org.highfive.backend.review.dto.request.UpdateReviewRequestDto;
 import org.highfive.backend.review.dto.response.ContentMyReviewResponseDto;
 import org.highfive.backend.review.dto.response.ReviewSimpleResponseDto;
 import org.highfive.backend.review.service.ReviewService;
-import org.highfive.backend.global.dto.CursorPageResponse;
-import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.user.entity.User;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -65,7 +65,8 @@ public class ReviewController {
     }
 
     @GetMapping("/{contentId}/me")
-    public Response<ContentMyReviewResponseDto> getMyReviewByContent(final @PathVariable Long contentId, @AuthenticationPrincipal final User user) {
+    public Response<ContentMyReviewResponseDto> getMyReviewByContent(final @PathVariable Long contentId,
+                                                                     @AuthenticationPrincipal final User user) {
         return reviewService.getMyReviewByContent(contentId, user);
     }
 }

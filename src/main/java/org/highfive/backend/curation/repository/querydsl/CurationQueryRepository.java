@@ -2,6 +2,8 @@ package org.highfive.backend.curation.repository.querydsl;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.content.entity.QContent;
 import org.highfive.backend.curation.entity.Curation;
@@ -9,9 +11,6 @@ import org.highfive.backend.curation.entity.QCuration;
 import org.highfive.backend.curation.entity.QCurationContents;
 import org.highfive.backend.user.entity.QUser;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
-import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -51,7 +50,9 @@ public class CurationQueryRepository {
     }
 
     private BooleanExpression gtCursor(final String cursor) {
-        if(cursor == null) return null;
+        if (cursor == null) {
+            return null;
+        }
         return curation.id.lt(Long.parseLong(cursor));
     }
 }

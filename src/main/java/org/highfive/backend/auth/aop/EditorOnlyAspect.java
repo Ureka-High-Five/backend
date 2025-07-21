@@ -21,13 +21,13 @@ public class EditorOnlyAspect {
     public void isValid() {
         final Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        if(!(principal instanceof User)) {
+        if (!(principal instanceof User)) {
             throw new BusinessException(CurationErrorCode.CURATION_ACCESS_DENIED);
         }
 
         final User user = (User) principal;
 
-        if(user.getUserRole().equals(UserRole.USER) || user.getUserRole().equals(UserRole.TEMP_USER)) {
+        if (user.getUserRole().equals(UserRole.USER) || user.getUserRole().equals(UserRole.TEMP_USER)) {
             throw new BusinessException(CurationErrorCode.CURATION_ACCESS_DENIED);
         }
     }

@@ -2,7 +2,6 @@ package org.highfive.backend.curation.dto.request.customAnnotation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-
 import java.util.HashSet;
 import java.util.List;
 

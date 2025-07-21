@@ -1,7 +1,5 @@
 package org.highfive.backend.content.dto.response;
 
-import java.time.Instant;
-
 public record MostPopularContentPerGenreDto(
         Long id,
         String thumbnailUrl,
@@ -10,4 +8,5 @@ public record MostPopularContentPerGenreDto(
         String genreName,
         Long rank,
         int openYear
-) {}
+) {
+}

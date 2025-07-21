@@ -1,6 +1,15 @@
 package org.highfive.backend.curation.service;
 
+import static org.highfive.backend.curation.dto.mapper.CurationMapper.mapToContentDtos;
+import static org.highfive.backend.curation.dto.mapper.CurationMapper.toCurationDetailResponseDto;
+import static org.highfive.backend.curation.dto.mapper.CurationMapper.toEntity;
+import static org.highfive.backend.curation.dto.mapper.CurationMapper.toMyCurationResponseDtos;
+
 import jakarta.transaction.Transactional;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.content.exception.ContentErrorCode;
@@ -19,11 +28,6 @@ import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.user.entity.User;
 import org.springframework.stereotype.Service;
-
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static org.highfive.backend.curation.dto.mapper.CurationMapper.*;
 
 @Service
 @RequiredArgsConstructor
@@ -54,14 +58,16 @@ public class CurationService {
         return Response.ok(responseDto);
     }
 
-    public Response<CursorPageResponse<MyCurationResponseDto>> getMyCurations(final User user, final String cursor, final int size) {
+    public Response<CursorPageResponse<MyCurationResponseDto>> getMyCurations(final User user, final String cursor,
+                                                                              final int size) {
         final List<Curation> curations = curationQueryRepository.findCurationByUserId(user.getId(), cursor, size);
         final boolean hasNext = curations.size() > size;
         final List<Curation> items = hasNext ? curations.subList(0, size) : curations;
         final String nextCursor = hasNext ? getNextCursor(items) : null;
         final List<MyCurationResponseDto> myCurationResponseDtos = toMyCurationResponseDtos(items);
 
-        final CursorPageResponse<MyCurationResponseDto> response = new CursorPageResponse<>(myCurationResponseDtos,  hasNext, nextCursor);
+        final CursorPageResponse<MyCurationResponseDto> response = new CursorPageResponse<>(myCurationResponseDtos,
+                hasNext, nextCursor);
         return Response.ok(response);
     }
 
@@ -81,14 +87,15 @@ public class CurationService {
 
     @Transactional
     public Response<Void> deleteCuration(final Long curationId, final User user) {
-        final Curation curation = curationRepository.findById(curationId).orElseThrow(() -> new BusinessException(CurationErrorCode.CURATION_NOT_FOUND));
+        final Curation curation = curationRepository.findById(curationId)
+                .orElseThrow(() -> new BusinessException(CurationErrorCode.CURATION_NOT_FOUND));
         checkCurationOwner(curation, user);
         curationRepository.delete(curation);
         return Response.ok(null);
     }
 
     private void checkCurationOwner(final Curation curation, final User user) {
-        if(!curation.getUser().getId().equals(user.getId())) {
+        if (!curation.getUser().getId().equals(user.getId())) {
             throw new BusinessException(CurationErrorCode.CURATION_ACCESS_DENIED);
         }
     }
@@ -106,8 +113,12 @@ public class CurationService {
     }
 
     private void updateContents(final Curation curation, final List<Long> newContentIds) {
-        if (newContentIds == null) return;
-        if (!isContentUpdated(curation, newContentIds)) return;
+        if (newContentIds == null) {
+            return;
+        }
+        if (!isContentUpdated(curation, newContentIds)) {
+            return;
+        }
         List<Content> newContents = getValidContents(newContentIds);
         replaceCurationContents(curation, newContents);
     }
@@ -156,7 +167,7 @@ public class CurationService {
 
     private List<Content> getContentsOrThrow(final List<Long> contentIds) {
         final List<Content> contents = contentRepository.findAllById(contentIds);
-        if(contents.size() != contentIds.size()) {
+        if (contents.size() != contentIds.size()) {
             throw new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND);
         }
         return contents;

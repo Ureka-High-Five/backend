@@ -1,7 +1,7 @@
 package org.highfive.backend.global.client.fastapi.dto.response;
 
-public record FastApiVectorFromGenresDto (
+public record FastApiVectorFromGenresDto(
 
-    String vector
-){
+        String vector
+) {
 }

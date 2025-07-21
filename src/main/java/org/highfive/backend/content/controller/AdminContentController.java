@@ -9,8 +9,6 @@ import org.highfive.backend.content.dto.response.AdminAddContentResponseDto;
 import org.highfive.backend.content.dto.response.AdminUpdateContentResponseDto;
 import org.highfive.backend.content.service.AdminContentService;
 import org.highfive.backend.global.dto.Response;
-import org.highfive.backend.user.entity.User;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,13 +26,15 @@ public class AdminContentController {
 
     @AdminOnly
     @PostMapping
-    public Response<AdminAddContentResponseDto> adminAddContent(@Valid @RequestBody final AdminAddContentRequestDto request) {
+    public Response<AdminAddContentResponseDto> adminAddContent(
+            @Valid @RequestBody final AdminAddContentRequestDto request) {
         return adminContentService.addContent(request);
     }
 
     @AdminOnly
     @PatchMapping
-    public Response<AdminUpdateContentResponseDto> adminUpdateContent(@Valid @RequestBody final AdminUpdateContentRequestDto request) {
+    public Response<AdminUpdateContentResponseDto> adminUpdateContent(
+            @Valid @RequestBody final AdminUpdateContentRequestDto request) {
         return adminContentService.updateContent(request);
     }
 

@@ -4,7 +4,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.highfive.backend.action.log.ActionLog;
-import org.highfive.backend.metadata.entity.MetaInfo;
 import org.highfive.backend.metadata.entity.MetaInfoContents;
 import org.highfive.backend.metadata.repository.jpa.MetaInfoContentsRepository;
 import org.highfive.backend.rabbitmq.dto.UserWeightUpdateMessageDto;
@@ -26,23 +25,24 @@ public class ActionLogService {
         actionLogRepository.save(actionLog);
     }
 
-    public void publishUpdateWeightMessage(final ActionLog actionLog){
+    public void publishUpdateWeightMessage(final ActionLog actionLog) {
         List<MetaInfoContents> metaInfoContents = metaInfoContentsRepository.findByContentId(actionLog.getContentId());
         List<Long> metaInfoIds = extractMetaInfoIds(metaInfoContents);
         List<String> metaInfoName = extractMetaInfoNames(metaInfoContents);
 
-        UserWeightUpdateMessageDto message = MessageMapper.toUserWeightUpdateMessageDto(actionLog.getUserId(),metaInfoIds,metaInfoName,actionLog.getAction(),actionLog.getValue());
+        UserWeightUpdateMessageDto message = MessageMapper.toUserWeightUpdateMessageDto(actionLog.getUserId(),
+                metaInfoIds, metaInfoName, actionLog.getAction(), actionLog.getValue());
 
         producer.sendWeightUpdateMessage(message);
     }
 
-    private List<Long> extractMetaInfoIds(final List<MetaInfoContents> metaInfoContents){
+    private List<Long> extractMetaInfoIds(final List<MetaInfoContents> metaInfoContents) {
         return metaInfoContents.stream()
                 .map(meta -> meta.getMetaInfo().getId())
                 .toList();
     }
 
-    private List<String> extractMetaInfoNames(final List<MetaInfoContents> metaInfoContents){
+    private List<String> extractMetaInfoNames(final List<MetaInfoContents> metaInfoContents) {
         return metaInfoContents.stream()
                 .map(meta -> meta.getMetaInfo().getName())
                 .toList();

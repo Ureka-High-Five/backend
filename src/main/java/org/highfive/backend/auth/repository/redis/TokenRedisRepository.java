@@ -1,11 +1,10 @@
 package org.highfive.backend.auth.repository.redis;
 
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
-
-import java.util.concurrent.TimeUnit;
 
 @Component
 @RequiredArgsConstructor
@@ -19,7 +18,8 @@ public class TokenRedisRepository {
     private Long refreshTokenExpiration;
 
     public void save(final String userId, final String refreshToken) {
-        redisTemplate.opsForValue().set(String.valueOf(userId), refreshToken, refreshTokenExpiration, TimeUnit.MILLISECONDS);
+        redisTemplate.opsForValue()
+                .set(String.valueOf(userId), refreshToken, refreshTokenExpiration, TimeUnit.MILLISECONDS);
     }
 
     public void saveLogoutToken(final String accessToken, final long tokenRemainingTime) {

@@ -91,7 +91,9 @@ public class ContentQueryRepositoryImpl implements ContentQueryRepository {
                 .groupBy(c.id, c.thumbnailUrl, c.title, c.openDate)
                 .orderBy(m.name.countDistinct().desc())
                 .fetch();
-    }@SuppressWarnings("unchecked")
+    }
+
+    @SuppressWarnings("unchecked")
 
     public List<Map<String, Object>> findContentGenresByContentIds(List<Long> contentIds) {
 
@@ -125,13 +127,13 @@ public class ContentQueryRepositoryImpl implements ContentQueryRepository {
     }
 
     @Override
-    public Optional<Content> findWithMetaInfoById(Long contentId){
+    public Optional<Content> findWithMetaInfoById(Long contentId) {
         QContent content = QContent.content;
         QMetaInfoContents metaInfoContents = QMetaInfoContents.metaInfoContents;
         QMetaInfo metaInfo = QMetaInfo.metaInfo;
 
         Content result = queryFactory.selectFrom(content)
-                .leftJoin(content.metaInfoContents,metaInfoContents).fetchJoin()
+                .leftJoin(content.metaInfoContents, metaInfoContents).fetchJoin()
                 .leftJoin(metaInfoContents.metaInfo, metaInfo).fetchJoin()
                 .where(content.id.eq(contentId))
                 .distinct()

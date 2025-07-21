@@ -11,7 +11,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class RatingActionLogStrategy implements ActionLogStrategy {
 
-    private record ContentReviewLogInfo(long contentId, int rating) {}
+    private record ContentReviewLogInfo(long contentId, int rating) {
+    }
 
     @Override
     public ActionLog createLog(ProceedingJoinPoint joinPoint, long userId, long timestamp) {

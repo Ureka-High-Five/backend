@@ -6,9 +6,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import org.highfive.backend.global.dto.CursorPageResponse;
 import org.highfive.backend.review.dto.response.QReviewSimpleResponseDto;
 import org.highfive.backend.review.dto.response.ReviewSimpleResponseDto;
-import org.highfive.backend.global.dto.CursorPageResponse;
 import org.highfive.backend.review.entity.QReview;
 import org.highfive.backend.user.entity.User;
 import org.springframework.stereotype.Repository;
@@ -21,7 +21,8 @@ public class ReviewQueryRepositoryImpl implements ReviewQueryRepository {
     private static final QReview review = QReview.review;
 
     @Override
-    public CursorPageResponse<ReviewSimpleResponseDto> findReviewsByCursor(final Long contentId, final String cursor, final int size, final User user) {
+    public CursorPageResponse<ReviewSimpleResponseDto> findReviewsByCursor(final Long contentId, final String cursor,
+                                                                           final int size, final User user) {
 
         final List<ReviewSimpleResponseDto> items = queryFactory
                 .select(new QReviewSimpleResponseDto(review))

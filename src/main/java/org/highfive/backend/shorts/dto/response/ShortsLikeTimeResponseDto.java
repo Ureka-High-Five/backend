@@ -8,5 +8,6 @@ public record ShortsLikeTimeResponseDto(
     public record ShortsLikeTimeLineDto(
             int time,
             int count
-    ) {}
+    ) {
+    }
 }

@@ -3,9 +3,8 @@ package org.highfive.backend.curation.dto.request;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import org.highfive.backend.curation.dto.request.customAnnotation.NoDuplicate;
-
 import java.util.List;
+import org.highfive.backend.curation.dto.request.customAnnotation.NoDuplicate;
 
 public record CreateCurationRequestDto(
         @NotBlank

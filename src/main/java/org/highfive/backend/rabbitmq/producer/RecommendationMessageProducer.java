@@ -29,7 +29,7 @@ public class RecommendationMessageProducer {
         try {
             rabbitTemplate.convertAndSend(queueName, message);
         } catch (Exception e) {
-            throw new MessageDeliveryException("메시지 전송 실패 ",e);
+            throw new MessageDeliveryException("메시지 전송 실패 ", e);
         }
     }
 

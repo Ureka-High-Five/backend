@@ -15,5 +15,6 @@ public record CurationDetailResponseDto(
             long id,
             String title,
             String thumbnailUrl
-    ) {}
+    ) {
+    }
 }

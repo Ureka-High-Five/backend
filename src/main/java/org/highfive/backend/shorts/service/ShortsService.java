@@ -1,7 +1,17 @@
 package org.highfive.backend.shorts.service;
 
 
+import static org.highfive.backend.shorts.dto.mapper.ShortsLikeTimeLogMapper.toShorts;
+import static org.highfive.backend.shorts.dto.mapper.ShortsLikeTimeLogMapper.toShortsLikeTimeLineDto;
+import static org.highfive.backend.shorts.dto.mapper.ShortsMapper.toShortsLikedUserResponseDtos;
+import static org.highfive.backend.shorts.exception.ShortsErrorCode.SHORTS_ALREADY_LIKED;
+import static org.highfive.backend.shorts.exception.ShortsErrorCode.SHORTS_LIKED_NOT_FOUND;
+import static org.highfive.backend.shorts.exception.ShortsErrorCode.SHORTS_NOT_FOUND;
+
 import jakarta.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.highfive.backend.global.dto.CursorPageResponse;
@@ -12,7 +22,12 @@ import org.highfive.backend.shorts.dto.mapper.ShortsMapper;
 import org.highfive.backend.shorts.dto.request.CreateShortsCommentRequestDto;
 import org.highfive.backend.shorts.dto.request.ShortsDislikeRequestDto;
 import org.highfive.backend.shorts.dto.request.ShortsLikeCreateRequestDto;
-import org.highfive.backend.shorts.dto.response.*;
+import org.highfive.backend.shorts.dto.response.GetShortsCommentResponseDto;
+import org.highfive.backend.shorts.dto.response.ShortsCommentsByIdResponseDto;
+import org.highfive.backend.shorts.dto.response.ShortsCommentsByTimeResponseDto;
+import org.highfive.backend.shorts.dto.response.ShortsLikeTimeResponseDto;
+import org.highfive.backend.shorts.dto.response.ShortsLikedUserItemDto;
+import org.highfive.backend.shorts.dto.response.ShortsResponseDto;
 import org.highfive.backend.shorts.entity.Shorts;
 import org.highfive.backend.shorts.entity.ShortsComment;
 import org.highfive.backend.shorts.entity.ShortsLikeTimeLog;
@@ -25,15 +40,6 @@ import org.highfive.backend.user.entity.User;
 import org.highfive.backend.user.repository.redis.UserRedisRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import static org.highfive.backend.shorts.dto.mapper.ShortsLikeTimeLogMapper.toShorts;
-import static org.highfive.backend.shorts.dto.mapper.ShortsLikeTimeLogMapper.toShortsLikeTimeLineDto;
-import static org.highfive.backend.shorts.dto.mapper.ShortsMapper.toShortsLikedUserResponseDtos;
-import static org.highfive.backend.shorts.exception.ShortsErrorCode.*;
 
 @Slf4j
 @Service
@@ -60,7 +66,8 @@ public class ShortsService {
         return Response.ok(null);
     }
 
-    public Response<CursorPageResponse<ShortsResponseDto>> recommendShorts(final Long cursor, final Integer size, final User user) {
+    public Response<CursorPageResponse<ShortsResponseDto>> recommendShorts(final Long cursor, final Integer size,
+                                                                           final User user) {
 
         final String userVector = userRedisRepository.getUserVector(user.getId());
         log.info("user vector: {}", userVector);
@@ -69,7 +76,8 @@ public class ShortsService {
         boolean hasNext = result.size() > size;
         Long nextCursor = hasNext ? recommend.getLast().getId() : null;
         result = hasNext ? result.subList(0, size) : result;
-        CursorPageResponse<ShortsResponseDto> response = new CursorPageResponse<>(result, hasNext, String.valueOf(nextCursor));
+        CursorPageResponse<ShortsResponseDto> response = new CursorPageResponse<>(result, hasNext,
+                String.valueOf(nextCursor));
         return Response.ok(response);
     }
 
@@ -77,7 +85,8 @@ public class ShortsService {
     public Response<Void> like(final User user, final ShortsLikeCreateRequestDto dto) {
         final Long shortsId = dto.shortsId();
         final long time = dto.time();
-        final Shorts shorts = shortsRepository.findById(shortsId).orElseThrow(() -> new BusinessException(SHORTS_NOT_FOUND));
+        final Shorts shorts = shortsRepository.findById(shortsId)
+                .orElseThrow(() -> new BusinessException(SHORTS_NOT_FOUND));
 
         if (shortsLikeTimeLogRepository.existsByUserIdAndShortsId(user.getId(), shortsId)) {
             throw new BusinessException(SHORTS_ALREADY_LIKED);
@@ -91,7 +100,8 @@ public class ShortsService {
     public Response<List<ShortsCommentsByTimeResponseDto>> commentsByTime(long shortsId, long time, int duration) {
         List<ShortsCommentsByTimeResponseDto> response = new ArrayList<>();
         for (long targetTime = time; targetTime < time + duration; targetTime += duration / 5) {
-            List<ShortsCommentsByTimeResponseDto> result = shortsCommentRepository.findByShortsIdAndTimeOrderByCreatedAtDesc(shortsId, targetTime)
+            List<ShortsCommentsByTimeResponseDto> result = shortsCommentRepository.findByShortsIdAndTimeOrderByCreatedAtDesc(
+                            shortsId, targetTime)
                     .stream()
                     .map(ShortsCommentMapper::toShortsCommentsByTimeResponseDto)
                     .toList();
@@ -109,7 +119,8 @@ public class ShortsService {
 
         shortsRepository.findById(shortsId).orElseThrow(() -> new BusinessException(SHORTS_NOT_FOUND));
 
-        final ShortsLikeTimeLog shortsLikeTimeLog = shortsLikeTimeLogRepository.findByUserIdAndShortsId(user.getId(),shortsId)
+        final ShortsLikeTimeLog shortsLikeTimeLog = shortsLikeTimeLogRepository.findByUserIdAndShortsId(user.getId(),
+                        shortsId)
                 .orElseThrow(() -> new BusinessException(SHORTS_LIKED_NOT_FOUND));
 
         shortsLikeTimeLogRepository.deleteById(shortsLikeTimeLog.getId());
@@ -117,16 +128,18 @@ public class ShortsService {
 
         return Response.ok(null);
     }
-  
-    public Response<GetShortsCommentResponseDto> getOneShortsComment(final Long shortsId,final Long time) {
 
-        final ShortsComment existedShortsComment = shortsCommentRepository.findFirstByShortsIdAndTimeOrderByCreatedAtDesc(shortsId,time).orElse(null);
+    public Response<GetShortsCommentResponseDto> getOneShortsComment(final Long shortsId, final Long time) {
 
-        if(Objects.isNull(existedShortsComment)){
+        final ShortsComment existedShortsComment = shortsCommentRepository.findFirstByShortsIdAndTimeOrderByCreatedAtDesc(
+                shortsId, time).orElse(null);
+
+        if (Objects.isNull(existedShortsComment)) {
             return Response.ok(null);
         }
 
-        GetShortsCommentResponseDto responseDto = ShortsCommentMapper.toGetShortsCommentResponseDto(existedShortsComment);
+        GetShortsCommentResponseDto responseDto = ShortsCommentMapper.toGetShortsCommentResponseDto(
+                existedShortsComment);
 
         return Response.ok(responseDto);
     }
@@ -139,7 +152,8 @@ public class ShortsService {
         return Response.ok(new ShortsLikeTimeResponseDto(data));
     }
 
-    public Response<CursorPageResponse<ShortsLikedUserItemDto>> likedShorts(final User user, final String cursor, final int size) {
+    public Response<CursorPageResponse<ShortsLikedUserItemDto>> likedShorts(final User user, final String cursor,
+                                                                            final int size) {
         Long cursorId = (cursor != null) ? Long.parseLong(cursor) : Long.MAX_VALUE;
 
         List<Shorts> results = shortsLikeTimeLogRepository.findLikedShorts(
@@ -154,10 +168,11 @@ public class ShortsService {
         }
 
         final String nextCursor = hasNext ? results.get(results.size() - 1).getId().toString() : null;
-        return Response.ok(new CursorPageResponse<>(toShortsLikedUserResponseDtos(results) , hasNext, nextCursor));
+        return Response.ok(new CursorPageResponse<>(toShortsLikedUserResponseDtos(results), hasNext, nextCursor));
     }
 
-    public Response<CursorPageResponse<ShortsCommentsByIdResponseDto>> commentsByIdAndCursor(Long shortsId, Long cursor, Integer size) {
+    public Response<CursorPageResponse<ShortsCommentsByIdResponseDto>> commentsByIdAndCursor(Long shortsId, Long cursor,
+                                                                                             Integer size) {
         return Response.ok(shortsCommentQueryRepository.findByIdAndCursor(shortsId, cursor, size));
     }
 
@@ -167,7 +182,8 @@ public class ShortsService {
         return Response.ok(ShortsMapper.toShortsResponseDto(shorts, liked));
     }
 
-    private boolean addCommentsUntilLimit(List<ShortsCommentsByTimeResponseDto> response, List<ShortsCommentsByTimeResponseDto> result) {
+    private boolean addCommentsUntilLimit(List<ShortsCommentsByTimeResponseDto> response,
+                                          List<ShortsCommentsByTimeResponseDto> result) {
         int remain = 5 - response.size();
         response.addAll(result.subList(0, Math.min(result.size(), remain)));
         return response.size() == 5;
@@ -182,7 +198,7 @@ public class ShortsService {
 
     public Response<ShortsResponseDto> getShortsByContent(final Long contentId, User user) {
         Shorts randomShorts = shortsRepository.findRandomByContentId(contentId)
-                .orElseThrow(()-> new BusinessException(SHORTS_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(SHORTS_NOT_FOUND));
         boolean liked = shortsLikeTimeLogRepository.existsByUserIdAndShortsId(user.getId(), randomShorts.getId());
         ShortsResponseDto response = ShortsMapper.toShortsResponseDto(randomShorts, liked);
 

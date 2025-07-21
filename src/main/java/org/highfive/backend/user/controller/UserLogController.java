@@ -4,8 +4,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.action.Action;
 import org.highfive.backend.action.ActionLogStamp;
-import org.highfive.backend.user.dto.request.CreateContentWatchLogRequestDto;
 import org.highfive.backend.global.dto.Response;
+import org.highfive.backend.user.dto.request.CreateContentWatchLogRequestDto;
 import org.highfive.backend.user.entity.User;
 import org.highfive.backend.user.service.UserLogService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,7 +24,7 @@ public class UserLogController {
     public Response<Void> createContentWatchLog(
             @Valid @RequestBody final CreateContentWatchLogRequestDto request,
             @AuthenticationPrincipal User user
-    ){
+    ) {
         return userLogService.createContentWatchLog(request, user);
     }
 }

@@ -1,17 +1,28 @@
 package org.highfive.backend.user.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
-import org.highfive.backend.shorts.entity.ShortsComment;
-import org.highfive.backend.shorts.entity.ShortsLikeTimeLog;
-import org.highfive.backend.global.entity.BaseEntity;
-import org.highfive.backend.user.entity.preference.PreferMetaInfo;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.highfive.backend.global.entity.BaseEntity;
+import org.highfive.backend.shorts.entity.ShortsComment;
+import org.highfive.backend.shorts.entity.ShortsLikeTimeLog;
+import org.highfive.backend.user.entity.preference.PreferMetaInfo;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Getter
@@ -85,6 +96,8 @@ public class User extends BaseEntity {
         return this.userRole == UserRole.ADMIN;
     }
 
-    public void updateUserRole(final UserRole role){ this.userRole = role;}
+    public void updateUserRole(final UserRole role) {
+        this.userRole = role;
+    }
 
 }

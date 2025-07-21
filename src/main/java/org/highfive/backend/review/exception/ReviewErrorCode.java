@@ -11,7 +11,7 @@ public enum ReviewErrorCode implements ErrorCode {
     REVIEW_NOT_FOUND(40403, "존재하지 않는 리뷰입니다.", HttpStatus.NOT_FOUND),
     REVIEW_FORBIDDEN(40301, "해당 리뷰에 대한 권한이 없는 사용자입니다.", HttpStatus.FORBIDDEN),
     MY_REVIEW_NOT_FOUND(40405, "나의 리뷰가 존재하지 않습니다.", HttpStatus.NOT_FOUND),
-    REVIEW_ALREADY_EXISTS(40902,"이미 리뷰를 작성한 콘텐츠입니다.", HttpStatus.CONFLICT),
+    REVIEW_ALREADY_EXISTS(40902, "이미 리뷰를 작성한 콘텐츠입니다.", HttpStatus.CONFLICT),
     ;
 
     private final int code;

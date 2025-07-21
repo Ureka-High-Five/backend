@@ -77,7 +77,8 @@ public class FastApiClient {
                         url,
                         HttpMethod.POST,
                         request,
-                        new ParameterizedTypeReference<List<FastApiRecommendResponseDto>>() {}
+                        new ParameterizedTypeReference<List<FastApiRecommendResponseDto>>() {
+                        }
                 ).getBody()
         );
     }

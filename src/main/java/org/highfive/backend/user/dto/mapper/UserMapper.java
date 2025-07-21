@@ -4,8 +4,8 @@ import org.highfive.backend.auth.client.dto.response.KakaoUserResponseDto;
 import org.highfive.backend.user.dto.response.GetAllUserResponseDto;
 import org.highfive.backend.user.dto.response.SearchUserResponseDto;
 import org.highfive.backend.user.dto.response.UserInfoResponseDto;
-import org.highfive.backend.user.entity.UserRole;
 import org.highfive.backend.user.entity.User;
+import org.highfive.backend.user.entity.UserRole;
 
 public class UserMapper {
 
@@ -21,14 +21,17 @@ public class UserMapper {
     }
 
     public static UserInfoResponseDto from(final User user) {
-        return new UserInfoResponseDto(user.getId(), user.getName(), user.getEmail(), user.getUserRole().name(), user.getProfileUrl());
+        return new UserInfoResponseDto(user.getId(), user.getName(), user.getEmail(), user.getUserRole().name(),
+                user.getProfileUrl());
     }
 
     public static GetAllUserResponseDto toGetAllUserResponseDto(User user) {
-        return new GetAllUserResponseDto(user.getId(), user.getProfileUrl(), user.getName(), user.getEmail(), user.getUserRole().toString());
+        return new GetAllUserResponseDto(user.getId(), user.getProfileUrl(), user.getName(), user.getEmail(),
+                user.getUserRole().toString());
     }
 
     public static SearchUserResponseDto toSearchUserResponseDto(User user) {
-        return new SearchUserResponseDto(user.getId(), user.getName(), user.getProfileUrl(), user.getEmail(), user.getUserRole());
+        return new SearchUserResponseDto(user.getId(), user.getName(), user.getProfileUrl(), user.getEmail(),
+                user.getUserRole());
     }
 }
