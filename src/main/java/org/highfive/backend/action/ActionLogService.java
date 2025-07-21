@@ -31,7 +31,7 @@ public class ActionLogService {
         List<Long> metaInfoIds = extractMetaInfoIds(metaInfoContents);
         List<String> metaInfoName = extractMetaInfoNames(metaInfoContents);
 
-        UserWeightUpdateMessageDto message = MessageMapper.toUserWeightUpdateMessageDto(actionLog.getUserId(),metaInfoIds,metaInfoName,actionLog.getValue());
+        UserWeightUpdateMessageDto message = MessageMapper.toUserWeightUpdateMessageDto(actionLog.getUserId(),metaInfoIds,metaInfoName,actionLog.getAction(),actionLog.getValue());
 
         producer.sendWeightUpdateMessage(message);
     }
