@@ -2,22 +2,14 @@ package org.highfive.backend.shorts.service;
 
 
 import jakarta.transaction.Transactional;
-import java.util.Objects;
-import jakarta.validation.constraints.Positive;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.highfive.backend.content.dto.VideoType;
 import org.highfive.backend.global.dto.CursorPageResponse;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
-import org.highfive.backend.shorts.dto.response.ShortsResponseDto;
 import org.highfive.backend.shorts.dto.mapper.ShortsCommentMapper;
 import org.highfive.backend.shorts.dto.mapper.ShortsMapper;
 import org.highfive.backend.shorts.dto.request.CreateShortsCommentRequestDto;
 import org.highfive.backend.shorts.dto.request.ShortsDislikeRequestDto;
-import org.highfive.backend.shorts.dto.response.GetShortsCommentResponseDto;
-import org.highfive.backend.shorts.dto.response.ShortsCommentsByTimeResponseDto;
 import org.highfive.backend.shorts.dto.request.ShortsLikeCreateRequestDto;
 import org.highfive.backend.shorts.dto.response.*;
 import org.highfive.backend.shorts.entity.Shorts;
@@ -32,12 +24,13 @@ import org.highfive.backend.user.entity.User;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import static org.highfive.backend.shorts.dto.mapper.ShortsLikeTimeLogMapper.toShorts;
 import static org.highfive.backend.shorts.dto.mapper.ShortsLikeTimeLogMapper.toShortsLikeTimeLineDto;
-import static org.highfive.backend.shorts.dto.mapper.ShortsMapper.*;
+import static org.highfive.backend.shorts.dto.mapper.ShortsMapper.toShortsLikedUserResponseDtos;
 import static org.highfive.backend.shorts.exception.ShortsErrorCode.*;
 
 @Service
@@ -68,7 +61,7 @@ public class ShortsService {
         List<ShortsResponseDto> result = getRecommendResult(user, recommend);
         boolean hasNext = result.size() > size;
         Long nextCursor = hasNext ? recommend.getLast().getId() : null;
-        result = new ArrayList<>(result.subList(0, Math.min(5, result.size())));
+        result = hasNext ? result.subList(0, size) : result;
         CursorPageResponse<ShortsResponseDto> response = new CursorPageResponse<>(result, hasNext, String.valueOf(nextCursor));
         return Response.ok(response);
     }

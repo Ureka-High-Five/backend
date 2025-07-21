@@ -1,7 +1,7 @@
 package org.highfive.backend.shorts.dto.response;
 
 public record ShortsCommentsByIdResponseDto (
-        String username,
+        String userName,
         String profileUrl,
         String comment,
         Long userId,
