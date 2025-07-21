@@ -19,6 +19,7 @@ import org.highfive.backend.shorts.repository.jpa.ShortsLikeTimeLogRepository;
 import org.highfive.backend.shorts.repository.querydsl.ShortsQueryRepository;
 import org.highfive.backend.shorts.service.ShortsService;
 import org.highfive.backend.user.entity.User;
+import org.highfive.backend.user.repository.redis.UserRedisRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,6 +29,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class ShortsServiceTest {
+
+    @Mock
+    private UserRedisRepository userRedisRepository;
 
     @Mock
     ShortsQueryRepository queryRepo;
@@ -54,6 +58,7 @@ public class ShortsServiceTest {
 
         given(likeTimeLogRepo.existsByUserIdAndShortsId(testUser.getId(), 1L)).willReturn(true);
         given(likeTimeLogRepo.existsByUserIdAndShortsId(testUser.getId(), 2L)).willReturn(false);
+        given(userRedisRepository.getUserVector(testUser.getId())).willReturn("test");
 
         // when
         Response<CursorPageResponse<ShortsResponseDto>> resp = shortsService.recommendShorts(null, 5, testUser);

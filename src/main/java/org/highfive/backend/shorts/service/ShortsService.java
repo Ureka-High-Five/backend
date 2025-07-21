@@ -3,6 +3,7 @@ package org.highfive.backend.shorts.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.highfive.backend.global.dto.CursorPageResponse;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
@@ -21,6 +22,7 @@ import org.highfive.backend.shorts.repository.jpa.ShortsRepository;
 import org.highfive.backend.shorts.repository.querydsl.ShortsCommentQueryRepository;
 import org.highfive.backend.shorts.repository.querydsl.ShortsQueryRepository;
 import org.highfive.backend.user.entity.User;
+import org.highfive.backend.user.repository.redis.UserRedisRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +35,7 @@ import static org.highfive.backend.shorts.dto.mapper.ShortsLikeTimeLogMapper.toS
 import static org.highfive.backend.shorts.dto.mapper.ShortsMapper.toShortsLikedUserResponseDtos;
 import static org.highfive.backend.shorts.exception.ShortsErrorCode.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ShortsService {
@@ -42,6 +45,7 @@ public class ShortsService {
     private final ShortsCommentRepository shortsCommentRepository;
     private final ShortsQueryRepository shortsQueryRepository;
     private final ShortsCommentQueryRepository shortsCommentQueryRepository;
+    private final UserRedisRepository userRedisRepository;
 
     @Transactional
     public Response<Void> createShortsComment(CreateShortsCommentRequestDto requestDto, User user) {
@@ -57,6 +61,9 @@ public class ShortsService {
     }
 
     public Response<CursorPageResponse<ShortsResponseDto>> recommendShorts(final Long cursor, final Integer size, final User user) {
+
+        final String userVector = userRedisRepository.getUserVector(user.getId());
+        log.info("user vector: {}", userVector);
         List<Shorts> recommend = shortsQueryRepository.findByCursor(cursor == null ? null : cursor.toString(), size);
         List<ShortsResponseDto> result = getRecommendResult(user, recommend);
         boolean hasNext = result.size() > size;
