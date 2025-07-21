@@ -61,7 +61,7 @@ public class ShortsService {
         List<ShortsResponseDto> result = getRecommendResult(user, recommend);
         boolean hasNext = result.size() > size;
         Long nextCursor = hasNext ? recommend.getLast().getId() : null;
-        result = new ArrayList<>(result.subList(0, Math.min(5, result.size() - 1)));
+        result = hasNext ? result.subList(0, size) : result;
         CursorPageResponse<ShortsResponseDto> response = new CursorPageResponse<>(result, hasNext, String.valueOf(nextCursor));
         return Response.ok(response);
     }
