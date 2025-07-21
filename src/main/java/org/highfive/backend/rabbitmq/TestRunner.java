@@ -1,6 +1,7 @@
-package org.highfive.backend.global.client.messaging;
+package org.highfive.backend.rabbitmq;
 
 import lombok.RequiredArgsConstructor;
+import org.highfive.backend.rabbitmq.producer.RecommendationMessageProducer;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;

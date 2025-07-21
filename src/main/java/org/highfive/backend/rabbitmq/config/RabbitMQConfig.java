@@ -1,4 +1,4 @@
-package org.highfive.backend.global.client.messaging;
+package org.highfive.backend.rabbitmq.config;
 
 import org.springframework.amqp.core.Queue;
 import org.springframework.beans.factory.annotation.Value;
