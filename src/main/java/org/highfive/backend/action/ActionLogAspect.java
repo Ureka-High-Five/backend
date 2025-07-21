@@ -35,6 +35,7 @@ public class ActionLogAspect {
         try {
             Object result = joinPoint.proceed();
             actionLogService.saveLog(actionLog);
+            actionLogService.publishUpdateWeightMessage(actionLog);
             return result;
         } catch (Exception e) {
             log.error("행동 로그 저장 중 에러가 발생했습니다.");
