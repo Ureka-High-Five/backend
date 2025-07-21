@@ -1,5 +1,6 @@
 package org.highfive.backend.rabbitmq.producer;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,8 @@ class RecommendationMessageProducerIntegrationTest {
     private RabbitTemplate rabbitTemplate;
 
     @Test
-    void 메시지_전송_재시도_후_recover_호출된다() {
+    @DisplayName("메시지 전송 3번 재시도 후, recover 메서드가 호출 됩니다.")
+    void givenMessageSendFails_threeTimes_thenRecoverIsCalled() {
         // when
         doThrow(new RuntimeException("MQ down"))
                 .when(rabbitTemplate)
