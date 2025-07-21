@@ -6,7 +6,7 @@ import org.highfive.backend.user.entity.log.ActionType;
 import org.highfive.backend.user.entity.log.UserLog;
 
 public class UserLogMapper {
-    public static UserLog toUserWatchLog(final User user, final Content content, final int rating){
+    public static UserLog toUserWatchLog(final User user, final Content content, final int rating) {
         return UserLog.builder()
                 .user(user)
                 .content(content)

@@ -6,7 +6,6 @@ import static org.highfive.backend.user.exception.UserLogErrorCode.INVALID_WATCH
 
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.content.dto.VideoType;
-import org.highfive.backend.user.dto.request.CreateContentWatchLogRequestDto;
 import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.content.repository.jpa.ContentRepository;
 import org.highfive.backend.global.dto.Response;
@@ -14,6 +13,7 @@ import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.shorts.entity.Shorts;
 import org.highfive.backend.shorts.repository.jpa.ShortsRepository;
 import org.highfive.backend.user.dto.mapper.UserLogMapper;
+import org.highfive.backend.user.dto.request.CreateContentWatchLogRequestDto;
 import org.highfive.backend.user.entity.User;
 import org.highfive.backend.user.entity.log.UserLog;
 import org.highfive.backend.user.repository.jpa.UserLogRepository;

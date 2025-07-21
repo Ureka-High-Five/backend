@@ -1,7 +1,7 @@
 package org.highfive.backend.content.dto.response;
 
-public record AdminAddContentResponseDto (
+public record AdminAddContentResponseDto(
 
-      Long contentId
-){
+        Long contentId
+) {
 }

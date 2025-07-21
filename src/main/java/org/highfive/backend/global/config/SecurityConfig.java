@@ -1,6 +1,7 @@
 package org.highfive.backend.global.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.auth.jwt.JwtAuthenticationFilter;
 import org.highfive.backend.auth.service.TokenService;
@@ -14,8 +15,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -48,7 +47,8 @@ public class SecurityConfig {
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(new JwtAuthenticationFilter(objectMapper, tokenService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthenticationFilter(objectMapper, tokenService),
+                        UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 

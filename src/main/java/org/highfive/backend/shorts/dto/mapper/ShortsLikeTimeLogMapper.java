@@ -1,11 +1,10 @@
 package org.highfive.backend.shorts.dto.mapper;
 
+import java.util.List;
 import org.highfive.backend.shorts.dto.response.ShortsLikeTimeResponseDto;
 import org.highfive.backend.shorts.entity.Shorts;
 import org.highfive.backend.shorts.entity.ShortsLikeTimeLog;
 import org.highfive.backend.user.entity.User;
-
-import java.util.List;
 
 public class ShortsLikeTimeLogMapper {
 
@@ -17,7 +16,8 @@ public class ShortsLikeTimeLogMapper {
                 .build();
     }
 
-    public static List<ShortsLikeTimeResponseDto.ShortsLikeTimeLineDto> toShortsLikeTimeLineDto(final List<Object[]> results) {
+    public static List<ShortsLikeTimeResponseDto.ShortsLikeTimeLineDto> toShortsLikeTimeLineDto(
+            final List<Object[]> results) {
         return results.stream()
                 .map(row -> new ShortsLikeTimeResponseDto.ShortsLikeTimeLineDto(
                         ((Number) row[0]).intValue(),

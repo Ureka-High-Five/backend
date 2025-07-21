@@ -8,15 +8,17 @@ public record KakaoUserResponseDto(
         @JsonProperty("kakao_account")
         KakaoAccount kakaoAccount
 ) {
-        public record KakaoAccount(
-                KakaoProfile profile,
-                String email
-        ) {}
+    public record KakaoAccount(
+            KakaoProfile profile,
+            String email
+    ) {
+    }
 
-        public record KakaoProfile(
-                String nickname,
+    public record KakaoProfile(
+            String nickname,
 
-                @JsonProperty("profile_image_url")
-                String profileImageUrl
-        ) {}
+            @JsonProperty("profile_image_url")
+            String profileImageUrl
+    ) {
+    }
 }

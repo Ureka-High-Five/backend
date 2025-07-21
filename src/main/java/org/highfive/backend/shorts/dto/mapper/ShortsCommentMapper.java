@@ -9,21 +9,23 @@ import org.highfive.backend.shorts.entity.ShortsComment;
 import org.highfive.backend.user.entity.User;
 
 public class ShortsCommentMapper {
-    public static ShortsComment toShortsComment(CreateShortsCommentRequestDto requestDto, User user, Shorts shorts){
-        return ShortsComment.of(user,shorts, requestDto.comment(), requestDto.time());
+    public static ShortsComment toShortsComment(CreateShortsCommentRequestDto requestDto, User user, Shorts shorts) {
+        return ShortsComment.of(user, shorts, requestDto.comment(), requestDto.time());
     }
 
-    public static GetShortsCommentResponseDto toGetShortsCommentResponseDto(ShortsComment shortsComment){
+    public static GetShortsCommentResponseDto toGetShortsCommentResponseDto(ShortsComment shortsComment) {
         User user = shortsComment.getUser();
         return new GetShortsCommentResponseDto(
-                shortsComment.getMessage(),user.getName(), user.getProfileUrl(),user.getId());
+                shortsComment.getMessage(), user.getName(), user.getProfileUrl(), user.getId());
     }
 
     public static ShortsCommentsByTimeResponseDto toShortsCommentsByTimeResponseDto(ShortsComment sc) {
-        return new ShortsCommentsByTimeResponseDto(sc.getTime(), sc.getUser().getName(), sc.getUser().getProfileUrl(), sc.getMessage(), sc.getUser().getId());
+        return new ShortsCommentsByTimeResponseDto(sc.getTime(), sc.getUser().getName(), sc.getUser().getProfileUrl(),
+                sc.getMessage(), sc.getUser().getId());
     }
 
     public static ShortsCommentsByIdResponseDto toShortsCommentsByIdResponseDto(ShortsComment sc) {
-        return new ShortsCommentsByIdResponseDto(sc.getUser().getName(), sc.getUser().getProfileUrl(), sc.getMessage(), sc.getUser().getId(), sc.getCreatedAt().toString());
+        return new ShortsCommentsByIdResponseDto(sc.getUser().getName(), sc.getUser().getProfileUrl(), sc.getMessage(),
+                sc.getUser().getId(), sc.getCreatedAt().toString());
     }
 }

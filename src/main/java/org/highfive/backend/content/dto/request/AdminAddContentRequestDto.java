@@ -7,45 +7,45 @@ import java.util.List;
 import lombok.Builder;
 
 @Builder
-public record AdminAddContentRequestDto (
+public record AdminAddContentRequestDto(
 
-    @NotBlank
-    String title,
+        @NotBlank
+        String title,
 
-    @NotBlank
-    String description,
+        @NotBlank
+        String description,
 
-    @NotBlank
-    String videoUrl,
+        @NotBlank
+        String videoUrl,
 
-    @NotBlank
-    String postUrl,
+        @NotBlank
+        String postUrl,
 
-    @NotBlank
-    String countryName,
+        @NotBlank
+        String countryName,
 
-    @NotBlank
-    String openDate,
+        @NotBlank
+        String openDate,
 
-    @Positive
-    Integer runningTime,
+        @Positive
+        Integer runningTime,
 
-    @Positive
-    Integer totalRound,
+        @Positive
+        Integer totalRound,
 
-    @NotBlank
-    String type,
+        @NotBlank
+        String type,
 
-    @NotEmpty
-    List<String> genres,
+        @NotEmpty
+        List<String> genres,
 
-    @NotEmpty
-    List<String> actors,
+        @NotEmpty
+        List<String> actors,
 
-    @NotBlank
-    String director
-)
-{}
+        @NotBlank
+        String director
+) {
+}
 
 
 

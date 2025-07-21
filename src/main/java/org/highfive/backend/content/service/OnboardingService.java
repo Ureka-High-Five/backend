@@ -17,18 +17,18 @@ import org.highfive.backend.content.dto.response.MostPopularContentPerGenreDto;
 import org.highfive.backend.content.dto.response.OnboardingContentDto;
 import org.highfive.backend.content.dto.response.OnboardingInitContentsResponseDto;
 import org.highfive.backend.content.dto.response.OnboardingSelectContentResponseDto;
-import org.highfive.backend.metadata.entity.MetaInfo;
-import org.highfive.backend.metadata.entity.MetaType;
 import org.highfive.backend.content.exception.ContentErrorCode;
 import org.highfive.backend.content.repository.jpa.ContentRepository;
 import org.highfive.backend.content.repository.querydsl.ContentQueryRepositoryImpl;
-import org.highfive.backend.metadata.repository.jpa.MetaInfoRepository;
 import org.highfive.backend.global.client.fastapi.FastApiClient;
 import org.highfive.backend.global.client.fastapi.dto.response.FastApiOnboardingResponseDto;
 import org.highfive.backend.global.code.SuccessCode;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.global.util.WeightManager;
+import org.highfive.backend.metadata.entity.MetaInfo;
+import org.highfive.backend.metadata.entity.MetaType;
+import org.highfive.backend.metadata.repository.jpa.MetaInfoRepository;
 import org.highfive.backend.user.code.UserErrorCode;
 import org.highfive.backend.user.dto.request.SubmitOnboardingRequestDto;
 import org.highfive.backend.user.entity.Gender;
@@ -57,8 +57,10 @@ public class OnboardingService {
     private final ContentQueryRepositoryImpl contentQueryRepositoryImpl;
     private final MetaInfoRepository metaInfoRepository;
 
-    public Response<List<OnboardingSelectContentResponseDto>> getContentBySelectedContent(final OnboardingSelectContentRequestDto request) {
-        List<GenreCountDto> topGenresByContentIds = contentQueryRepositoryImpl.findTopGenresByContentIds(request.selectedContentIds());
+    public Response<List<OnboardingSelectContentResponseDto>> getContentBySelectedContent(
+            final OnboardingSelectContentRequestDto request) {
+        List<GenreCountDto> topGenresByContentIds = contentQueryRepositoryImpl.findTopGenresByContentIds(
+                request.selectedContentIds());
         List<OnboardingSelectContentResponseDto> contents = getOnboardingSelectContentResponseDtos(
                 topGenresByContentIds.stream().map((GenreCountDto::genre)).toList(), request);
 
@@ -71,7 +73,8 @@ public class OnboardingService {
     @Transactional
     public Response<TokenResponseDto> initUser(final SubmitOnboardingRequestDto request) {
         long userId = request.userId();
-        User user = userRepository.findById(userId).orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND_ERROR));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND_ERROR));
         initBasic(request, user);
         initVector(request, user);
 
@@ -86,7 +89,8 @@ public class OnboardingService {
             throw new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND);
         }
         List<OnboardingInitContentsResponseDto> initContents = topContents.stream()
-                .map(dto -> new OnboardingInitContentsResponseDto(dto.id(), dto.thumbnailUrl(), dto.title(), dto.openYear()))
+                .map(dto -> new OnboardingInitContentsResponseDto(dto.id(), dto.thumbnailUrl(), dto.title(),
+                        dto.openYear()))
                 .toList();
 
         return new Response<>(SuccessCode.OK.getCode(), initContents, null);
@@ -103,15 +107,19 @@ public class OnboardingService {
         return new TokenResponseDto(accessToken, refreshToken, true);
     }
 
-    private List<OnboardingSelectContentResponseDto> getOnboardingSelectContentResponseDtos(List<String> topGenres, OnboardingSelectContentRequestDto request) {
-        List<OnboardingContentDto> result = contentQueryRepositoryImpl.findContentsByGenresOrderByMatchCountDesc(topGenres);
+    private List<OnboardingSelectContentResponseDto> getOnboardingSelectContentResponseDtos(List<String> topGenres,
+                                                                                            OnboardingSelectContentRequestDto request) {
+        List<OnboardingContentDto> result = contentQueryRepositoryImpl.findContentsByGenresOrderByMatchCountDesc(
+                topGenres);
         result = duplicateFilter(result, request);
         return result.stream().map(
-                c -> new OnboardingSelectContentResponseDto(c.id(), c.thumbnailUrl(), c.title(), c.openDate().getYear()))
+                        c -> new OnboardingSelectContentResponseDto(c.id(), c.thumbnailUrl(), c.title(),
+                                c.openDate().getYear()))
                 .toList();
     }
 
-    private List<OnboardingContentDto> duplicateFilter(final List<OnboardingContentDto> contents, final OnboardingSelectContentRequestDto request) {
+    private List<OnboardingContentDto> duplicateFilter(final List<OnboardingContentDto> contents,
+                                                       final OnboardingSelectContentRequestDto request) {
         final List<OnboardingContentDto> result = new ArrayList<>();
         for (OnboardingContentDto content : contents) {
             if (request.selectedContentIds().contains(content.id())) {
@@ -160,14 +168,15 @@ public class OnboardingService {
         for (Map.Entry<String, Double> entry : genreWeights.entrySet()) {
             final String genreName = entry.getKey();
             final double weight = entry.getValue();
-            
+
             if (weight == 0) {
                 continue;
             }
 
             final MetaInfo metaInfo = metaInfoRepository.findByNameAndType(genreName, MetaType.GENRE);
             Long metaInfoId = metaInfo.getId();
-            PreferMetaInfo preferMetaInfo = preferMetaInfoRepository.findByMetaInfoAndUser(metaInfoId, user.getId()).orElse(null);
+            PreferMetaInfo preferMetaInfo = preferMetaInfoRepository.findByMetaInfoAndUser(metaInfoId, user.getId())
+                    .orElse(null);
 
             if (preferMetaInfo != null) {
                 preferMetaInfo.updateWeight(weight);

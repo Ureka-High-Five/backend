@@ -1,7 +1,11 @@
 package org.highfive.backend.auth.service;
 
+import static org.highfive.backend.auth.service.TokenType.REFRESHTOKEN;
+import static org.highfive.backend.global.code.SuccessCode.OK;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.auth.client.KakaoOAuthClient;
 import org.highfive.backend.auth.client.dto.response.KakaoUserResponseDto;
@@ -19,11 +23,6 @@ import org.highfive.backend.user.entity.UserRole;
 import org.highfive.backend.user.repository.jpa.UserRepository;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-
-import static org.highfive.backend.auth.service.TokenType.REFRESHTOKEN;
-import static org.highfive.backend.global.code.SuccessCode.OK;
 
 @Service
 @RequiredArgsConstructor
@@ -65,15 +64,17 @@ public class AuthService {
     public Response<TokenResponseDto> reissue(final ReissueRequestDto reissueRequestDto) {
 
         final String refreshToken = reissueRequestDto.refreshToken();
-        final UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) tokenService.getAuthentication(refreshToken, REFRESHTOKEN);
+        final UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) tokenService.getAuthentication(
+                refreshToken, REFRESHTOKEN);
         final User user = (User) authentication.getPrincipal();
 
         tokenService.validateToken(refreshToken, REFRESHTOKEN);
-        if(!tokenRedisRepository.isRefreshTokenValid(user.getKakaoUserId(), refreshToken)) {
+        if (!tokenRedisRepository.isRefreshTokenValid(user.getKakaoUserId(), refreshToken)) {
             throw new BusinessException(AuthErrorCode.TOKEN_MISMATCH_ERROR);
         }
 
-        final String renewAccessToken = tokenService.generateAccessToken(user.getKakaoUserId(), List.of(user.getUserRole().toString()));
+        final String renewAccessToken = tokenService.generateAccessToken(user.getKakaoUserId(),
+                List.of(user.getUserRole().toString()));
         return tokenResponse(renewAccessToken, null);
     }
 

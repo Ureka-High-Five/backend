@@ -1,5 +1,9 @@
 package org.highfive.backend.auth.client;
 
+import static org.highfive.backend.auth.exception.AuthErrorCode.KAKAO_TOKEN_ERROR;
+import static org.highfive.backend.auth.exception.AuthErrorCode.KAKAO_USERINFO_ERROR;
+import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.highfive.backend.auth.client.dto.response.KakaoTokenResponseDto;
@@ -10,10 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import static org.highfive.backend.auth.exception.AuthErrorCode.KAKAO_TOKEN_ERROR;
-import static org.highfive.backend.auth.exception.AuthErrorCode.KAKAO_USERINFO_ERROR;
-import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
 
 @Slf4j
 @Component
@@ -65,11 +65,13 @@ public class KakaoOAuthClient {
                 .block();
     }
 
-    private WebClient.ResponseSpec handleResponse(final WebClient.ResponseSpec responseSpec, final AuthErrorCode errorCode) {
+    private WebClient.ResponseSpec handleResponse(final WebClient.ResponseSpec responseSpec,
+                                                  final AuthErrorCode errorCode) {
         return responseSpec.onStatus(
                 status -> status.is4xxClientError() || status.is5xxServerError(),
                 response -> response.bodyToMono(String.class)
-                        .doOnNext(body -> log.error("[{}] {} 응답: {}", errorCode.getCode(), errorCode.getMessage(), body))
+                        .doOnNext(
+                                body -> log.error("[{}] {} 응답: {}", errorCode.getCode(), errorCode.getMessage(), body))
                         .thenReturn(new BusinessException(errorCode))
         );
     }

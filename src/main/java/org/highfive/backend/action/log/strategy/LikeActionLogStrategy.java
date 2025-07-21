@@ -43,7 +43,8 @@ public class LikeActionLogStrategy implements ActionLogStrategy {
 
 
     private long getContentIdByShortsId(long shortsId) {
-        Shorts shorts = shortsRepository.findById(shortsId).orElseThrow(() -> new BusinessException(ShortsErrorCode.SHORTS_NOT_FOUND));
+        Shorts shorts = shortsRepository.findById(shortsId)
+                .orElseThrow(() -> new BusinessException(ShortsErrorCode.SHORTS_NOT_FOUND));
         return shorts.getContent().getId();
     }
 }

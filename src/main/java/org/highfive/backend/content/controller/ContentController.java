@@ -11,7 +11,11 @@ import org.highfive.backend.content.dto.response.SearchContentResponseDto;
 import org.highfive.backend.content.service.ContentService;
 import org.highfive.backend.global.dto.CursorPageResponse;
 import org.highfive.backend.global.dto.Response;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/content")
@@ -39,7 +43,7 @@ public class ContentController {
     @GetMapping("/{contentId}/video")
     public Response<ContentVideoResponseDto> getContentVideo(
             @PathVariable final Long contentId
-    ){
+    ) {
         return contentService.getContentVideo(contentId);
     }
 

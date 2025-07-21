@@ -21,13 +21,13 @@ public class AdminOnlyAspect {
     public void isValid() {
         final Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        if(!(principal instanceof User)) {
+        if (!(principal instanceof User)) {
             throw new BusinessException(GlobalErrorCode.ACCESS_DENIED);
         }
 
         final UserRole userRole = ((User) principal).getUserRole();
 
-        if(userRole.equals(UserRole.USER) || userRole.equals(UserRole.TEMP_USER) || userRole.equals(UserRole.EDITOR)) {
+        if (userRole.equals(UserRole.USER) || userRole.equals(UserRole.TEMP_USER) || userRole.equals(UserRole.EDITOR)) {
             throw new BusinessException(GlobalErrorCode.ACCESS_DENIED);
         }
     }

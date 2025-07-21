@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum UserLogErrorCode implements ErrorCode {
 
-    INVALID_WATCH_TIME(40003,"시청시간이 컨텐츠의 러닝 타임보다 깁니다.", HttpStatus.BAD_REQUEST);
+    INVALID_WATCH_TIME(40003, "시청시간이 컨텐츠의 러닝 타임보다 깁니다.", HttpStatus.BAD_REQUEST);
 
     private final int code;
     private final String message;

@@ -2,7 +2,6 @@ package org.highfive.backend.content.exception;
 
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.global.code.ErrorCode;
-import org.springframework.boot.autoconfigure.graphql.GraphQlProperties.Http;
 import org.springframework.http.HttpStatus;
 
 @RequiredArgsConstructor

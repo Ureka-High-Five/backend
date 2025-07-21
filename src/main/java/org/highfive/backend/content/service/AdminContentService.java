@@ -1,6 +1,5 @@
 package org.highfive.backend.content.service;
 
-import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.content.dto.mapper.ContentMapper;
@@ -9,20 +8,18 @@ import org.highfive.backend.content.dto.request.AdminUpdateContentRequestDto;
 import org.highfive.backend.content.dto.response.AdminAddContentResponseDto;
 import org.highfive.backend.content.dto.response.AdminUpdateContentResponseDto;
 import org.highfive.backend.content.entity.Content;
+import org.highfive.backend.content.exception.ContentErrorCode;
+import org.highfive.backend.content.repository.jpa.ContentRepository;
+import org.highfive.backend.global.client.fastapi.FastApiClient;
+import org.highfive.backend.global.client.fastapi.dto.response.FastApiVectorFromGenresDto;
+import org.highfive.backend.global.dto.Response;
+import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.metadata.entity.MetaInfo;
 import org.highfive.backend.metadata.entity.MetaInfoContents;
 import org.highfive.backend.metadata.entity.MetaType;
-import org.highfive.backend.content.exception.ContentErrorCode;
 import org.highfive.backend.metadata.exception.MetaInfoErrorCode;
-import org.highfive.backend.content.repository.jpa.ContentRepository;
 import org.highfive.backend.metadata.repository.jpa.MetaInfoContentsRepository;
 import org.highfive.backend.metadata.repository.jpa.MetaInfoRepository;
-import org.highfive.backend.global.client.fastapi.FastApiClient;
-import org.highfive.backend.global.client.fastapi.dto.response.FastApiVectorFromGenresDto;
-import org.highfive.backend.global.code.GlobalErrorCode;
-import org.highfive.backend.global.dto.Response;
-import org.highfive.backend.global.exception.BusinessException;
-import org.highfive.backend.user.entity.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,7 +62,8 @@ public class AdminContentService {
 
     @Transactional
     public Response<Void> deleteContent(long contentId) {
-        Content content = contentRepository.findById(contentId).orElseThrow(() -> new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND));
+        Content content = contentRepository.findById(contentId)
+                .orElseThrow(() -> new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND));
         boolean isDeleted = content.delete();
         if (!isDeleted) {
             throw new BusinessException(ContentErrorCode.CONTENT_ALREADY_DELETED);
@@ -75,7 +73,8 @@ public class AdminContentService {
     }
 
     private Content getUpdateContent(final AdminUpdateContentRequestDto request) {
-        final Content content = contentRepository.findById(request.contentId()).orElseThrow(() -> new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND));
+        final Content content = contentRepository.findById(request.contentId())
+                .orElseThrow(() -> new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND));
         content.updateFromDto(request);
         contentRepository.save(content);
         return content;

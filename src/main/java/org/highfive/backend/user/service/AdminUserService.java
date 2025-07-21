@@ -33,12 +33,12 @@ public class AdminUserService {
     @Transactional
     public Response<Void> updateUserRole(final UpdateUserRoleRequestDto request) {
 
-        if(Objects.equals(request.role(), UserRole.ADMIN)){
+        if (Objects.equals(request.role(), UserRole.ADMIN)) {
             throw new BusinessException(ADMIN_CHANGE_FORBIDDEN);
         }
 
         User existedUser = userRepository.findById(request.userId())
-                        .orElseThrow(()-> new BusinessException(USER_NOT_FOUND_ERROR));
+                .orElseThrow(() -> new BusinessException(USER_NOT_FOUND_ERROR));
 
         existedUser.updateUserRole(request.role());
 

@@ -2,6 +2,7 @@ package org.highfive.backend.rabbitmq.producer;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.highfive.backend.rabbitmq.dto.UserWeightUpdateMessageDto;
 import org.highfive.backend.rabbitmq.exception.MessageDeliveryException;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,11 +25,11 @@ public class RecommendationMessageProducer {
             maxAttempts = 3,
             backoff = @Backoff(delay = 200)
     )
-    public void sendWeightUpdateMessage(String value) {
+    public void sendWeightUpdateMessage(UserWeightUpdateMessageDto message) {
         try {
-            rabbitTemplate.convertAndSend(queueName, value);
+            rabbitTemplate.convertAndSend(queueName, message);
         } catch (Exception e) {
-            throw new MessageDeliveryException("메시지 전송 실패 ",e);
+            throw new MessageDeliveryException("메시지 전송 실패 ", e);
         }
     }
 

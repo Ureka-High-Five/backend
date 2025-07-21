@@ -22,7 +22,8 @@ public class WatchActionLogStrategy implements ActionLogStrategy {
     private final ContentRepository contentRepository;
     private final ShortsRepository shortsRepository;
 
-    private record ContentWatchLogInfo(long id, int watchTime, String type) {}
+    private record ContentWatchLogInfo(long id, int watchTime, String type) {
+    }
 
     @Override
     public ActionLog createLog(ProceedingJoinPoint joinPoint, long userId, long timestamp) {

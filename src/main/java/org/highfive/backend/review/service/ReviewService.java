@@ -1,28 +1,28 @@
 package org.highfive.backend.review.service;
 
+import static org.highfive.backend.content.exception.ContentErrorCode.CONTENT_NOT_FOUND;
+import static org.highfive.backend.global.code.SuccessCode.CREATED;
+import static org.highfive.backend.global.code.SuccessCode.OK;
+import static org.highfive.backend.review.exception.ReviewErrorCode.REVIEW_ALREADY_EXISTS;
+
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.highfive.backend.content.entity.Content;
+import org.highfive.backend.content.repository.jpa.ContentRepository;
+import org.highfive.backend.global.dto.CursorPageResponse;
+import org.highfive.backend.global.dto.Response;
+import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.review.dto.mapper.ReviewMapper;
 import org.highfive.backend.review.dto.request.CreateReviewRequestDto;
 import org.highfive.backend.review.dto.request.UpdateReviewRequestDto;
 import org.highfive.backend.review.dto.response.ContentMyReviewResponseDto;
 import org.highfive.backend.review.dto.response.ReviewSimpleResponseDto;
-import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.review.entity.Review;
 import org.highfive.backend.review.exception.ReviewErrorCode;
-import org.highfive.backend.content.repository.jpa.ContentRepository;
 import org.highfive.backend.review.repository.jpa.ReviewRepository;
-import org.highfive.backend.global.dto.CursorPageResponse;
-import org.highfive.backend.global.dto.Response;
-import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.user.entity.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static org.highfive.backend.content.exception.ContentErrorCode.CONTENT_NOT_FOUND;
-import static org.highfive.backend.global.code.SuccessCode.CREATED;
-import static org.highfive.backend.global.code.SuccessCode.OK;
-import static org.highfive.backend.review.exception.ReviewErrorCode.REVIEW_ALREADY_EXISTS;
 
 @Service
 @RequiredArgsConstructor
@@ -41,7 +41,7 @@ public class ReviewService {
 
         boolean alreadyCreateReview = reviewRepository.existsByUserIdAndContentId(user.getId(), requestDto.contentId());
 
-        if(alreadyCreateReview){
+        if (alreadyCreateReview) {
             throw new BusinessException(REVIEW_ALREADY_EXISTS);
         }
 
@@ -90,7 +90,8 @@ public class ReviewService {
             final int size,
             final User user) {
 
-        CursorPageResponse<ReviewSimpleResponseDto> items = reviewRepository.findReviewsByCursor(contentId, cursor, size, user);
+        CursorPageResponse<ReviewSimpleResponseDto> items = reviewRepository.findReviewsByCursor(contentId, cursor,
+                size, user);
         return Response.ok(items);
     }
 

@@ -15,18 +15,22 @@ public record HomeContentsResponseDto(
             String description,
             List<String> genre,
             String title
-    ) {}
+    ) {
+    }
 
     public record PersonalRecommendDto(
             Long contentId,
             String thumbnailUrl
-    ) {}
+    ) {
+    }
 
     public record GenreContentDto(
             Long contentId,
             String thumbnailUrl
-    ) {}
+    ) {
+    }
 
     public record CurationDto(
-    ) {}
+    ) {
+    }
 }

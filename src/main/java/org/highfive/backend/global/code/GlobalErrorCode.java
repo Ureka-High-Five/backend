@@ -2,7 +2,7 @@ package org.highfive.backend.global.code;
 
 import org.springframework.http.HttpStatus;
 
-public enum GlobalErrorCode implements ErrorCode{
+public enum GlobalErrorCode implements ErrorCode {
 
     INTERNAL_SERVER_ERROR(50000, "서버 오류 입니다.", HttpStatus.INTERNAL_SERVER_ERROR),
     BAD_REQUEST(40000, "잘못된 요청 입니다.", HttpStatus.BAD_REQUEST),

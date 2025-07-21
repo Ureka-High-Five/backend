@@ -1,5 +1,6 @@
 package org.highfive.backend.user.service;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.global.dto.CursorPageResponse;
 import org.highfive.backend.global.dto.Response;
@@ -9,8 +10,6 @@ import org.highfive.backend.user.dto.response.RatedContentResponseDto;
 import org.highfive.backend.user.dto.response.UserInfoResponseDto;
 import org.highfive.backend.user.entity.User;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -22,8 +21,10 @@ public class UserService {
         return Response.ok(UserMapper.from(user));
     }
 
-    public Response<CursorPageResponse<RatedContentResponseDto>> getMyReviews(final User user, final String cursor, final int size) {
-        final List<RatedContentResponseDto> ratedContentResponseDtos = reviewRepository.findByUser(user.getId(), cursor, size + 1);
+    public Response<CursorPageResponse<RatedContentResponseDto>> getMyReviews(final User user, final String cursor,
+                                                                              final int size) {
+        final List<RatedContentResponseDto> ratedContentResponseDtos = reviewRepository.findByUser(user.getId(), cursor,
+                size + 1);
 
         boolean hasNext = ratedContentResponseDtos.size() > size;
         String nextCursor = null;

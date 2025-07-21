@@ -3,9 +3,9 @@ package org.highfive.backend.curation.controller;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.highfive.backend.auth.aop.EditorOnly;
 import org.highfive.backend.curation.dto.request.CreateCurationRequestDto;
 import org.highfive.backend.curation.dto.request.CurationUpdateRequestDto;
-import org.highfive.backend.auth.aop.EditorOnly;
 import org.highfive.backend.curation.dto.response.CurationDetailResponseDto;
 import org.highfive.backend.curation.dto.response.MyCurationResponseDto;
 import org.highfive.backend.curation.service.CurationService;
@@ -13,7 +13,15 @@ import org.highfive.backend.global.dto.CursorPageResponse;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.user.entity.User;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,7 +32,8 @@ public class CurationController {
 
     @EditorOnly
     @PostMapping
-    public Response<Void> createCuration(final @AuthenticationPrincipal User user, @Valid @RequestBody final CreateCurationRequestDto createCurationRequestDto) {
+    public Response<Void> createCuration(final @AuthenticationPrincipal User user,
+                                         @Valid @RequestBody final CreateCurationRequestDto createCurationRequestDto) {
         return curationService.create(user, createCurationRequestDto);
     }
 
@@ -52,7 +61,8 @@ public class CurationController {
 
     @EditorOnly
     @DeleteMapping("/{curationId}")
-    public Response<Void> deleteCuration(@PathVariable final Long curationId, @AuthenticationPrincipal final User user) {
+    public Response<Void> deleteCuration(@PathVariable final Long curationId,
+                                         @AuthenticationPrincipal final User user) {
         return curationService.deleteCuration(curationId, user);
     }
 }

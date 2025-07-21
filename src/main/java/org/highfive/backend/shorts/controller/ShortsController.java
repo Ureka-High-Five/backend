@@ -15,18 +15,18 @@ import org.highfive.backend.shorts.dto.request.ShortsLikeCreateRequestDto;
 import org.highfive.backend.shorts.dto.response.GetShortsCommentResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsCommentsByIdResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsCommentsByTimeResponseDto;
-import org.highfive.backend.shorts.dto.response.ShortsResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsLikeTimeResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsLikedUserItemDto;
+import org.highfive.backend.shorts.dto.response.ShortsResponseDto;
 import org.highfive.backend.shorts.service.ShortsService;
 import org.highfive.backend.user.entity.User;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -60,9 +60,9 @@ public class ShortsController {
 
     @GetMapping("/{shortsId}/comments")
     public Response<List<ShortsCommentsByTimeResponseDto>> commentsByTime(
-        @PathVariable Long shortsId,
-        @RequestParam @Positive Long time,
-        @RequestParam @Positive Integer duration) {
+            @PathVariable Long shortsId,
+            @RequestParam @Positive Long time,
+            @RequestParam @Positive Integer duration) {
         return shortsService.commentsByTime(shortsId, time, duration);
     }
 
@@ -89,12 +89,14 @@ public class ShortsController {
     public Response<GetShortsCommentResponseDto> getOneShortsComment(
             @RequestParam final Long shortsId,
             @RequestParam final Long time
-    ){
+    ) {
         return shortsService.getOneShortsComment(shortsId, time);
     }
 
     @GetMapping("/liked")
-    public Response<CursorPageResponse<ShortsLikedUserItemDto>> likedShorts(final @AuthenticationPrincipal User user, @RequestParam @Nullable final String cursor, @RequestParam(value = "5") final int size) {
+    public Response<CursorPageResponse<ShortsLikedUserItemDto>> likedShorts(final @AuthenticationPrincipal User user,
+                                                                            @RequestParam @Nullable final String cursor,
+                                                                            @RequestParam(value = "5") final int size) {
         return shortsService.likedShorts(user, cursor, size);
     }
 
@@ -111,7 +113,7 @@ public class ShortsController {
     public Response<ShortsResponseDto> getShortsByContent(
             @PathVariable Long contentId,
             @AuthenticationPrincipal User user
-    ){
+    ) {
         return shortsService.getShortsByContent(contentId, user);
     }
 }

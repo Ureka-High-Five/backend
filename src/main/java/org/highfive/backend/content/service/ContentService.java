@@ -1,5 +1,11 @@
 package org.highfive.backend.content.service;
 
+import static org.highfive.backend.content.dto.mapper.ContentMapper.toSearchContentResponseDto;
+import static org.highfive.backend.global.code.SuccessCode.OK;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.content.dto.VideoType;
 import org.highfive.backend.content.dto.mapper.ContentMapper;
@@ -7,24 +13,17 @@ import org.highfive.backend.content.dto.response.ContentDetailResponseDto;
 import org.highfive.backend.content.dto.response.ContentVideoResponseDto;
 import org.highfive.backend.content.dto.response.SearchContentResponseDto;
 import org.highfive.backend.content.entity.Content;
-import org.highfive.backend.metadata.entity.MetaInfo;
-import org.highfive.backend.metadata.entity.MetaInfoContents;
-import org.highfive.backend.metadata.entity.MetaType;
 import org.highfive.backend.content.exception.ContentErrorCode;
 import org.highfive.backend.content.repository.jpa.ContentRepository;
 import org.highfive.backend.content.repository.querydsl.ContentQueryRepositoryImpl;
 import org.highfive.backend.global.dto.CursorPageResponse;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
+import org.highfive.backend.metadata.entity.MetaInfo;
+import org.highfive.backend.metadata.entity.MetaInfoContents;
+import org.highfive.backend.metadata.entity.MetaType;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static org.highfive.backend.content.dto.mapper.ContentMapper.toSearchContentResponseDto;
-import static org.highfive.backend.global.code.SuccessCode.OK;
 
 @Service
 @RequiredArgsConstructor
@@ -52,7 +51,8 @@ public class ContentService {
         return new Response<>(OK.getCode(), response, null);
     }
 
-    public Response<CursorPageResponse<SearchContentResponseDto>> search(final String input, final String cursor, final int size) {
+    public Response<CursorPageResponse<SearchContentResponseDto>> search(final String input, final String cursor,
+                                                                         final int size) {
         final String keyword = LIKE + input.toLowerCase() + LIKE;
 
         List<Content> contents = contentRepository.searchByInput(keyword, cursor, Pageable.ofSize(size + 1));
@@ -84,7 +84,8 @@ public class ContentService {
         final Content content = contentRepository.findById(contentId)
                 .orElseThrow(() -> new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND));
 
-        ContentVideoResponseDto response = new ContentVideoResponseDto(content.getVideoUrl(), VideoType.VIDEO.toString());
+        ContentVideoResponseDto response = new ContentVideoResponseDto(content.getVideoUrl(),
+                VideoType.VIDEO.toString());
 
         return Response.ok(response);
     }

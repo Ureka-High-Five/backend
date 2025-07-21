@@ -1,5 +1,7 @@
 package org.highfive.backend.global.exception.handler;
 
+import static org.highfive.backend.global.code.GlobalErrorCode.BAD_REQUEST;
+
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.highfive.backend.global.code.ErrorCode;
@@ -12,8 +14,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import static org.highfive.backend.global.code.GlobalErrorCode.BAD_REQUEST;
 
 @Slf4j
 @RestControllerAdvice
