@@ -1,11 +1,23 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/highfive
+    url: jdbc:postgresql://localhost:5432/leadme
     username: root
     password: user
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: spring_user
+    password: spring_pass
+    listener:
+      simple:
+        acknowledge-mode: manual
+    mq:
+      queue:
+        user-action: user-action-queue
 
   jpa:
     hibernate:
@@ -13,13 +25,16 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        dialect: org.hibernate.dialect.MySQL8Dialect
     show-sql: true
 
   data:
     redis:
       host: localhost
       port: 6379
+    mongodb:
+      uri: mongodb://root:rootpass@localhost:27017/leadme?authSource=admin
+      username: root
+      password: rootpass
 
 springdoc:
   swagger-ui:

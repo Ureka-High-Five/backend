@@ -37,6 +37,7 @@ import org.highfive.backend.shorts.repository.jpa.ShortsRepository;
 import org.highfive.backend.shorts.repository.querydsl.ShortsCommentQueryRepository;
 import org.highfive.backend.shorts.repository.querydsl.ShortsQueryRepository;
 import org.highfive.backend.user.entity.User;
+import org.highfive.backend.user.repository.jpa.UserRepository;
 import org.highfive.backend.user.repository.redis.UserRedisRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -52,6 +53,7 @@ public class ShortsService {
     private final ShortsQueryRepository shortsQueryRepository;
     private final ShortsCommentQueryRepository shortsCommentQueryRepository;
     private final UserRedisRepository userRedisRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     public Response<Void> createShortsComment(CreateShortsCommentRequestDto requestDto, User user) {
@@ -71,6 +73,7 @@ public class ShortsService {
 
         final String userVector = userRedisRepository.getUserVector(user.getId());
         log.info("user vector: {}", userVector);
+        userRepository.upsertUserVector(user.getId(), userVector);
         List<Shorts> recommend = shortsQueryRepository.findByCursor(cursor == null ? null : cursor.toString(), size);
         List<ShortsResponseDto> result = getRecommendResult(user, recommend);
         boolean hasNext = result.size() > size;

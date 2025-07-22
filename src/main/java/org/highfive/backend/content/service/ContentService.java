@@ -54,9 +54,11 @@ public class ContentService {
     public Response<CursorPageResponse<SearchContentResponseDto>> search(final String input, final String cursor,
                                                                          final int size) {
         final String keyword = LIKE + input.toLowerCase() + LIKE;
-
-        List<Content> contents = contentRepository.searchByInput(keyword, cursor, Pageable.ofSize(size + 1));
-
+        Long parsedCursor = null;
+        if (cursor != null && !cursor.isBlank()) {
+            parsedCursor = Long.parseLong(cursor);
+        }
+        List<Content> contents = contentRepository.searchByInput(keyword, parsedCursor, Pageable.ofSize(size + 1));
         final boolean hasNext = contents.size() > size;
         contents = hasNext ? contents.subList(0, size) : contents;
         final String nextCursor = hasNext ? contents.get(contents.size() - 1).getId().toString() : null;
