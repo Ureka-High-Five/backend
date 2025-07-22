@@ -11,6 +11,7 @@ import static org.highfive.backend.shorts.exception.ShortsErrorCode.SHORTS_NOT_F
 
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.highfive.backend.global.dto.CursorPageResponse;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
+import org.highfive.backend.shorts.dto.ShortsDto;
 import org.highfive.backend.shorts.dto.mapper.ShortsCommentMapper;
 import org.highfive.backend.shorts.dto.mapper.ShortsMapper;
 import org.highfive.backend.shorts.dto.request.CreateShortsCommentRequestDto;
@@ -34,9 +36,9 @@ import org.highfive.backend.shorts.entity.ShortsComment;
 import org.highfive.backend.shorts.entity.ShortsLikeTimeLog;
 import org.highfive.backend.shorts.repository.jpa.ShortsCommentRepository;
 import org.highfive.backend.shorts.repository.jpa.ShortsLikeTimeLogRepository;
+import org.highfive.backend.shorts.repository.jpa.ShortsRedisRepository;
 import org.highfive.backend.shorts.repository.jpa.ShortsRepository;
 import org.highfive.backend.shorts.repository.querydsl.ShortsCommentQueryRepository;
-import org.highfive.backend.shorts.repository.querydsl.ShortsQueryRepository;
 import org.highfive.backend.user.entity.User;
 import org.highfive.backend.user.repository.jpa.UserRepository;
 import org.highfive.backend.user.repository.redis.UserRedisRepository;
@@ -48,10 +50,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ShortsService {
 
+    private final int count = 30;
+
     private final ShortsLikeTimeLogRepository shortsLikeTimeLogRepository;
     private final ShortsRepository shortsRepository;
+    private final ShortsRedisRepository shortsRedisRepository;
     private final ShortsCommentRepository shortsCommentRepository;
-    private final ShortsQueryRepository shortsQueryRepository;
     private final ShortsCommentQueryRepository shortsCommentQueryRepository;
     private final UserRedisRepository userRedisRepository;
     private final UserRepository userRepository;
@@ -70,19 +74,20 @@ public class ShortsService {
     }
 
     @Transactional
-    public Response<CursorPageResponse<ShortsResponseDto>> recommendShorts(final Long cursor, final Integer size,
-                                                                           final User user) {
-        final String rawVector = userRedisRepository.getUserVector(user.getId());
-        final String userVector = convertUserVector(rawVector);
+    public Response<CursorPageResponse<ShortsResponseDto>> recommendShorts(final Long cursor, final Integer size, final User user) {
+        final String userVector = convertUserVector(userRedisRepository.getUserVector(user.getId()));
         userRepository.upsertUserVector(user.getId(), userVector);
-        List<Shorts> recommend = shortsQueryRepository.findByCursor(cursor == null ? null : cursor.toString(), size);
-        List<ShortsResponseDto> result = getRecommendResult(user, recommend);
-        boolean hasNext = result.size() > size;
-        Long nextCursor = hasNext ? recommend.getLast().getId() : null;
-        result = hasNext ? result.subList(0, size) : result;
-        CursorPageResponse<ShortsResponseDto> response = new CursorPageResponse<>(result, hasNext,
-                String.valueOf(nextCursor));
-        return Response.ok(response);
+
+        if (cursor == null) {
+            generateShortsCache(user.getId());
+        }
+
+        final List<ShortsDto> pagedShorts = shortsRedisRepository.findByCursor(user.getId(), cursor, size + 1);
+        final boolean hasNext = pagedShorts.size() > size;
+        final Long nextCursor = hasNext ? pagedShorts.get(size).id() : null;
+        final List<ShortsDto> sliced = hasNext ? pagedShorts.subList(0, size) : pagedShorts;
+        final List<ShortsResponseDto> result = getRecommendResult(user, sliced);
+        return Response.ok(new CursorPageResponse<>(result, hasNext, nextCursor != null ? nextCursor.toString() : null));
     }
 
     @Transactional
@@ -186,6 +191,22 @@ public class ShortsService {
         return Response.ok(ShortsMapper.toShortsResponseDto(shorts, liked));
     }
 
+    private void generateShortsCache(final Long userId) {
+        final List<ShortsDto> recommended = shortsRepository.findRecommendedShortsByUser(userId, 20).stream().map(ShortsMapper::toShortsDto).toList();
+
+        final List<Long> contentIds = recommended.stream()
+                .map(ShortsDto::contentId)
+                .distinct()
+                .toList();
+
+        final List<ShortsDto> random = shortsRepository.findRandomShortsExcludingContentIds(contentIds, 10).stream().map(ShortsMapper::toShortsDto).toList();
+        final List<ShortsDto> result = new ArrayList<>(recommended);
+        result.addAll(random);
+        Collections.shuffle(result);
+
+        shortsRedisRepository.saveAll(userId, result);
+    }
+
     private boolean addCommentsUntilLimit(List<ShortsCommentsByTimeResponseDto> response,
                                           List<ShortsCommentsByTimeResponseDto> result) {
         int remain = 5 - response.size();
@@ -193,9 +214,9 @@ public class ShortsService {
         return response.size() == 5;
     }
 
-    private List<ShortsResponseDto> getRecommendResult(final User user, final List<Shorts> recommend) {
+    private List<ShortsResponseDto> getRecommendResult(final User user, final List<ShortsDto> recommend) {
         return recommend.stream().map(item -> {
-            boolean liked = shortsLikeTimeLogRepository.existsByUserIdAndShortsId(user.getId(), item.getId());
+            boolean liked = shortsLikeTimeLogRepository.existsByUserIdAndShortsId(user.getId(), item.id());
             return ShortsMapper.toShortsResponseDto(item, liked);
         }).toList();
     }
