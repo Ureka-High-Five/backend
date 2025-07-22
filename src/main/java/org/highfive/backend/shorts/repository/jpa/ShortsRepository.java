@@ -1,11 +1,13 @@
 package org.highfive.backend.shorts.repository.jpa;
 
 import io.lettuce.core.dynamic.annotation.Param;
-import java.util.Optional;
 import org.highfive.backend.shorts.entity.Shorts;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
+import java.util.Optional;
 
 public interface ShortsRepository extends JpaRepository<Shorts, Long> {
 
@@ -20,5 +22,34 @@ public interface ShortsRepository extends JpaRepository<Shorts, Long> {
     @Query("SELECT s FROM Shorts s WHERE s.content.id = :contentId ORDER BY function('RAND')")
     Optional<Shorts> findRandomByContentId(@Param("contentId") Long contentId);
 
+    @Query(value = """
+    SELECT s.*
+    FROM shorts s
+    JOIN contents con ON s.content_id = con.id
+    WHERE s.content_id NOT IN (:contentsId)
+    ORDER BY random()
+    LIMIT :limit
+""", nativeQuery = true)
+    List<Shorts> findRandomShortsExcludingContentIds(
+            List<Long> contentsId,
+            int limit
+    );
 
+    @Query(value = """
+    SELECT s.*
+    FROM shorts s
+    JOIN contents con ON s.content_id = con.id
+    WHERE con.id IN (
+        SELECT con.id
+        FROM contents con
+        JOIN contents_vector cv ON con.id = cv.content_id
+        JOIN users_vector u ON u.user_id = :userId
+        ORDER BY cv.embedding <#> u.embedding
+        LIMIT :count
+    )
+    """, nativeQuery = true)
+    List<Shorts> findRecommendedShortsByUser(
+            Long userId,
+            int count
+    );
 }
