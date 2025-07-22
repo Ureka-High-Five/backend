@@ -25,6 +25,6 @@ public class UserLogController {
             @Valid @RequestBody final CreateContentWatchLogRequestDto request,
             @AuthenticationPrincipal User user
     ) {
-        return userLogService.createContentWatchLog(request, user);
+        return userLogService.createContentWatchLog(request);
     }
 }

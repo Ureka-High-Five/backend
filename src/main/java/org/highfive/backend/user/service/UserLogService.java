@@ -12,10 +12,7 @@ import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.shorts.entity.Shorts;
 import org.highfive.backend.shorts.repository.jpa.ShortsRepository;
-import org.highfive.backend.user.dto.mapper.UserLogMapper;
 import org.highfive.backend.user.dto.request.CreateContentWatchLogRequestDto;
-import org.highfive.backend.user.entity.User;
-import org.highfive.backend.user.entity.log.UserLog;
 import org.highfive.backend.user.repository.jpa.UserLogRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,32 +27,26 @@ public class UserLogService {
     private final UserLogRepository userLogRepository;
 
     @Transactional
-    public Response<Void> createContentWatchLog(CreateContentWatchLogRequestDto request, User user) {
+    public Response<Void> createContentWatchLog(CreateContentWatchLogRequestDto request) {
         VideoType videoType = VideoType.valueOf(request.type());
 
-        Content content;
         long runningTime;
 
         switch (videoType) {
             case VIDEO -> {
                 Content foundContent = contentRepository.findById(request.id())
                         .orElseThrow(() -> new BusinessException(CONTENT_NOT_FOUND));
-                content = foundContent;
                 runningTime = foundContent.getRunningTime();
             }
             case SHORTS -> {
                 Shorts shorts = shortsRepository.findById(request.id())
                         .orElseThrow(() -> new BusinessException(CONTENT_NOT_FOUND));
-                content = shorts.getContent();
                 runningTime = shorts.getRunningTime();
             }
             default -> throw new BusinessException(VIDEO_TYPE_NOT_FOUND);
         }
 
         validateWatchTime(request.watchTime(), runningTime);
-
-        UserLog userLog = UserLogMapper.toUserWatchLog(user, content, request.watchTime());
-        userLogRepository.save(userLog);
 
         return Response.ok(null);
     }
