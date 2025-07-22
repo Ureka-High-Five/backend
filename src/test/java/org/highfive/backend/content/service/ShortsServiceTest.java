@@ -19,6 +19,7 @@ import org.highfive.backend.shorts.repository.jpa.ShortsLikeTimeLogRepository;
 import org.highfive.backend.shorts.repository.querydsl.ShortsQueryRepository;
 import org.highfive.backend.shorts.service.ShortsService;
 import org.highfive.backend.user.entity.User;
+import org.highfive.backend.user.repository.jpa.UserRepository;
 import org.highfive.backend.user.repository.redis.UserRedisRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class ShortsServiceTest {
+
+    @Mock
+    private UserRepository userRepository;
 
     @Mock
     private UserRedisRepository userRedisRepository;
