@@ -1,6 +1,7 @@
 package org.highfive.backend.shorts.service;
 
 
+import static org.highfive.backend.global.util.VectorUtil.convertUserVector;
 import static org.highfive.backend.shorts.dto.mapper.ShortsLikeTimeLogMapper.toShorts;
 import static org.highfive.backend.shorts.dto.mapper.ShortsLikeTimeLogMapper.toShortsLikeTimeLineDto;
 import static org.highfive.backend.shorts.dto.mapper.ShortsMapper.toShortsLikedUserResponseDtos;
@@ -70,9 +71,8 @@ public class ShortsService {
 
     public Response<CursorPageResponse<ShortsResponseDto>> recommendShorts(final Long cursor, final Integer size,
                                                                            final User user) {
-
-        final String userVector = userRedisRepository.getUserVector(user.getId());
-        log.info("user vector: {}", userVector);
+        final String rawVector = userRedisRepository.getUserVector(user.getId());
+        final String userVector = convertUserVector(rawVector);
         userRepository.upsertUserVector(user.getId(), userVector);
         List<Shorts> recommend = shortsQueryRepository.findByCursor(cursor == null ? null : cursor.toString(), size);
         List<ShortsResponseDto> result = getRecommendResult(user, recommend);
