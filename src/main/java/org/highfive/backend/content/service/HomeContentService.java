@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.highfive.backend.global.util.VectorUtil.convertUserVector;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -63,14 +65,6 @@ public class HomeContentService {
         final String userVector = convertUserVector(rawVector);
         userRepository.upsertUserVector(user.getId(), userVector);
         return  contentRepository.findRecommendedContentsByUser(user.getId(), count);
-    }
-
-    private String convertUserVector(String vector) {
-        if (vector != null && vector.length() > 1 &&
-                vector.startsWith("\"") && vector.endsWith("\"")) {
-            return vector.substring(1, vector.length() - 1);
-        }
-        return vector;
     }
 
     private Map<String, List<GenreContentDto>> recommendContentsByUserGenre(final User user, final int count) {
