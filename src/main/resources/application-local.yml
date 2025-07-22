@@ -1,11 +1,21 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/leadme
+    url: jdbc:postgresql://localhost:5432/leadme?currentSchema=leadme
     username: root
     password: user
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        default_schema: leadme
+    show-sql: true
 
   rabbitmq:
     host: localhost
@@ -18,16 +28,6 @@ spring:
     mq:
       queue:
         user-action: user-action-queue
-
-
-  jpa:
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        format_sql: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-    show-sql: true
 
   data:
     redis:
