@@ -2,11 +2,12 @@ package org.highfive.backend.shorts.repository.querydsl;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.shorts.entity.QShorts;
 import org.highfive.backend.shorts.entity.Shorts;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
