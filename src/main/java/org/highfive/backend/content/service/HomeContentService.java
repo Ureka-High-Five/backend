@@ -9,13 +9,9 @@ import org.highfive.backend.content.dto.response.HomeContentsResponseDto.MainRec
 import org.highfive.backend.content.dto.response.HomeContentsResponseDto.PersonalRecommendDto;
 import org.highfive.backend.content.dto.response.TopContentsByGenreDto;
 import org.highfive.backend.content.entity.Content;
-import org.highfive.backend.content.exception.ContentErrorCode;
 import org.highfive.backend.content.repository.jpa.ContentRepository;
-import org.highfive.backend.global.client.fastapi.FastApiClient;
-import org.highfive.backend.global.client.fastapi.dto.response.FastApiRecommendResponseDto;
 import org.highfive.backend.global.code.SuccessCode;
 import org.highfive.backend.global.dto.Response;
-import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.user.entity.User;
 import org.highfive.backend.user.entity.preference.PreferMetaInfoRepository;
 import org.highfive.backend.user.repository.jpa.UserRepository;
@@ -32,7 +28,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class HomeContentService {
 
-    private final FastApiClient fastApiClient;
     private final UserRedisRepository userRedisRepository;
     private final ContentRepository contentRepository;
     private final PreferMetaInfoRepository preferMetaInfoRepository;
@@ -51,32 +46,23 @@ public class HomeContentService {
     }
 
     private MainRecommendDto recommendMainContentsByUser(final User user) {
-        final List<FastApiRecommendResponseDto> contentsByUserVector = recommendContentsByVector(user, 1);
-        final Content content = contentRepository.findById(contentsByUserVector.getFirst().id())
-                .orElseThrow(() -> new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND));
+        final List<Content> contentsByUserVector = recommendContentsByVector(user, 1);
+        final Content content = contentsByUserVector.getFirst();
         final List<String> genres = getGenres(content);
         return new MainRecommendDto(content.getId(), content.getPostUrl(), content.getDescription(), genres, content.getTitle());
     }
 
     private List<PersonalRecommendDto> recommendContentsByUser(final User user, final int count) {
         return recommendContentsByVector(user, count).stream()
-                .map(dto -> {
-                    Content content = getContentById(dto.id());
-                    return new PersonalRecommendDto(content.getId(), content.getThumbnailUrl());
-                })
+                .map(dto -> new PersonalRecommendDto(dto.getId(), dto.getThumbnailUrl()))
                 .toList();
     }
 
-    private Content getContentById(long contentId) {
-        return contentRepository.findById(contentId)
-                .orElseThrow(() -> new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND));
-    }
-
-    private List<FastApiRecommendResponseDto> recommendContentsByVector(final User user, final int count) {
+    private List<Content> recommendContentsByVector(final User user, final int count) {
         final String userVector = userRedisRepository.getUserVector(user.getId());
         log.info("userId={}, user vector={}", user.getId(), userVector);
         userRepository.upsertUserVector(user.getId(), userVector);
-        return fastApiVectorRecommend(userVector, count);
+        return  contentRepository.findRecommendedContentsByUser(user.getId(), count);
     }
 
     private Map<String, List<GenreContentDto>> recommendContentsByUserGenre(final User user, final int count) {
@@ -97,9 +83,5 @@ public class HomeContentService {
             genres.add(genreName);
         }
         return genres;
-    }
-
-    private List<FastApiRecommendResponseDto> fastApiVectorRecommend(final String vector, final int count) {
-        return fastApiClient.getContentsByVector(vector, count);
     }
 }

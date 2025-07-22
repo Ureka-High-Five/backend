@@ -88,10 +88,6 @@ public class User extends BaseEntity {
         this.userRole = userRole;
     }
 
-    public void updateEmbedding(final String embedding) {
-        this.embedding = embedding;
-    }
-
     public boolean isAdmin() {
         return this.userRole == UserRole.ADMIN;
     }
