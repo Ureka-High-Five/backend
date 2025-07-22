@@ -59,30 +59,6 @@ public class FastApiClient {
         );
     }
 
-    public List<FastApiRecommendResponseDto> getContentsByVector(final String vector, final int count) {
-        final String url = genUrl("/contents?count=" + count);
-
-        ObjectMapper mapper = new ObjectMapper();
-        String jsonBody;
-        try {
-            jsonBody = mapper.writeValueAsString(new RecommendRequest(vector));
-        } catch (JsonProcessingException e) {
-            throw new BusinessException(GlobalErrorCode.JSON_PARSING_ERROR);
-        }
-
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        final HttpEntity<String> request = new HttpEntity<>(jsonBody, headers);
-        return executeWithFastApiHandling(() ->
-                restTemplate.exchange(
-                        url,
-                        HttpMethod.POST,
-                        request,
-                        new ParameterizedTypeReference<List<FastApiRecommendResponseDto>>() {
-                        }
-                ).getBody()
-        );
-    }
-
     private <T> T executeWithFastApiHandling(final FastApiCall<T> apiCall) {
         try {
             final T result = apiCall.call();
