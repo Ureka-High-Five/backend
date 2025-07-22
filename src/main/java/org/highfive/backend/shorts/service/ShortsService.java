@@ -50,7 +50,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ShortsService {
 
-    private final int count = 30;
+    private final int RECOMMEND_SHORTS_COUNT = 20;
+    private final int RECOMMEND_RANDOM_COUNT = 10;
 
     private final ShortsLikeTimeLogRepository shortsLikeTimeLogRepository;
     private final ShortsRepository shortsRepository;
@@ -192,14 +193,14 @@ public class ShortsService {
     }
 
     private void generateShortsCache(final Long userId) {
-        final List<ShortsDto> recommended = shortsRepository.findRecommendedShortsByUser(userId, 20).stream().map(ShortsMapper::toShortsDto).toList();
+        final List<ShortsDto> recommended = shortsRepository.findRecommendedShortsByUser(userId, RECOMMEND_SHORTS_COUNT);
 
         final List<Long> contentIds = recommended.stream()
                 .map(ShortsDto::contentId)
                 .distinct()
                 .toList();
 
-        final List<ShortsDto> random = shortsRepository.findRandomShortsExcludingContentIds(contentIds, 10).stream().map(ShortsMapper::toShortsDto).toList();
+        final List<ShortsDto> random = shortsRepository.findRandomShortsExcludingContentIds(contentIds, RECOMMEND_RANDOM_COUNT);
         final List<ShortsDto> result = new ArrayList<>(recommended);
         result.addAll(random);
         Collections.shuffle(result);
