@@ -69,6 +69,7 @@ public class ShortsService {
         return Response.ok(null);
     }
 
+    @Transactional
     public Response<CursorPageResponse<ShortsResponseDto>> recommendShorts(final Long cursor, final Integer size,
                                                                            final User user) {
         final String rawVector = userRedisRepository.getUserVector(user.getId());
