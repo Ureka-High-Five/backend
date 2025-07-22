@@ -39,9 +39,9 @@ public class UserQueryRepository {
     public CursorPageResponse<SearchUserResponseDto> findByNameContaining(String username, Long cursor, int size) {
         List<User> findUsers = jpaQueryFactory.selectFrom(user)
                 .where(
-                        user.name.like("%" + username + "%"),
+                        user.name.toLowerCase().like("%" + username.toLowerCase() + "%"),
                         cursorFilter(cursor)
-                ).orderBy(user.name.asc())
+                ).orderBy(user.id.asc())
                 .limit(size + 1)
                 .fetch();
         boolean hasNext = findUsers.size() > size;
