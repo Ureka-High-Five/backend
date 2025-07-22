@@ -72,7 +72,7 @@ public class OnboardingService {
 
     @Transactional
     public Response<TokenResponseDto> initUser(final SubmitOnboardingRequestDto request) {
-        long userId = request.userId();
+        final long userId = request.userId();
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND_ERROR));
         initBasic(request, user);
@@ -146,7 +146,7 @@ public class OnboardingService {
         FastApiOnboardingResponseDto response = fastApiClient.onboardingSubmit(genreCount);
 
         String vector = response.userVector();
-        user.updateEmbedding(vector);
+        userRepository.upsertUserVector(user.getId(), vector);
 
         Map<String, Double> genreWeights = weightManager.calcWeight(genreCount);
         updateUserWeight(user, genreWeights);

@@ -19,12 +19,14 @@ spring:
       queue:
         user-action: user-action-queue
 
+
   jpa:
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
         format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
 
   data:
@@ -33,8 +35,6 @@ spring:
       port: 6379
     mongodb:
       uri: mongodb://root:rootpass@localhost:27017/leadme?authSource=admin
-      username: root
-      password: rootpass
 
 springdoc:
   swagger-ui:

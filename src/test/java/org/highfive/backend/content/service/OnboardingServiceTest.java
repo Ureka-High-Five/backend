@@ -1,39 +1,24 @@
 package org.highfive.backend.content.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.assertj.core.api.AssertionsForClassTypes.tuple;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
-
-import java.time.LocalDateTime;
-import java.time.Year;
-import java.util.List;
-import java.util.Map;
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.assertj.core.api.AssertionsForInterfaceTypes;
 import org.highfive.backend.auth.dto.response.TokenResponseDto;
 import org.highfive.backend.auth.service.TokenService;
 import org.highfive.backend.common.fixture.UserFixture;
 import org.highfive.backend.content.dto.request.OnboardingSelectContentRequestDto;
-import org.highfive.backend.content.dto.response.GenreCountDto;
-import org.highfive.backend.content.dto.response.MostPopularContentPerGenreDto;
-import org.highfive.backend.content.dto.response.OnboardingContentDto;
-import org.highfive.backend.content.dto.response.OnboardingInitContentsResponseDto;
-import org.highfive.backend.content.dto.response.OnboardingSelectContentResponseDto;
-import org.highfive.backend.metadata.entity.MetaInfo;
-import org.highfive.backend.metadata.entity.MetaType;
+import org.highfive.backend.content.dto.response.*;
 import org.highfive.backend.content.exception.ContentErrorCode;
 import org.highfive.backend.content.repository.jpa.ContentRepository;
-import org.highfive.backend.metadata.repository.jpa.MetaInfoContentsRepository;
 import org.highfive.backend.content.repository.querydsl.ContentQueryRepositoryImpl;
-import org.highfive.backend.metadata.repository.jpa.MetaInfoRepository;
 import org.highfive.backend.global.client.fastapi.FastApiClient;
 import org.highfive.backend.global.client.fastapi.dto.response.FastApiOnboardingResponseDto;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.global.util.WeightManager;
+import org.highfive.backend.metadata.entity.MetaInfo;
+import org.highfive.backend.metadata.entity.MetaType;
+import org.highfive.backend.metadata.repository.jpa.MetaInfoContentsRepository;
+import org.highfive.backend.metadata.repository.jpa.MetaInfoRepository;
 import org.highfive.backend.user.dto.request.SubmitOnboardingRequestDto;
 import org.highfive.backend.user.entity.Gender;
 import org.highfive.backend.user.entity.User;
@@ -47,6 +32,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.time.LocalDateTime;
+import java.time.Year;
+import java.util.List;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForClassTypes.tuple;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class OnboardingServiceTest {
@@ -201,6 +198,7 @@ class OnboardingServiceTest {
         given(metaInfoRepository.findByNameAndType("Action", MetaType.GENRE)).willReturn(actionMeta);
         MetaInfo comedyMeta = new MetaInfo(2L, "Comedy", MetaType.GENRE, null);
         given(metaInfoRepository.findByNameAndType("Comedy", MetaType.GENRE)).willReturn(comedyMeta);
+        doNothing().when(userRepository).upsertUserVector(anyLong(), anyString());
 
         given(tokenService.generateAccessToken(eq(kakaoUserId), anyList())).willReturn("access");
         given(tokenService.generateRefreshToken(eq(kakaoUserId), anyList())).willReturn("refresh");
@@ -226,7 +224,6 @@ class OnboardingServiceTest {
         assertThat(user.getUserRole()).isEqualTo(UserRole.USER);
         assertThat(user.getGender()).isEqualTo(Gender.MALE);
         assertThat(user.getAge()).isEqualTo(25);
-        assertThat(user.getEmbedding()).isEqualTo("vec-xyz");
 
         verify(preferMetaInfoRepository, times(2)).save(any());
     }

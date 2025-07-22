@@ -1,28 +1,22 @@
 package org.highfive.backend.global.client.fastapi;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.List;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
-import org.highfive.backend.global.client.fastapi.dto.request.RecommendRequest;
 import org.highfive.backend.global.client.fastapi.dto.response.FastApiOnboardingResponseDto;
-import org.highfive.backend.global.client.fastapi.dto.response.FastApiRecommendResponseDto;
 import org.highfive.backend.global.client.fastapi.dto.response.FastApiVectorFromGenresDto;
 import org.highfive.backend.global.client.fastapi.exception.FastApiErrorCode;
-import org.highfive.backend.global.code.GlobalErrorCode;
 import org.highfive.backend.global.exception.BusinessException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Component
@@ -56,30 +50,6 @@ public class FastApiClient {
 
         return executeWithFastApiHandling(() ->
                 restTemplate.postForEntity(url, request, FastApiOnboardingResponseDto.class).getBody()
-        );
-    }
-
-    public List<FastApiRecommendResponseDto> getContentsByVector(final String vector, final int count) {
-        final String url = genUrl("/contents?count=" + count);
-
-        ObjectMapper mapper = new ObjectMapper();
-        String jsonBody;
-        try {
-            jsonBody = mapper.writeValueAsString(new RecommendRequest(vector));
-        } catch (JsonProcessingException e) {
-            throw new BusinessException(GlobalErrorCode.JSON_PARSING_ERROR);
-        }
-
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        final HttpEntity<String> request = new HttpEntity<>(jsonBody, headers);
-        return executeWithFastApiHandling(() ->
-                restTemplate.exchange(
-                        url,
-                        HttpMethod.POST,
-                        request,
-                        new ParameterizedTypeReference<List<FastApiRecommendResponseDto>>() {
-                        }
-                ).getBody()
         );
     }
 
