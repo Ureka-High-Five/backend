@@ -92,7 +92,6 @@ public class ContentQueryRepositoryImpl implements ContentQueryRepository {
                 .orderBy(m.name.countDistinct().desc())
                 .fetch();
     }
-
     @SuppressWarnings("unchecked")
 
     public List<Map<String, Object>> findContentGenresByContentIds(List<Long> contentIds) {
