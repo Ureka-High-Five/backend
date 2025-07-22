@@ -62,7 +62,7 @@ public class HomeContentService {
         final String userVector = userRedisRepository.getUserVector(user.getId());
         log.info("userId={}, user vector={}", user.getId(), userVector);
         userRepository.upsertUserVector(user.getId(), userVector);
-        return  contentRepository.findRecommendedContentByUser(user.getId(), count);
+        return  contentRepository.findRecommendedContentsByUser(user.getId(), count);
     }
 
     private Map<String, List<GenreContentDto>> recommendContentsByUserGenre(final User user, final int count) {
