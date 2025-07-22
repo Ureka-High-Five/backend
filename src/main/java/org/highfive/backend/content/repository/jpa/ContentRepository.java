@@ -61,4 +61,16 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
             @Param("cursor") Long cursor,
             Pageable pageable
     );
+
+    @Query(value = """
+        SELECT c.*
+        FROM contents_vector c
+        JOIN users_vector u ON u.id = :userId
+        ORDER BY c.embedding <#> u.embedding
+        LIMIT :count
+    """, nativeQuery = true)
+    List<Content> findRecommendedContentByUser(
+            Long userId,
+            int count
+    );
 }
