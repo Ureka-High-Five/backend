@@ -1,5 +1,6 @@
 package org.highfive.backend.content.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.highfive.backend.content.dto.response.HomeContentsResponseDto;
@@ -37,6 +38,7 @@ public class HomeContentService {
     private final PreferMetaInfoRepository preferMetaInfoRepository;
     private final UserRepository userRepository;
 
+    @Transactional
     public Response<HomeContentsResponseDto> getHomeContents(final User user) {
         final MainRecommendDto mainRecommend = recommendMainContentsByUser(user);
         final List<PersonalRecommendDto> personalRecommends = recommendContentsByUser(user, 4);
