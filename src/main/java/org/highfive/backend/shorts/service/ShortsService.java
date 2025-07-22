@@ -10,10 +10,9 @@ import static org.highfive.backend.shorts.exception.ShortsErrorCode.SHORTS_LIKED
 import static org.highfive.backend.shorts.exception.ShortsErrorCode.SHORTS_NOT_FOUND;
 
 import jakarta.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+
+import java.util.*;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.highfive.backend.global.dto.CursorPageResponse;
@@ -216,10 +215,15 @@ public class ShortsService {
     }
 
     private List<ShortsResponseDto> getRecommendResult(final User user, final List<ShortsDto> recommend) {
-        return recommend.stream().map(item -> {
-            boolean liked = shortsLikeTimeLogRepository.existsByUserIdAndShortsId(user.getId(), item.id());
-            return ShortsMapper.toShortsResponseDto(item, liked);
-        }).toList();
+        final List<Long> shortsIds = recommend.stream()
+                .map(ShortsDto::id)
+                .toList();
+
+        final Set<Long> likedIds = new HashSet<>(shortsLikeTimeLogRepository.findLikedShortsIds(user.getId(), shortsIds));
+
+        return recommend.stream()
+                .map(item -> ShortsMapper.toShortsResponseDto(item, likedIds.contains(item.id())))
+                .toList();
     }
 
     public Response<ShortsResponseDto> getShortsByContent(final Long contentId, User user) {
