@@ -57,7 +57,7 @@ public class ShortsServiceTest {
     private final User testUser = UserFixture.createUser(1L);
 
     @Test
-    @DisplayName("쇼츠에 자신의 좋아요 여부가 표시된다")
+    @DisplayName("'쇼츠에 자신의 좋아요 여부가 표시된다")
     void recommendShorts_likedFlagTest() {
         // given
         Content content = ContentFixture.createDefaultContent();
@@ -74,8 +74,8 @@ public class ShortsServiceTest {
         given(shortsRedisRepository.findByCursor(eq(testUser.getId()), isNull(), eq(6)))
                 .willReturn(shortsDtos);
 
-        given(likeTimeLogRepo.existsByUserIdAndShortsId(testUser.getId(), 1L)).willReturn(true);
-        given(likeTimeLogRepo.existsByUserIdAndShortsId(testUser.getId(), 2L)).willReturn(false);
+        given(likeTimeLogRepo.findLikedShortsIds(eq(testUser.getId()), anyList()))
+                .willReturn(List.of(1L));
 
         // when
         Response<CursorPageResponse<ShortsResponseDto>> resp = shortsService.recommendShorts(null, 5, testUser);
