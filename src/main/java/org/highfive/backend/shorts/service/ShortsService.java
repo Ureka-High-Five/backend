@@ -219,7 +219,7 @@ public class ShortsService {
                 .map(ShortsDto::id)
                 .toList();
 
-        final Set<Long> likedIds = new HashSet<>(shortsLikeTimeLogRepository.findLikedShortsIds(user.getId(), shortsIds));
+        final List<Long> likedIds = shortsLikeTimeLogRepository.findLikedShortsIds(user.getId(), shortsIds);
 
         return recommend.stream()
                 .map(item -> ShortsMapper.toShortsResponseDto(item, likedIds.contains(item.id())))
