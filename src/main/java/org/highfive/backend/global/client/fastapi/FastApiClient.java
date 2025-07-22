@@ -1,22 +1,13 @@
 package org.highfive.backend.global.client.fastapi;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.List;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
-import org.highfive.backend.global.client.fastapi.dto.request.RecommendRequest;
 import org.highfive.backend.global.client.fastapi.dto.response.FastApiOnboardingResponseDto;
-import org.highfive.backend.global.client.fastapi.dto.response.FastApiRecommendResponseDto;
 import org.highfive.backend.global.client.fastapi.dto.response.FastApiVectorFromGenresDto;
 import org.highfive.backend.global.client.fastapi.exception.FastApiErrorCode;
-import org.highfive.backend.global.code.GlobalErrorCode;
 import org.highfive.backend.global.exception.BusinessException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
