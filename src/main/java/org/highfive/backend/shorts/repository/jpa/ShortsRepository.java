@@ -17,7 +17,7 @@ public interface ShortsRepository extends JpaRepository<Shorts, Long> {
     @Query("update Shorts s set s.likeCount = s.likeCount - 1 where s.id = :id and s.likeCount > 0")
     void decreaseLike(Long id);
 
-    @Query("SELECT s FROM Shorts s WHERE s.content.id = :contentId ORDER BY function('RAND')")
+    @Query("SELECT s FROM Shorts s WHERE s.content.id = :contentId ORDER BY function('RANDOM')")
     Optional<Shorts> findRandomByContentId(@Param("contentId") Long contentId);
 
 
