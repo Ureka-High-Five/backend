@@ -7,11 +7,10 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class AhoCorasickSlangFilterService implements SlangFilterService {
+public class AhoCorasickSlangFilterService {
 
     private final SlangHolder slangHolder;
 
-    @Override
     public boolean filteringSlang(String text) {
         return slangHolder.countSlang(text) > 0;
     }

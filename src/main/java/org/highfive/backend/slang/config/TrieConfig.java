@@ -11,7 +11,6 @@ import org.springframework.context.annotation.DependsOn;
 
 @Slf4j
 @Configuration
-@DependsOn("slangLoader")
 public class TrieConfig {
 
     private final SlangRepository slangRepository;
