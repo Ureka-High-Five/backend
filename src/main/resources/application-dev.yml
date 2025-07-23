@@ -62,10 +62,11 @@ management:
   endpoints:
     web:
       exposure:
-        include: prometheus, metrics
+        include: prometheus
   endpoint:
     prometheus:
       access: unrestricted
-  metrics:
-    enable:
-      tomcat: true
+  prometheus:
+    metrics:
+      export:
+        enabled: true
