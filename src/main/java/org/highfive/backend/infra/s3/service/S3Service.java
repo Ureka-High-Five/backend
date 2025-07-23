@@ -28,13 +28,13 @@ public class S3Service {
     public Response<URL> generatePresignedUrl() {
         final String key = FOLDDER + "/" + UUID.randomUUID();
 
-        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+        final PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bucket)
                 .key(key)
                 .contentType(ContentType.IMAGE_JPEG.toString())
                 .build();
 
-        PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
+        final PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
                 .putObjectRequest(putObjectRequest)
                 .signatureDuration(Duration.ofMinutes(DURATION))
                 .build();
