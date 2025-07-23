@@ -1,5 +1,6 @@
 package org.highfive.backend.infra.s3.service;
 
+import com.nimbusds.common.contenttype.ContentType;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.global.dto.Response;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,7 +31,7 @@ public class S3Service {
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bucket)
                 .key(key)
-                .contentType("image/jpeg")
+                .contentType(ContentType.IMAGE_JPEG.toString())
                 .build();
 
         PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
