@@ -37,6 +37,7 @@ import org.highfive.backend.user.entity.UserRole;
 import org.highfive.backend.user.entity.preference.PreferMetaInfo;
 import org.highfive.backend.user.entity.preference.PreferMetaInfoRepository;
 import org.highfive.backend.user.repository.jpa.UserRepository;
+import org.highfive.backend.user.repository.redis.UserRedisRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,6 +57,7 @@ public class OnboardingService {
     private final PreferMetaInfoRepository preferMetaInfoRepository;
     private final ContentQueryRepositoryImpl contentQueryRepositoryImpl;
     private final MetaInfoRepository metaInfoRepository;
+    private final UserRedisRepository userRedisRepository;
 
     public Response<List<OnboardingSelectContentResponseDto>> getContentBySelectedContent(
             final OnboardingSelectContentRequestDto request) {
@@ -142,10 +144,11 @@ public class OnboardingService {
     private void initVector(final SubmitOnboardingRequestDto request, final User user) {
         List<Long> contentIds = request.selectedContentIds();
         Map<String, Integer> genreCount = countGenre(contentIds);
-        FastApiOnboardingResponseDto response = fastApiClient.onboardingSubmit(user.getId(), genreCount);
+        FastApiOnboardingResponseDto response = fastApiClient.onboardingSubmit(genreCount);
 
         String vector = response.userVector();
         userRepository.upsertUserVector(user.getId(), vector);
+        userRedisRepository.setUserVector(user.getId(), vector);
 
         Map<String, Double> genreWeights = weightManager.calcWeight(genreCount);
         updateUserWeight(user, genreWeights);

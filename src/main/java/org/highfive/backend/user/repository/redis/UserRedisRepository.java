@@ -13,4 +13,8 @@ public class UserRedisRepository {
     public String getUserVector(final Long userId) {
         return stringRedisTemplate.opsForValue().get(userId.toString());
     }
+
+    public void setUserVector(final Long userId, final String vector) {
+        stringRedisTemplate.opsForValue().set(userId.toString(), vector);
+    }
 }

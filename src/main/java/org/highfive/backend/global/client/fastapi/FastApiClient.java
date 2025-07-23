@@ -43,11 +43,11 @@ public class FastApiClient {
                 restTemplate.postForEntity(url, request, FastApiVectorFromGenresDto.class).getBody());
     }
 
-    public FastApiOnboardingResponseDto onboardingSubmit(final long userId, final Map<String, Integer> genreCount) {
+    public FastApiOnboardingResponseDto onboardingSubmit(final Map<String, Integer> genreCount) {
         String url = genUrl("/user/preferences");
 
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<FastApiOnboardingRequestDto> request = new HttpEntity<>(new FastApiOnboardingRequestDto(userId, genreCount), headers);
+        HttpEntity<Map<String, Integer>> request = new HttpEntity<>(genreCount, headers);
 
         return executeWithFastApiHandling(() ->
                 restTemplate.postForEntity(url, request, FastApiOnboardingResponseDto.class).getBody()
