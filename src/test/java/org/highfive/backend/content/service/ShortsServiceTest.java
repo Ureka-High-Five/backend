@@ -1,21 +1,23 @@
 package org.highfive.backend.content.service;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
 import java.util.List;
 import org.highfive.backend.common.fixture.ContentFixture;
 import org.highfive.backend.common.fixture.ShortsFixture;
 import org.highfive.backend.common.fixture.UserFixture;
-import org.highfive.backend.content.dto.VideoType;
 import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.global.dto.CursorPageResponse;
 import org.highfive.backend.global.dto.Response;
+import org.highfive.backend.shorts.dto.ShortsDto;
+import org.highfive.backend.shorts.dto.mapper.ShortsMapper;
 import org.highfive.backend.shorts.dto.response.ShortsResponseDto;
 import org.highfive.backend.shorts.entity.Shorts;
 import org.highfive.backend.shorts.repository.jpa.ShortsLikeTimeLogRepository;
+import org.highfive.backend.shorts.repository.jpa.ShortsRedisRepository;
+import org.highfive.backend.shorts.repository.jpa.ShortsRepository;
 import org.highfive.backend.shorts.repository.querydsl.ShortsQueryRepository;
 import org.highfive.backend.shorts.service.ShortsService;
 import org.highfive.backend.user.entity.User;
@@ -30,6 +32,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class ShortsServiceTest {
+
+    @Mock
+    private ShortsRepository shortsRepository;
+
+    @Mock
+    private ShortsRedisRepository shortsRedisRepository;
 
     @Mock
     private UserRepository userRepository;
@@ -49,27 +57,31 @@ public class ShortsServiceTest {
     private final User testUser = UserFixture.createUser(1L);
 
     @Test
-    @DisplayName("쇼츠에 자신의 좋아요 여부가 표시된다")
+    @DisplayName("'쇼츠에 자신의 좋아요 여부가 표시된다")
     void recommendShorts_likedFlagTest() {
         // given
-
         Content content = ContentFixture.createDefaultContent();
-        List<Shorts> page = List.of(
-                ShortsFixture.createShortsById(content, 1L),
-                ShortsFixture.createShortsById(content, 2L)
-        );
-        given(queryRepo.findByCursor(any(), eq(5))).willReturn(page);
+        Shorts shorts1 = ShortsFixture.createShortsById(content, 1L);
+        Shorts shorts2 = ShortsFixture.createShortsById(content, 2L);
 
-        given(likeTimeLogRepo.existsByUserIdAndShortsId(testUser.getId(), 1L)).willReturn(true);
-        given(likeTimeLogRepo.existsByUserIdAndShortsId(testUser.getId(), 2L)).willReturn(false);
+        List<ShortsDto> shortsDtos = List.of(
+                ShortsMapper.toShortsDto(shorts1),
+                ShortsMapper.toShortsDto(shorts2)
+        );
+
         given(userRedisRepository.getUserVector(testUser.getId())).willReturn("test");
+
+        given(shortsRedisRepository.findByCursor(eq(testUser.getId()), isNull(), eq(6)))
+                .willReturn(shortsDtos);
+
+        given(likeTimeLogRepo.findLikedShortsIds(eq(testUser.getId()), anyList()))
+                .willReturn(List.of(1L));
 
         // when
         Response<CursorPageResponse<ShortsResponseDto>> resp = shortsService.recommendShorts(null, 5, testUser);
 
         // then
         List<ShortsResponseDto> dto = resp.content().items();
-        assertThat(dto.getFirst().videoType()).isEqualTo(VideoType.SHORTS);
 
         assertThat(dto.size()).isEqualTo(2);
 

@@ -12,6 +12,9 @@ public interface ShortsLikeTimeLogRepository extends JpaRepository<ShortsLikeTim
 
     boolean existsByUserIdAndShortsId(Long userId, Long shortsId);
 
+    @Query("SELECT s.shorts.id FROM ShortsLikeTimeLog s WHERE s.user.id = :userId AND s.shorts.id IN :shortsIds")
+    List<Long> findLikedShortsIds(Long userId, List<Long> shortsIds);
+
     @Query(value = """
             SELECT 
                 FLOOR(s.time / :duration) * :duration AS time_group,
