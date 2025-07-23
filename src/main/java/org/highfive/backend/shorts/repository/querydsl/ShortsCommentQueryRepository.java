@@ -7,8 +7,10 @@ import lombok.RequiredArgsConstructor;
 import org.highfive.backend.global.dto.CursorPageResponse;
 import org.highfive.backend.shorts.dto.mapper.ShortsCommentMapper;
 import org.highfive.backend.shorts.dto.response.ShortsCommentsByIdResponseDto;
+import org.highfive.backend.shorts.dto.response.ShortsCommentsResponseDto;
 import org.highfive.backend.shorts.entity.QShortsComment;
 import org.highfive.backend.shorts.entity.ShortsComment;
+import org.highfive.backend.user.entity.QUser;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -17,6 +19,7 @@ public class ShortsCommentQueryRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
     private final QShortsComment shortsComment = QShortsComment.shortsComment;
+    private final QUser user = QUser.user;
 
     public CursorPageResponse<ShortsCommentsByIdResponseDto> findByIdAndCursor(Long shortsId, long cursor, int size) {
         List<ShortsComment> findComments = jpaQueryFactory
@@ -41,5 +44,29 @@ public class ShortsCommentQueryRepository {
             return null;
         }
         return shortsComment.id.goe(Long.parseLong(cursor));
+    }
+
+    public CursorPageResponse<ShortsCommentsResponseDto> findByShortsIdAndCursor(Long shortsId, Long cursor, Integer size) {
+        List<ShortsComment> comments = jpaQueryFactory
+                .selectFrom(shortsComment)
+                .join(shortsComment.user, user).fetchJoin()
+                .where(
+                        shortsComment.shorts.id.eq(shortsId),
+                        cursorGoe(cursor)
+                )
+                .orderBy(shortsComment.id.asc())
+                .limit(size + 1)
+                .fetch();
+        boolean hasNext = comments.size() > size;
+        Long nextCursor = hasNext ? comments.getLast().getId() : null;
+        List<ShortsCommentsResponseDto> response = comments.stream().map(ShortsCommentMapper::toShortsCommentResponseDto).limit(size).toList();
+        return new CursorPageResponse<>(response, hasNext, String.valueOf(nextCursor));
+    }
+
+    private BooleanExpression cursorGoe(Long cursor) {
+        if (cursor == null || cursor <= 0) {
+            return null;
+        }
+        return shortsComment.id.goe(cursor);
     }
 }
