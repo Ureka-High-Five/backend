@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class EditorOnlyAspect {
 
-    @Before("@annotation(org.highfive.backend.auth.aop.EditorOnly) && within(org.highfive.backend.curation.controller..*)")
+    @Before("@annotation(org.highfive.backend.auth.aop.EditorOnly)")
     public void isValid() {
         final Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
