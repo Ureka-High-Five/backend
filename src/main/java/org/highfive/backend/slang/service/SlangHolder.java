@@ -29,21 +29,4 @@ public class SlangHolder {
             rwLock.readLock().unlock();
         }
     }
-
-    public int rebuild() {
-        List<Slang> all = slangRepository.findAll();
-        List<String> slangList = all.stream().map(Slang::getWord).toList();
-        trieBuilder.addKeywords(slangList);
-        Trie newTrie = trieBuilder.build();
-        log.info("{}개의 비속어가 rebuild 되었습니다.", slangList.size());
-
-        rwLock.writeLock().lock();
-        try{
-            this.trie = newTrie;
-        } finally {
-            rwLock.writeLock().unlock();
-        }
-
-        return slangList.size();
-    }
 }
