@@ -142,7 +142,7 @@ public class OnboardingService {
     private void initVector(final SubmitOnboardingRequestDto request, final User user) {
         List<Long> contentIds = request.selectedContentIds();
         Map<String, Integer> genreCount = countGenre(contentIds);
-        FastApiOnboardingResponseDto response = fastApiClient.onboardingSubmit(genreCount);
+        FastApiOnboardingResponseDto response = fastApiClient.onboardingSubmit(user.getId(), genreCount);
 
         String vector = response.userVector();
         userRepository.upsertUserVector(user.getId(), vector);

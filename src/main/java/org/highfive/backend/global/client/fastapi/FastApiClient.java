@@ -1,6 +1,7 @@
 package org.highfive.backend.global.client.fastapi;
 
 import lombok.extern.slf4j.Slf4j;
+import org.highfive.backend.global.client.fastapi.dto.request.FastApiOnboardingRequestDto;
 import org.highfive.backend.global.client.fastapi.dto.response.FastApiOnboardingResponseDto;
 import org.highfive.backend.global.client.fastapi.dto.response.FastApiVectorFromGenresDto;
 import org.highfive.backend.global.client.fastapi.exception.FastApiErrorCode;
@@ -42,11 +43,11 @@ public class FastApiClient {
                 restTemplate.postForEntity(url, request, FastApiVectorFromGenresDto.class).getBody());
     }
 
-    public FastApiOnboardingResponseDto onboardingSubmit(final Map<String, Integer> genreCount) {
+    public FastApiOnboardingResponseDto onboardingSubmit(final long userId, final Map<String, Integer> genreCount) {
         String url = genUrl("/user/preferences");
 
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<Map<String, Integer>> request = new HttpEntity<>(genreCount, headers);
+        HttpEntity<FastApiOnboardingRequestDto> request = new HttpEntity<>(new FastApiOnboardingRequestDto(userId, genreCount), headers);
 
         return executeWithFastApiHandling(() ->
                 restTemplate.postForEntity(url, request, FastApiOnboardingResponseDto.class).getBody()
