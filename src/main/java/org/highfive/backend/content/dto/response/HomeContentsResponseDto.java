@@ -7,7 +7,7 @@ public record HomeContentsResponseDto(
         MainRecommendDto mainRecommend,
         List<PersonalRecommendDto> personalRecommends,
         Map<String, List<GenreContentDto>> genre,
-        CurationDto curation
+        List<CurationDto> curation
 ) {
     public record MainRecommendDto(
             Long contentId,
@@ -31,6 +31,11 @@ public record HomeContentsResponseDto(
     }
 
     public record CurationDto(
+            Long curationId,
+            Long userId,
+            String userName,
+            String thumbnailUrl,
+            String title
     ) {
     }
 }
