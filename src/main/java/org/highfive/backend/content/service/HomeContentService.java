@@ -4,12 +4,15 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.highfive.backend.content.dto.response.HomeContentsResponseDto;
+import org.highfive.backend.content.dto.response.HomeContentsResponseDto.CurationDto;
 import org.highfive.backend.content.dto.response.HomeContentsResponseDto.GenreContentDto;
 import org.highfive.backend.content.dto.response.HomeContentsResponseDto.MainRecommendDto;
 import org.highfive.backend.content.dto.response.HomeContentsResponseDto.PersonalRecommendDto;
 import org.highfive.backend.content.dto.response.TopContentsByGenreDto;
 import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.content.repository.jpa.ContentRepository;
+import org.highfive.backend.curation.dto.mapper.CurationMapper;
+import org.highfive.backend.curation.repository.jpa.CurationRepository;
 import org.highfive.backend.global.code.SuccessCode;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.user.entity.User;
@@ -34,16 +37,16 @@ public class HomeContentService {
     private final ContentRepository contentRepository;
     private final PreferMetaInfoRepository preferMetaInfoRepository;
     private final UserRepository userRepository;
+    private final CurationRepository curationRepository;
 
     @Transactional
     public Response<HomeContentsResponseDto> getHomeContents(final User user) {
         final MainRecommendDto mainRecommend = recommendMainContentsByUser(user);
         final List<PersonalRecommendDto> personalRecommends = recommendContentsByUser(user, 4);
         final Map<String, List<GenreContentDto>> genreRecommends = recommendContentsByUserGenre(user, 2);
+        final List<CurationDto> curations = CurationMapper.toCurationDto(curationRepository.findRandomCurations());
 
-        // todo 사용자가 선호하는 장르 기반 큐레이션 조회(1차 MVP 이후)
-
-        final HomeContentsResponseDto result = new HomeContentsResponseDto(mainRecommend, personalRecommends, genreRecommends, null);
+        final HomeContentsResponseDto result = new HomeContentsResponseDto(mainRecommend, personalRecommends, genreRecommends, curations);
         return new Response<>(SuccessCode.OK.getCode(), result, null);
     }
 
