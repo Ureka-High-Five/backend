@@ -25,6 +25,7 @@ import org.highfive.backend.user.entity.User;
 import org.highfive.backend.user.entity.UserRole;
 import org.highfive.backend.user.entity.preference.PreferMetaInfoRepository;
 import org.highfive.backend.user.repository.jpa.UserRepository;
+import org.highfive.backend.user.repository.redis.UserRedisRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,6 +49,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class OnboardingServiceTest {
 
+    @Mock
+    private UserRedisRepository userRedisRepository;
     @Mock
     ContentQueryRepositoryImpl queryDslRepo;
     @InjectMocks
