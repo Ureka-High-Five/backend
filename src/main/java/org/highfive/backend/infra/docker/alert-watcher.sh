@@ -1,7 +1,7 @@
 #!/bin/sh
 
-LOG_FILE="/app/logs/app.log"
-LAST_LINE_FILE="/app/.last_line"
+LOG_FILE="/home/ec2-user/app/logs/app.log"
+LAST_LINE_FILE="/home/ec2-user/app/.last_line"
 SLACK_WEBHOOK="$SLACK_WEBHOOK_LOG"
 
 if [ ! -f "$LAST_LINE_FILE" ]; then
@@ -18,9 +18,27 @@ while true; do
       if [ $? -eq 0 ]; then
         safe_line=$(echo "$line" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g')
         curl -s -X POST -H 'Content-type: application/json' \
-          --data "{\"text\": \"🚨 ERROR 로그 감지됨:\n${safe_line}\"}" "$SLACK_WEBHOOK"
+          --data "{
+            \"blocks\": [
+              {
+                \"type\": \"section\",
+                \"text\": {
+                  \"type\": \"mrkdwn\",
+                  \"text\": \":rotating_light: *ERROR 로그 감지됨!*\"
+                }
+              },
+              {
+                \"type\": \"section\",
+                \"text\": {
+                  \"type\": \"mrkdwn\",
+                  \"text\": \"\`\`\`${safe_line}\`\`\`\"
+                }
+              }
+            ]
+          }" "$SLACK_WEBHOOK"
       fi
     done
+
     echo "$CURRENT_LINE" > "$LAST_LINE_FILE"
   fi
 
