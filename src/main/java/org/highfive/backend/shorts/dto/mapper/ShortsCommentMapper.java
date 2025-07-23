@@ -4,6 +4,7 @@ import org.highfive.backend.shorts.dto.request.CreateShortsCommentRequestDto;
 import org.highfive.backend.shorts.dto.response.GetShortsCommentResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsCommentsByIdResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsCommentsByTimeResponseDto;
+import org.highfive.backend.shorts.dto.response.ShortsCommentsResponseDto;
 import org.highfive.backend.shorts.entity.Shorts;
 import org.highfive.backend.shorts.entity.ShortsComment;
 import org.highfive.backend.user.entity.User;
@@ -27,5 +28,9 @@ public class ShortsCommentMapper {
     public static ShortsCommentsByIdResponseDto toShortsCommentsByIdResponseDto(ShortsComment sc) {
         return new ShortsCommentsByIdResponseDto(sc.getUser().getName(), sc.getUser().getProfileUrl(), sc.getMessage(),
                 sc.getUser().getId(), sc.getCreatedAt().toString());
+    }
+
+    public static ShortsCommentsResponseDto toShortsCommentResponseDto(ShortsComment shortsComment) {
+        return new ShortsCommentsResponseDto(shortsComment.getId(), shortsComment.getUser().getName(), shortsComment.getUser().getId(), shortsComment.getUser().getProfileUrl(), shortsComment.getMessage(), shortsComment.getCreatedAt().toString());
     }
 }
