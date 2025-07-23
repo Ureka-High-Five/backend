@@ -7,7 +7,6 @@ import org.highfive.backend.slang.Slang;
 import org.highfive.backend.slang.SlangRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
 
 @Slf4j
 @Configuration

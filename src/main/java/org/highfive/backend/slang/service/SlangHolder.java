@@ -1,12 +1,9 @@
 package org.highfive.backend.slang.service;
 
-import java.util.List;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.ahocorasick.trie.Trie;
-import org.highfive.backend.slang.Slang;
-import org.highfive.backend.slang.SlangRepository;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -14,11 +11,9 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class SlangHolder {
 
-    private final SlangRepository slangRepository;
     private final ReentrantReadWriteLock rwLock = new ReentrantReadWriteLock();
 
     private volatile Trie trie;
-    private Trie.TrieBuilder trieBuilder;
 
     public int countSlang(String text) {
         rwLock.readLock().lock();

@@ -20,10 +20,4 @@ public class Slang {
     private String word;
 
     protected Slang() {}
-
-    public Slang(String word) {
-        this.word = word;
-    }
-
-    public void setWord(String word) { this.word = word; }
 }
