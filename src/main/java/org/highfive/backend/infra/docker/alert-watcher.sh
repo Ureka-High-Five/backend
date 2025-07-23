@@ -4,6 +4,13 @@ LOG_FILE="/home/ec2-user/app/logs/app.log"
 LAST_LINE_FILE="/home/ec2-user/app/.last_line"
 SLACK_WEBHOOK="$SLACK_WEBHOOK_LOG"
 
+if [ -z "$SLACK_WEBHOOK" ]; then
+  echo "[ERROR] SLACK_WEBHOOK_LOG 환경변수가 설정되지 않았습니다."
+  exit 1
+fi
+
+mkdir -p "$(dirname "$LOG_FILE")"
+touch "$LOG_FILE"
 if [ ! -f "$LAST_LINE_FILE" ]; then
   echo 0 > "$LAST_LINE_FILE"
 fi
