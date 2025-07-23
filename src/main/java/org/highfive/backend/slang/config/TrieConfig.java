@@ -25,7 +25,7 @@ public class TrieConfig {
     }
 
     @Bean
-    public Trie.TrieBuilder trieBuilder() { // 추후 금칙어 추가 기능 만들 때 필요
+    public Trie.TrieBuilder trieBuilder() {
         List<Slang> all = slangRepository.findAll();
         Trie.TrieBuilder trieBuilder = Trie.builder().ignoreCase().onlyWholeWords(); // ignoreCase: 대소문자 무시, onlyWholeWords: 금칙어 양쪽에 특수문자만 허용
 
