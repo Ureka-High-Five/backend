@@ -2,7 +2,7 @@ name: DEV_CI/CD
 
 on:
   push:
-    branches: [ develop ]
+    branches: [develop]
 
 jobs:
   deploy:
@@ -111,6 +111,8 @@ jobs:
             echo "RABBITMQ_UI_PORT=${{ secrets.RABBITMQ_UI_PORT }}" >> .env
             echo "RABBITMQ_DEFAULT_USER=${{ secrets.RABBITMQ_DEFAULT_USER }}" >> .env
             echo "RABBITMQ_DEFAULT_PASS=${{ secrets.RABBITMQ_DEFAULT_PASS }}" >> .env
+            echo "S3_ACCESS_KEY=${{ secrets.S3_ACCESS_KEY}}" >> .env
+            echo "S3_SECRET_ACCESS_KEY=${{ secrets.S3_SECRET_ACCESS_KEY}}" >> .env
             echo "SLACK_WEBHOOK_LOG=${{ secrets.SLACK_WEBHOOK_LOG }}" >> .env
             docker-compose --env-file .env -f docker-compose-dev.yml down -v
             docker image prune -f
