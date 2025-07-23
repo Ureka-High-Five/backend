@@ -41,6 +41,16 @@ kakao:
   client-secret: ${OAUTH_CLIENT_SECRET}
   redirect-uri: ${OAUTH_FE_REDIRECT_URI}
 
+cloud:
+  aws:
+    s3:
+      bucket: dev-leadme
+    region:
+      static: ap-northeast-2
+    credentials:
+      access-key: ${S3_ACCESS_KEY}
+      access-secret-key: ${S3_SECRET_ACCESS_KEY}
+
 fastapi:
   host: ${RECOMMEND_SERVER_URL}
   port: ${RECOMMEND_SERVER_PORT}
