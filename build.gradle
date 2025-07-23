@@ -77,6 +77,10 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
 
+    implementation platform('software.amazon.awssdk:bom:2.25.5')
+    implementation 'software.amazon.awssdk:s3'
+    implementation 'software.amazon.awssdk:auth'
+
     implementation 'org.ahocorasick:ahocorasick:0.6.3'
 
     compileOnly 'org.projectlombok:lombok'
