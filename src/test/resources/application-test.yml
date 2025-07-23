@@ -33,3 +33,13 @@ fastapi:
 
 queue:
   name: recommendation.weight.update
+
+cloud:
+  aws:
+    s3:
+      bucket: i don't know
+    region:
+      static: korea
+    credentials:
+      access-key: abcdefg
+      access-secret-key: abcedfg
