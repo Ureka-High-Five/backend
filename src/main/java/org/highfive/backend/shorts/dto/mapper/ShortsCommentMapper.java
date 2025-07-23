@@ -16,7 +16,7 @@ public class ShortsCommentMapper {
     public static GetShortsCommentResponseDto toGetShortsCommentResponseDto(ShortsComment shortsComment) {
         User user = shortsComment.getUser();
         return new GetShortsCommentResponseDto(
-                shortsComment.getMessage(), user.getName(), user.getProfileUrl(), user.getId());
+                shortsComment.getId(), shortsComment.getMessage(), user.getName(), user.getProfileUrl(), user.getId());
     }
 
     public static ShortsCommentsByTimeResponseDto toShortsCommentsByTimeResponseDto(ShortsComment sc) {
