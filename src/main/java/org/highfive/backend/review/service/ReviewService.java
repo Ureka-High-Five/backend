@@ -20,6 +20,8 @@ import org.highfive.backend.review.dto.response.ReviewSimpleResponseDto;
 import org.highfive.backend.review.entity.Review;
 import org.highfive.backend.review.exception.ReviewErrorCode;
 import org.highfive.backend.review.repository.jpa.ReviewRepository;
+import org.highfive.backend.slang.SlangValidator;
+import org.highfive.backend.slang.service.AhoCorasickSlangFilterService;
 import org.highfive.backend.user.entity.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,8 +35,7 @@ public class ReviewService {
 
     @Transactional
     public Response<Void> createReview(final CreateReviewRequestDto requestDto, User user) {
-
-        // TODO: review에 대한 금칙어 처리 추가 필요
+        SlangValidator.validate(requestDto.review());
 
         Content content = contentRepository.findById(requestDto.contentId())
                 .orElseThrow(() -> new BusinessException(CONTENT_NOT_FOUND));
@@ -54,7 +55,7 @@ public class ReviewService {
 
     @Transactional
     public Response<Void> updateReview(final Long reviewId, final UpdateReviewRequestDto requestDto, final User user) {
-        // TODO: review에 대한 금칙어 처리 추가 필요
+        SlangValidator.validate(requestDto.review());
 
         Review existedReview = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new BusinessException(ReviewErrorCode.REVIEW_NOT_FOUND));
