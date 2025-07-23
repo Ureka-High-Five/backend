@@ -38,6 +38,7 @@ import org.highfive.backend.shorts.repository.jpa.ShortsLikeTimeLogRepository;
 import org.highfive.backend.shorts.repository.jpa.ShortsRedisRepository;
 import org.highfive.backend.shorts.repository.jpa.ShortsRepository;
 import org.highfive.backend.shorts.repository.querydsl.ShortsCommentQueryRepository;
+import org.highfive.backend.slang.SlangValidator;
 import org.highfive.backend.user.entity.User;
 import org.highfive.backend.user.repository.jpa.UserRepository;
 import org.highfive.backend.user.repository.redis.UserRedisRepository;
@@ -62,7 +63,7 @@ public class ShortsService {
 
     @Transactional
     public Response<Void> createShortsComment(CreateShortsCommentRequestDto requestDto, User user) {
-        //Todo: 쇼츠 댓글에 대한 금칙어 처리 필요
+        SlangValidator.validate(requestDto.comment());
 
         Shorts existedShorts = shortsRepository.findById(requestDto.shortsId())
                 .orElseThrow(() -> new BusinessException(SHORTS_NOT_FOUND));
