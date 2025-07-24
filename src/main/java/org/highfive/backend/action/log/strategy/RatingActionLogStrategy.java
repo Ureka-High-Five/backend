@@ -8,6 +8,8 @@ import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.review.dto.request.CreateReviewRequestDto;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 public class RatingActionLogStrategy implements ActionLogStrategy {
 
@@ -18,6 +20,7 @@ public class RatingActionLogStrategy implements ActionLogStrategy {
     public ActionLog createLog(ProceedingJoinPoint joinPoint, long userId, long timestamp) {
         ContentReviewLogInfo info = extractContentReviewLogInfo(joinPoint);
         return ActionLog.builder()
+                .id(UUID.randomUUID().toString())
                 .userId(userId)
                 .contentId(info.contentId)
                 .action(Action.RATING)

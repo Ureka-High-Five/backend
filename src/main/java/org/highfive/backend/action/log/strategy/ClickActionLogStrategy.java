@@ -8,6 +8,8 @@ import org.highfive.backend.content.exception.ContentErrorCode;
 import org.highfive.backend.global.exception.BusinessException;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 public class ClickActionLogStrategy implements ActionLogStrategy {
 
@@ -15,6 +17,7 @@ public class ClickActionLogStrategy implements ActionLogStrategy {
     public ActionLog createLog(ProceedingJoinPoint joinPoint, long userId, long timestamp) {
         long contentId = extractContentId(joinPoint);
         return ActionLog.builder()
+                .id(UUID.randomUUID().toString())
                 .userId(userId)
                 .contentId(contentId)
                 .action(Action.CLICK)
