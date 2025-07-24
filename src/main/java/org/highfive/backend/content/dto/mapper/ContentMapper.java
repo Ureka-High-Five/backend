@@ -45,6 +45,7 @@ public class ContentMapper {
                 .contentType(ContentType.valueOf(request.type()))
                 .grade(15)
                 .popularity(100)
+                .thumbnailUrl(request.postUrl())
                 .build();
     }
 }
