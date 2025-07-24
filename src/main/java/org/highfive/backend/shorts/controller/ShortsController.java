@@ -60,11 +60,11 @@ public class ShortsController {
     }
 
     @GetMapping("/{shortsId}/comments")
-    public Response<CursorPageResponse<ShortsCommentsResponseDto>> commentsByTime(
+    public Response<List<ShortsCommentsByTimeResponseDto>> getCommentsByTime(
             @PathVariable Long shortsId,
-            @RequestParam(required = false) @Positive final Long cursor,
-            @RequestParam(defaultValue = "10", required = false) @Positive final Integer size) {
-        return shortsService.getShortsCommentsInf(shortsId, cursor, size);
+            @RequestParam @Positive Long time,
+            @RequestParam @Positive Integer duration) {
+        return shortsService.getCommentsByTime(shortsId, time, duration);
     }
 
     @PostMapping("/like")

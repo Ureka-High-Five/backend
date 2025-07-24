@@ -109,7 +109,7 @@ public class ShortsService {
         return Response.ok(null);
     }
 
-    public Response<List<ShortsCommentsByTimeResponseDto>> commentsByTime(long shortsId, long time, int duration) {
+    public Response<List<ShortsCommentsByTimeResponseDto>> getCommentsByTime(long shortsId, long time, int duration) {
         List<ShortsCommentsByTimeResponseDto> response = new ArrayList<>();
         for (long targetTime = time; targetTime < time + duration; targetTime += duration / 5) {
             List<ShortsCommentsByTimeResponseDto> result = shortsCommentRepository.findByShortsIdAndTimeOrderByCreatedAtDesc(
