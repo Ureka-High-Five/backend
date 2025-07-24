@@ -12,6 +12,8 @@ import org.highfive.backend.shorts.exception.ShortsErrorCode;
 import org.highfive.backend.shorts.repository.jpa.ShortsRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 @RequiredArgsConstructor
 public class LikeActionLogStrategy implements ActionLogStrategy {
@@ -23,6 +25,7 @@ public class LikeActionLogStrategy implements ActionLogStrategy {
         long shortsId = extractShortsLikeCreateRequestDto(joinPoint);
         long contentId = getContentIdByShortsId(shortsId);
         return ActionLog.builder()
+                .id(UUID.randomUUID().toString())
                 .userId(userId)
                 .contentId(contentId)
                 .action(Action.LIKE)
