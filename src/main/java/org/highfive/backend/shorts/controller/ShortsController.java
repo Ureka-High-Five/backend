@@ -81,8 +81,9 @@ public class ShortsController {
 
     @GetMapping("/like")
     public Response<ShortsLikeTimeResponseDto> getShortsLike(@RequestParam long shortsId,
-                                                             @RequestParam @Positive int duration) {
-        return shortsService.getShortsLike(shortsId, duration);
+                                                             @RequestParam @Positive int duration,
+                                                             @AuthenticationPrincipal User user) {
+        return shortsService.getShortsLike(shortsId, duration, user);
     }
 
     @GetMapping("/comment")
