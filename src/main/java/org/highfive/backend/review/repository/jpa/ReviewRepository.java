@@ -27,7 +27,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewQue
             """, nativeQuery = true)
     List<RatedContentResponseDto> findByUser(
             Long userId,
-            String cursor,
+            Long cursor,
             int limit
     );
 

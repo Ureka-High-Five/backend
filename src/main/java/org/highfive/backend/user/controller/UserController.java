@@ -27,7 +27,7 @@ public class UserController {
 
     @GetMapping("/reviews")
     public Response<CursorPageResponse<RatedContentResponseDto>> getMyReviews(@AuthenticationPrincipal final User user,
-                                                                              @RequestParam(required = false) final String cursor,
+                                                                              @RequestParam(required = false) final Long cursor,
                                                                               @RequestParam(defaultValue = "3") final int size) {
         return userService.getMyReviews(user, cursor, size);
     }

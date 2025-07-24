@@ -21,7 +21,7 @@ public class UserService {
         return Response.ok(UserMapper.from(user));
     }
 
-    public Response<CursorPageResponse<RatedContentResponseDto>> getMyReviews(final User user, final String cursor,
+    public Response<CursorPageResponse<RatedContentResponseDto>> getMyReviews(final User user, final Long cursor,
                                                                               final int size) {
         final List<RatedContentResponseDto> ratedContentResponseDtos = reviewRepository.findByUser(user.getId(), cursor,
                 size + 1);
