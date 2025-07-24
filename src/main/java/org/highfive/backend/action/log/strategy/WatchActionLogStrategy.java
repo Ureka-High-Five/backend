@@ -15,6 +15,8 @@ import org.highfive.backend.shorts.repository.jpa.ShortsRepository;
 import org.highfive.backend.user.dto.request.CreateContentWatchLogRequestDto;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 @RequiredArgsConstructor
 public class WatchActionLogStrategy implements ActionLogStrategy {
@@ -47,6 +49,7 @@ public class WatchActionLogStrategy implements ActionLogStrategy {
         }
 
         return ActionLog.builder()
+                .id(UUID.randomUUID().toString())
                 .userId(userId)
                 .contentId(contentId)
                 .action(Action.WATCH)
