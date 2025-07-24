@@ -11,6 +11,7 @@ import static org.highfive.backend.shorts.exception.ShortsErrorCode.SHORTS_NOT_F
 
 import jakarta.transaction.Transactional;
 
+import jakarta.validation.constraints.Positive;
 import java.util.*;
 
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ import org.highfive.backend.shorts.dto.request.ShortsLikeCreateRequestDto;
 import org.highfive.backend.shorts.dto.response.GetShortsCommentResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsCommentsByIdResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsCommentsByTimeResponseDto;
+import org.highfive.backend.shorts.dto.response.ShortsCommentsResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsLikeTimeResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsLikedUserItemDto;
 import org.highfive.backend.shorts.dto.response.ShortsResponseDto;
@@ -235,5 +237,9 @@ public class ShortsService {
         ShortsResponseDto response = ShortsMapper.toShortsResponseDto(randomShorts, liked);
 
         return Response.ok(response);
+    }
+
+    public Response<CursorPageResponse<ShortsCommentsResponseDto>> getShortsCommentsInf(Long shortsId, Long cursor, Integer size) {
+        return Response.ok(shortsCommentQueryRepository.findByShortsIdAndCursor(shortsId, cursor, size));
     }
 }
