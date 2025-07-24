@@ -48,21 +48,6 @@ public class AdminContentService {
         return Response.ok(new AdminAddContentResponseDto(savedContent.getId()));
     }
 
-    private void setGenres(AdminAddContentRequestDto request, Content content) {
-        final List<String> genres = request.genres();
-        for (String genreName : genres) {
-            MetaInfo genre = metaInfoRepository.findByNameAndType(genreName, MetaType.ACTOR);
-            if (genre == null) {
-                genre = metaInfoRepository.save(
-                                MetaInfo.builder()
-                                .type(MetaType.GENRE)
-                                .name(genreName)
-                                .build());
-            }
-            metaInfoContentsRepository.save(MetaInfoContents.builder().content(content).metaInfo(genre).build());
-        }
-    }
-
     @Transactional
     public Response<AdminUpdateContentResponseDto> updateContent(final AdminUpdateContentRequestDto request) {
         final Content content = getUpdateContent(request);
@@ -164,6 +149,21 @@ public class AdminContentService {
                             .build());
         }
         metaInfoContentsRepository.save(MetaInfoContents.builder().content(content).metaInfo(director).build());
+    }
+
+    private void setGenres(AdminAddContentRequestDto request, Content content) {
+        final List<String> genres = request.genres();
+        for (String genreName : genres) {
+            MetaInfo genre = metaInfoRepository.findByNameAndType(genreName, MetaType.GENRE);
+            if (genre == null) {
+                genre = metaInfoRepository.save(
+                        MetaInfo.builder()
+                                .type(MetaType.GENRE)
+                                .name(genreName)
+                                .build());
+            }
+            metaInfoContentsRepository.save(MetaInfoContents.builder().content(content).metaInfo(genre).build());
+        }
     }
 
     private String getEmbeddingByGenres(final List<String> genres) {
