@@ -238,8 +238,4 @@ public class ShortsService {
 
         return Response.ok(response);
     }
-
-    public Response<CursorPageResponse<ShortsCommentsResponseDto>> getShortsCommentsInf(Long shortsId, Long cursor, Integer size) {
-        return Response.ok(shortsCommentQueryRepository.findByShortsIdAndCursor(shortsId, cursor, size));
-    }
 }
