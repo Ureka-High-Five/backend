@@ -40,11 +40,27 @@ public class AdminContentService {
 
         final Content savedContent = contentRepository.save(content);
 
+        setGenres(request, content);
         setActors(request, content);
         setDirector(request, content);
         setCountry(request, content);
 
         return Response.ok(new AdminAddContentResponseDto(savedContent.getId()));
+    }
+
+    private void setGenres(AdminAddContentRequestDto request, Content content) {
+        final List<String> genres = request.genres();
+        for (String genreName : genres) {
+            MetaInfo genre = metaInfoRepository.findByNameAndType(genreName, MetaType.ACTOR);
+            if (genre == null) {
+                genre = metaInfoRepository.save(
+                                MetaInfo.builder()
+                                .type(MetaType.GENRE)
+                                .name(genreName)
+                                .build());
+            }
+            metaInfoContentsRepository.save(MetaInfoContents.builder().content(content).metaInfo(genre).build());
+        }
     }
 
     @Transactional
@@ -139,9 +155,13 @@ public class AdminContentService {
 
     private void setDirector(final AdminAddContentRequestDto request, final Content content) {
         final String directorName = request.director();
-        final MetaInfo director = metaInfoRepository.findByNameAndType(directorName, MetaType.DIRECTOR);
+        MetaInfo director = metaInfoRepository.findByNameAndType(directorName, MetaType.DIRECTOR);
         if (director == null) {
-            throw new BusinessException(MetaInfoErrorCode.DIRECTOR_NOT_FOUND);
+            director = metaInfoRepository.save(
+                            MetaInfo.builder()
+                            .type(MetaType.DIRECTOR)
+                            .name(directorName)
+                            .build());
         }
         metaInfoContentsRepository.save(MetaInfoContents.builder().content(content).metaInfo(director).build());
     }
