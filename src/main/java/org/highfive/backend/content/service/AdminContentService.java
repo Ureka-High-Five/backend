@@ -40,6 +40,7 @@ public class AdminContentService {
 
         final Content savedContent = contentRepository.save(content);
 
+        setGenres(request, content);
         setActors(request, content);
         setDirector(request, content);
         setCountry(request, content);
@@ -127,7 +128,11 @@ public class AdminContentService {
         for (String actorName : actors) {
             MetaInfo actor = metaInfoRepository.findByNameAndType(actorName, MetaType.ACTOR);
             if (actor == null) {
-                throw new BusinessException(MetaInfoErrorCode.ACTOR_NOT_FOUND);
+                actor = metaInfoRepository.save(
+                        MetaInfo.builder()
+                        .type(MetaType.ACTOR)
+                        .name(actorName)
+                        .build());
             }
             metaInfoContentsRepository.save(MetaInfoContents.builder().content(content).metaInfo(actor).build());
         }
@@ -135,11 +140,30 @@ public class AdminContentService {
 
     private void setDirector(final AdminAddContentRequestDto request, final Content content) {
         final String directorName = request.director();
-        final MetaInfo director = metaInfoRepository.findByNameAndType(directorName, MetaType.DIRECTOR);
+        MetaInfo director = metaInfoRepository.findByNameAndType(directorName, MetaType.DIRECTOR);
         if (director == null) {
-            throw new BusinessException(MetaInfoErrorCode.DIRECTOR_NOT_FOUND);
+            director = metaInfoRepository.save(
+                            MetaInfo.builder()
+                            .type(MetaType.DIRECTOR)
+                            .name(directorName)
+                            .build());
         }
         metaInfoContentsRepository.save(MetaInfoContents.builder().content(content).metaInfo(director).build());
+    }
+
+    private void setGenres(AdminAddContentRequestDto request, Content content) {
+        final List<String> genres = request.genres();
+        for (String genreName : genres) {
+            MetaInfo genre = metaInfoRepository.findByNameAndType(genreName, MetaType.GENRE);
+            if (genre == null) {
+                genre = metaInfoRepository.save(
+                        MetaInfo.builder()
+                                .type(MetaType.GENRE)
+                                .name(genreName)
+                                .build());
+            }
+            metaInfoContentsRepository.save(MetaInfoContents.builder().content(content).metaInfo(genre).build());
+        }
     }
 
     private String getEmbeddingByGenres(final List<String> genres) {

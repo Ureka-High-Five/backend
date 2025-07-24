@@ -2,6 +2,7 @@ package org.highfive.backend.global.client.fastapi;
 
 import lombok.extern.slf4j.Slf4j;
 import org.highfive.backend.global.client.fastapi.dto.request.FastApiOnboardingRequestDto;
+import org.highfive.backend.global.client.fastapi.dto.request.FastApiVectorByGenresRequestDto;
 import org.highfive.backend.global.client.fastapi.dto.response.FastApiOnboardingResponseDto;
 import org.highfive.backend.global.client.fastapi.dto.response.FastApiVectorFromGenresDto;
 import org.highfive.backend.global.client.fastapi.exception.FastApiErrorCode;
@@ -37,7 +38,7 @@ public class FastApiClient {
         final String url = genUrl("/embedding-by-genre");
 
         headers.setContentType(MediaType.APPLICATION_JSON);
-        final HttpEntity<List<String>> request = new HttpEntity<>(genres, headers);
+        final HttpEntity<FastApiVectorByGenresRequestDto> request = new HttpEntity<>(new FastApiVectorByGenresRequestDto(genres), headers);
 
         return executeWithFastApiHandling(() ->
                 restTemplate.postForEntity(url, request, FastApiVectorFromGenresDto.class).getBody());
