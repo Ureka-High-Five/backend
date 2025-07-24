@@ -156,12 +156,13 @@ public class ShortsService {
         return Response.ok(responseDto);
     }
 
-    public Response<ShortsLikeTimeResponseDto> getShortsLike(final long shortsId, final int duration) {
+    public Response<ShortsLikeTimeResponseDto> getShortsLike(final long shortsId, final int duration, final User user) {
         shortsRepository.findById(shortsId).orElseThrow(() -> new BusinessException(SHORTS_NOT_FOUND));
         List<Object[]> results = shortsLikeTimeLogRepository.findAllShortsLikeWithTime(shortsId, duration);
         List<ShortsLikeTimeResponseDto.ShortsLikeTimeLineDto> data = toShortsLikeTimeLineDto(results);
+        boolean liked = shortsLikeTimeLogRepository.existsByUserIdAndShortsId(user.getId(), shortsId);
 
-        return Response.ok(new ShortsLikeTimeResponseDto(data));
+        return Response.ok(new ShortsLikeTimeResponseDto(data, liked));
     }
 
     public Response<CursorPageResponse<ShortsLikedUserItemDto>> likedShorts(final User user, final String cursor,
