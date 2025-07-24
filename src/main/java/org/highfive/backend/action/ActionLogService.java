@@ -3,7 +3,9 @@ package org.highfive.backend.action;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.highfive.backend.action.exception.ActionLogErrorCode;
 import org.highfive.backend.action.log.ActionLog;
+import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.metadata.entity.MetaInfoContents;
 import org.highfive.backend.metadata.repository.jpa.MetaInfoContentsRepository;
 import org.highfive.backend.rabbitmq.dto.UserWeightUpdateMessageDto;
@@ -24,10 +26,17 @@ public class ActionLogService {
     private final MetaInfoContentsRepository metaInfoContentsRepository;
     private final MongoTemplate mongoTemplate;
 
-    public void saveLog(final ActionLog actionLog) {
+    public ActionLog saveLog(ActionLog actionLog) {
         log.info("ActionLog = {}", actionLog.toString());
-        actionLogRepository.save(actionLog);
-        mongoTemplate.save(actionLog, MANAGED_ACTION_LOG);
+        try {
+            actionLogRepository.save(actionLog);
+            actionLog = mongoTemplate.save(actionLog, MANAGED_ACTION_LOG);
+        } catch (Exception ex) {
+            log.error("[actionlog_save_failed] ActionLog 저장 중 예외 발생: actionLog={}, error={}", actionLog, ex.getMessage(), ex);
+            throw new BusinessException(ActionLogErrorCode.ACTION_LOG_NOT_SAVE);
+        }
+
+        return actionLog;
     }
 
     public void publishUpdateWeightMessage(final ActionLog actionLog) {
@@ -35,7 +44,7 @@ public class ActionLogService {
         List<Long> metaInfoIds = extractMetaInfoIds(metaInfoContents);
         List<String> metaInfoName = extractMetaInfoNames(metaInfoContents);
 
-        UserWeightUpdateMessageDto message = MessageMapper.toUserWeightUpdateMessageDto(actionLog.getUserId(),
+        UserWeightUpdateMessageDto message = MessageMapper.toUserWeightUpdateMessageDto(actionLog.getId(), actionLog.getUserId(),
                 metaInfoIds, metaInfoName, actionLog.getAction(), actionLog.getValue());
 
         producer.sendWeightUpdateMessage(message);
