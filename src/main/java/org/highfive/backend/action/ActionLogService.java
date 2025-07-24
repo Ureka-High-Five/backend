@@ -9,6 +9,7 @@ import org.highfive.backend.metadata.repository.jpa.MetaInfoContentsRepository;
 import org.highfive.backend.rabbitmq.dto.UserWeightUpdateMessageDto;
 import org.highfive.backend.rabbitmq.dto.mapper.MessageMapper;
 import org.highfive.backend.rabbitmq.producer.RecommendationMessageProducer;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -16,13 +17,17 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ActionLogService {
 
+    private final String MANAGED_ACTION_LOG = "managed_action_log";
+
     private final ActionLogRepository actionLogRepository;
     private final RecommendationMessageProducer producer;
     private final MetaInfoContentsRepository metaInfoContentsRepository;
+    private final MongoTemplate mongoTemplate;
 
     public void saveLog(final ActionLog actionLog) {
         log.info("ActionLog = {}", actionLog.toString());
         actionLogRepository.save(actionLog);
+        mongoTemplate.save(actionLog, MANAGED_ACTION_LOG);
     }
 
     public void publishUpdateWeightMessage(final ActionLog actionLog) {
