@@ -31,4 +31,16 @@ public class ActionLog {
     private double value;
 
     private long timestamp;
+
+    private MetaInfoLog metaInfo;
+
+    private ActionLogStatus status;
+
+    public void updateMetaInfo(final MetaInfoLog metaInfoLog) {
+        this.metaInfo = metaInfoLog;
+    }
+
+    public void updateStatus(final ActionLogStatus status) {
+        this.status = status;
+    }
 }
