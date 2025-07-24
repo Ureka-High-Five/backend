@@ -1,6 +1,5 @@
 package org.highfive.backend.action;
 
-import java.lang.reflect.Method;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -8,15 +7,24 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.highfive.backend.action.log.ActionLog;
+import org.highfive.backend.action.log.ActionLogStatus;
 import org.highfive.backend.action.log.ActionLogStrategyFactory;
+import org.highfive.backend.action.log.MetaInfoLog;
 import org.highfive.backend.action.log.strategy.ActionLogStrategy;
 import org.highfive.backend.global.exception.BusinessException;
+import org.highfive.backend.metadata.entity.MetaInfo;
+import org.highfive.backend.metadata.entity.MetaInfoContents;
+import org.highfive.backend.metadata.repository.jpa.MetaInfoContentsRepository;
 import org.highfive.backend.user.code.UserErrorCode;
 import org.highfive.backend.user.entity.User;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Aspect
@@ -27,10 +35,16 @@ public class ActionLogAspect {
 
     private final ActionLogService actionLogService;
     private final ActionLogStrategyFactory strategyFactory;
+    private final MetaInfoContentsRepository metaInfoContentsRepository;
 
     @Around("@annotation(org.highfive.backend.action.ActionLogStamp)")
     public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
-        ActionLog actionLog = createActionLog(joinPoint);
+        final ActionLog actionLog = createActionLog(joinPoint);
+        final Long contentId = actionLog.getContentId();
+        final List<MetaInfoContents> metaInfoContents = metaInfoContentsRepository.findByContentIdWithMetaInfo(contentId);
+        final MetaInfoLog metaInfoLog = extractMetaInfoLog(metaInfoContents);
+        actionLog.updateMetaInfo(metaInfoLog);
+        actionLog.updateStatus(ActionLogStatus.PROCESSING);
 
         try {
             Object result = joinPoint.proceed();
@@ -41,6 +55,30 @@ public class ActionLogAspect {
             log.error("행동 로그 저장 중 에러가 발생했습니다.");
             throw e;
         }
+    }
+
+    private static MetaInfoLog extractMetaInfoLog(final List<MetaInfoContents> metaINfoContents) {
+        List<String> genres = new ArrayList<>();
+        List<String> actors = new ArrayList<>();
+        String director = "";
+        String country = "";
+
+        for(MetaInfoContents metaInfoContents : metaINfoContents) {
+            MetaInfo metaInfo = metaInfoContents.getMetaInfo();
+            switch(metaInfo.getType()) {
+                case ACTOR -> actors.add(metaInfo.getName());
+                case GENRE -> genres.add(metaInfo.getName());
+                case DIRECTOR -> director = metaInfo.getName();
+                case COUNTRY -> country = metaInfo.getName();
+            }
+        }
+
+        return MetaInfoLog.builder()
+                .genres(genres)
+                .actors(actors)
+                .country(country)
+                .director(director)
+                .build();
     }
 
     private ActionLog createActionLog(ProceedingJoinPoint joinPoint) {
