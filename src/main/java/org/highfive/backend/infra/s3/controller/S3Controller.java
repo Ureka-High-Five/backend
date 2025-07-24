@@ -3,6 +3,7 @@ package org.highfive.backend.infra.s3.controller;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.auth.aop.EditorOnly;
 import org.highfive.backend.global.dto.Response;
+import org.highfive.backend.infra.s3.dto.PresignedUploadResponse;
 import org.highfive.backend.infra.s3.service.S3Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +20,7 @@ public class S3Controller {
 
     @EditorOnly
     @GetMapping("/presignedUrl")
-    public Response<URL> getPresignedUrl() {
+    public Response<PresignedUploadResponse> getPresignedUrl() {
         return s3Service.generatePresignedUrl();
     }
 }
