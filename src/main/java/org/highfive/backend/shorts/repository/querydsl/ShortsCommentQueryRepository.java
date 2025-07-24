@@ -27,7 +27,7 @@ public class ShortsCommentQueryRepository {
                 .where(
                         shortsComment.shorts.id.eq(shortsId),
                         cursorFilter(String.valueOf(cursor))
-                ).orderBy(shortsComment.id.desc())
+                ).orderBy(shortsComment.id.asc())
                 .limit(size + 1)
                 .fetch();
         boolean hasNext = findComments.size() > size;
