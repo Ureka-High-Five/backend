@@ -21,12 +21,12 @@ public class ShortsCommentMapper {
     }
 
     public static ShortsCommentsByTimeResponseDto toShortsCommentsByTimeResponseDto(ShortsComment sc) {
-        return new ShortsCommentsByTimeResponseDto(sc.getTime(), sc.getUser().getName(), sc.getUser().getProfileUrl(),
+        return new ShortsCommentsByTimeResponseDto(sc.getId(), sc.getTime(), sc.getUser().getName(), sc.getUser().getProfileUrl(),
                 sc.getMessage(), sc.getUser().getId());
     }
 
     public static ShortsCommentsByIdResponseDto toShortsCommentsByIdResponseDto(ShortsComment sc) {
-        return new ShortsCommentsByIdResponseDto(sc.getUser().getName(), sc.getUser().getProfileUrl(), sc.getMessage(),
+        return new ShortsCommentsByIdResponseDto(sc.getId(), sc.getUser().getName(), sc.getUser().getProfileUrl(), sc.getMessage(),
                 sc.getUser().getId(), sc.getCreatedAt().toString());
     }
 
