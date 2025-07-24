@@ -26,7 +26,7 @@ public class ShortsCommentMapper {
     }
 
     public static ShortsCommentsByIdResponseDto toShortsCommentsByIdResponseDto(ShortsComment sc) {
-        return new ShortsCommentsByIdResponseDto(sc.getUser().getName(), sc.getUser().getProfileUrl(), sc.getMessage(),
+        return new ShortsCommentsByIdResponseDto(sc.getId(), sc.getUser().getName(), sc.getUser().getProfileUrl(), sc.getMessage(),
                 sc.getUser().getId(), sc.getCreatedAt().toString());
     }
 
