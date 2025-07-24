@@ -127,7 +127,11 @@ public class AdminContentService {
         for (String actorName : actors) {
             MetaInfo actor = metaInfoRepository.findByNameAndType(actorName, MetaType.ACTOR);
             if (actor == null) {
-                throw new BusinessException(MetaInfoErrorCode.ACTOR_NOT_FOUND);
+                actor = metaInfoRepository.save(
+                        MetaInfo.builder()
+                        .type(MetaType.ACTOR)
+                        .name(actorName)
+                        .build());
             }
             metaInfoContentsRepository.save(MetaInfoContents.builder().content(content).metaInfo(actor).build());
         }
