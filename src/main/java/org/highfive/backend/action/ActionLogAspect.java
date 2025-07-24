@@ -12,7 +12,6 @@ import org.highfive.backend.action.log.ActionLogStrategyFactory;
 import org.highfive.backend.action.log.MetaInfoLog;
 import org.highfive.backend.action.log.strategy.ActionLogStrategy;
 import org.highfive.backend.global.exception.BusinessException;
-import org.highfive.backend.metadata.entity.MetaInfo;
 import org.highfive.backend.metadata.entity.MetaInfoContents;
 import org.highfive.backend.metadata.repository.jpa.MetaInfoContentsRepository;
 import org.highfive.backend.user.code.UserErrorCode;
@@ -23,8 +22,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
+
+import static org.highfive.backend.action.log.ActionLogMapper.extractMetaInfoLog;
 
 @Slf4j
 @Aspect
@@ -55,30 +55,6 @@ public class ActionLogAspect {
             log.error("행동 로그 저장 중 에러가 발생했습니다.");
             throw e;
         }
-    }
-
-    private static MetaInfoLog extractMetaInfoLog(final List<MetaInfoContents> metaINfoContents) {
-        List<String> genres = new ArrayList<>();
-        List<String> actors = new ArrayList<>();
-        String director = "";
-        String country = "";
-
-        for(MetaInfoContents metaInfoContents : metaINfoContents) {
-            MetaInfo metaInfo = metaInfoContents.getMetaInfo();
-            switch(metaInfo.getType()) {
-                case ACTOR -> actors.add(metaInfo.getName());
-                case GENRE -> genres.add(metaInfo.getName());
-                case DIRECTOR -> director = metaInfo.getName();
-                case COUNTRY -> country = metaInfo.getName();
-            }
-        }
-
-        return MetaInfoLog.builder()
-                .genres(genres)
-                .actors(actors)
-                .country(country)
-                .director(director)
-                .build();
     }
 
     private ActionLog createActionLog(ProceedingJoinPoint joinPoint) {
