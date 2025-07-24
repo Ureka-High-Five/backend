@@ -67,10 +67,12 @@ class AdminContentServiceTest {
         MetaInfo actor    = MetaInfo.builder().name("톰 크루즈").type( MetaType.ACTOR).build();
         MetaInfo director = MetaInfo.builder().name("딘 데블로이스").type(MetaType.DIRECTOR).build();
         MetaInfo country  = MetaInfo.builder().name("KR").type(MetaType.COUNTRY).build();
+        MetaInfo thriller  = MetaInfo.builder().name("thriller").type(MetaType.GENRE).build();
 
         given(metaInfoRepository.findByNameAndType("톰 크루즈", MetaType.ACTOR)).willReturn(actor);
         given(metaInfoRepository.findByNameAndType("딘 데블로이스", MetaType.DIRECTOR)).willReturn(director);
         given(metaInfoRepository.findByNameAndType("KR", MetaType.COUNTRY)).willReturn(country);
+        given(metaInfoRepository.findByNameAndType("thriller", MetaType.GENRE)).willReturn(thriller);
 
         given(contentRepository.save(any(Content.class)))
                 .willAnswer(inv -> {
