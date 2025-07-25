@@ -9,6 +9,7 @@ import org.highfive.backend.user.dto.mapper.UserMapper;
 import org.highfive.backend.user.dto.response.RatedContentResponseDto;
 import org.highfive.backend.user.dto.response.UserInfoResponseDto;
 import org.highfive.backend.user.entity.User;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,8 +24,7 @@ public class UserService {
 
     public Response<CursorPageResponse<RatedContentResponseDto>> getMyReviews(final User user, final Long cursor,
                                                                               final int size) {
-        final List<RatedContentResponseDto> ratedContentResponseDtos = reviewRepository.findByUser(user.getId(), cursor,
-                size + 1);
+        final List<RatedContentResponseDto> ratedContentResponseDtos = reviewRepository.findByUser(user.getId(), cursor, PageRequest.ofSize(size + 1));
 
         boolean hasNext = ratedContentResponseDtos.size() > size;
         String nextCursor = null;
