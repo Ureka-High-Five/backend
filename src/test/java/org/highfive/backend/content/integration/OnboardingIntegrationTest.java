@@ -94,7 +94,7 @@ class OnboardingIntegrationTest {
     void onboardingSelectContents_Success() {
         SampleIds ids = insertSelectSampleContents();
 
-        OnboardingSelectContentRequestDto req = new OnboardingSelectContentRequestDto(ids.selectedIds());
+        OnboardingSelectContentRequestDto req = new OnboardingSelectContentRequestDto(ids.selectedIds(), ids.recommendedIds());
 
         String url = "http://localhost:" + port + "/content/recommend";
         HttpHeaders headers = new HttpHeaders();
@@ -119,7 +119,7 @@ class OnboardingIntegrationTest {
     @Test
     @DisplayName("온보딩 선택 - 빈 리스트 통합 테스트")
     void onboardingSelectContents_Empty() {
-        OnboardingSelectContentRequestDto req = new OnboardingSelectContentRequestDto(List.of());
+        OnboardingSelectContentRequestDto req = new OnboardingSelectContentRequestDto(List.of(), List.of());
 
         String url = "http://localhost:" + port + "/content/recommend";
         HttpHeaders headers = new HttpHeaders();
