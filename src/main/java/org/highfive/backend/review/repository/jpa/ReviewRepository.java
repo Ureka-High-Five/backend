@@ -20,7 +20,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewQue
         FROM Review r
         JOIN r.content c
         WHERE r.user.id = :userId
-         AND (:cursor IS NULL OR r.id < :cursor)
+         AND (:cursor IS NULL OR r.id <= :cursor)
         ORDER BY r.id DESC
     """)
     List<RatedContentResponseDto> findByUser(
