@@ -1,12 +1,11 @@
 package org.highfive.backend.shorts.dto.mapper;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.highfive.backend.shorts.dto.ShortsDto;
 import org.highfive.backend.shorts.dto.response.ShortsLikedUserItemDto;
 import org.highfive.backend.shorts.dto.response.ShortsResponseDto;
 import org.highfive.backend.shorts.entity.Shorts;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class ShortsMapper {
 
@@ -16,17 +15,19 @@ public class ShortsMapper {
     }
 
     public static ShortsResponseDto toShortsResponseDto(Shorts shorts, boolean liked) {
-        return ShortsResponseDto.of(shorts.getId(), shorts.getShortsUrl(), shorts.getContent().getId(),
+        return ShortsResponseDto.of(shorts.getId(), shorts.getShortsUrl(), shorts.getThumbnailUrl(),
+                shorts.getContent().getId(),
                 shorts.getContent().getTitle(), liked);
     }
 
     public static ShortsResponseDto toShortsResponseDto(final ShortsDto shorts, final boolean liked) {
-        return ShortsResponseDto.of(shorts.id(), shorts.shortsUrl(), shorts.contentId(),
+        return ShortsResponseDto.of(shorts.id(), shorts.shortsUrl(), shorts.shortsThumbnail(), shorts.contentId(),
                 shorts.title(), liked);
     }
 
     public static ShortsDto toShortsDto(final Shorts shorts) {
-        return new ShortsDto(shorts.getId(), shorts.getShortsUrl(), shorts.getContent().getId(), shorts.getContent().getTitle());
+        return new ShortsDto(shorts.getId(), shorts.getShortsUrl(), shorts.getThumbnailUrl(),
+                shorts.getContent().getId(), shorts.getContent().getTitle());
     }
 
 }

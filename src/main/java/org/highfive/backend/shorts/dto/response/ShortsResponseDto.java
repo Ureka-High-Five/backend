@@ -5,13 +5,16 @@ import org.highfive.backend.content.dto.VideoType;
 public record ShortsResponseDto(
         Long shortsId,
         String shortsUrl,
+        String shortsThumbnail,
         Long contentId,
         String contentTitle,
         boolean liked,
         VideoType videoType
 ) {
-    public static ShortsResponseDto of(Long shortsId, String shortsUrl, Long contentId, String contentTitle,
+    public static ShortsResponseDto of(Long shortsId, String shortsUrl, String shortsThumbnail, Long contentId,
+                                       String contentTitle,
                                        boolean liked) {
-        return new ShortsResponseDto(shortsId, shortsUrl, contentId, contentTitle, liked, VideoType.SHORTS);
+        return new ShortsResponseDto(shortsId, shortsUrl, shortsThumbnail, contentId, contentTitle, liked,
+                VideoType.SHORTS);
     }
 }
