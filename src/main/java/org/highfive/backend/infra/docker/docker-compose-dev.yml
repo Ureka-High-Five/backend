@@ -47,5 +47,7 @@ services:
       - /home/ec2-user/app-logs:/home/ec2-user/app-logs:ro
       - ./promtail-config.yml:/etc/promtail/config.yml
     command: -config.file=/etc/promtail/config.yml -config.expand-env=true
+    environment:
+      LOKI_SERVER_IP: ${LOKI_SERVER_IP}
     depends_on:
       - app
