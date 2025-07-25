@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.highfive.backend.review.entity.Review;
 import org.highfive.backend.review.repository.querydsl.ReviewQueryRepository;
 import org.highfive.backend.user.dto.response.RatedContentResponseDto;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -25,7 +26,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewQue
     List<RatedContentResponseDto> findByUser(
             Long userId,
             Long cursor,
-            int limit
+            Pageable pageable
     );
 
     boolean existsByUserIdAndContentId(Long userId, Long contentId);
