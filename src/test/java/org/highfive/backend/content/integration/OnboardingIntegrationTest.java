@@ -90,11 +90,15 @@ class OnboardingIntegrationTest {
     }
 
     @Test
-    @DisplayName("온보딩 선택 - 성공 통합 테스트")
+    @DisplayName("온보딩 선택 - recommendedIds에 포함된 콘텐츠는 제외된다")
     void onboardingSelectContents_Success() {
+        // given
         SampleIds ids = insertSelectSampleContents();
 
-        OnboardingSelectContentRequestDto req = new OnboardingSelectContentRequestDto(ids.selectedIds(), ids.recommendedIds());
+        OnboardingSelectContentRequestDto req = new OnboardingSelectContentRequestDto(
+                ids.selectedIds(),
+                ids.recommendedIds()  // 제외할 콘텐츠 ID
+        );
 
         String url = "http://localhost:" + port + "/content/recommend";
         HttpHeaders headers = new HttpHeaders();
@@ -102,6 +106,7 @@ class OnboardingIntegrationTest {
 
         HttpEntity<OnboardingSelectContentRequestDto> entity = new HttpEntity<>(req, headers);
 
+        // when
         ResponseEntity<Response<List<OnboardingSelectContentResponseDto>>> response =
                 restTemplate.exchange(
                         url,
@@ -110,10 +115,19 @@ class OnboardingIntegrationTest {
                         new ParameterizedTypeReference<>() {}
                 );
 
+        // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
         Response<List<OnboardingSelectContentResponseDto>> body = response.getBody();
-        assertThat(body.content()).hasSize(3);
-        assertThat(body.code()).isEqualTo(20000);
+        assertThat(body).isNotNull();
+        assertThat(body.code()).isEqualTo(20400);
+
+        List<Long> recommendedIds = ids.recommendedIds();
+        List<Long> returnedIds = body.content().stream()
+                .map(OnboardingSelectContentResponseDto::contentId)
+                .toList();
+
+        assertThat(returnedIds).doesNotContainAnyElementsOf(recommendedIds);
     }
 
     @Test

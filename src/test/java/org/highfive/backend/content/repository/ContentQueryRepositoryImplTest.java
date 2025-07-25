@@ -69,10 +69,10 @@ class ContentQueryRepositoryImplTest {
 
         // when
         List<GenreCountDto> result =
-                contentQueryRepositoryImpl.findTopGenresByContentIds(List.of(1L, 2L, 3L), List.of(4L, 5L, 6L));
+                contentQueryRepositoryImpl.findTopGenresByContentIds(List.of(1L, 2L, 3L));
 
         // then
-        assertThat(result).hasSize(3);
+        assertThat(result).hasSize(2);
 
         GenreCountDto first  = result.get(0);
         GenreCountDto second = result.get(1);
@@ -106,7 +106,7 @@ class ContentQueryRepositoryImplTest {
 
         // when
         List<OnboardingContentDto> result =
-                contentQueryRepositoryImpl.findContentsByGenresOrderByMatchCountDesc(List.of("Action", "Drama"));
+                contentQueryRepositoryImpl.findContentsByGenresOrderByMatchCountDesc(List.of("Action", "Drama"), List.of());
 
         // then
         assertThat(result).hasSize(3);
