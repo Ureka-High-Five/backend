@@ -47,7 +47,7 @@ public class ContentQueryRepositoryImpl implements ContentQueryRepository {
                 .fetch();
     }
 
-    public List<GenreCountDto> findTopGenresByContentIds(List<Long> contentIds, List<Long> recommendedContentIds) {
+    public List<GenreCountDto> findTopGenresByContentIds(List<Long> contentIds) {
         QMetaInfoContents mic = QMetaInfoContents.metaInfoContents;
         QMetaInfo m = QMetaInfo.metaInfo;
 
@@ -60,17 +60,15 @@ public class ContentQueryRepositoryImpl implements ContentQueryRepository {
                 .join(m).on(mic.metaInfo.id.eq(m.id))
                 .where(
                         m.type.eq(MetaType.GENRE),
-                        mic.content.id.in(contentIds),
-                        recommendedContentIds != null && !recommendedContentIds.isEmpty()
-                        ? mic.content.id.notIn(recommendedContentIds) : null
+                        mic.content.id.in(contentIds)
                 )
                 .groupBy(m.name)
                 .orderBy(mic.count().desc())
-                .limit(3)
+                .limit(2)
                 .fetch();
     }
 
-    public List<OnboardingContentDto> findContentsByGenresOrderByMatchCountDesc(List<String> genres) {
+    public List<OnboardingContentDto> findContentsByGenresOrderByMatchCountDesc(List<String> genres, List<Long> recommendedContentIds) {
         QContent c = QContent.content;
         QMetaInfoContents mic = QMetaInfoContents.metaInfoContents;
         QMetaInfo m = QMetaInfo.metaInfo;
@@ -88,7 +86,8 @@ public class ContentQueryRepositoryImpl implements ContentQueryRepository {
                 .join(m).on(mic.metaInfo.id.eq(m.id))
                 .where(
                         m.type.eq(MetaType.GENRE),
-                        m.name.in(genres)
+                        m.name.in(genres),
+                        c.id.notIn(recommendedContentIds)
                 )
                 .groupBy(c.id, c.thumbnailUrl, c.title, c.openDate)
                 .orderBy(m.name.countDistinct().desc())

@@ -61,7 +61,7 @@ public class OnboardingService {
 
     public Response<List<OnboardingSelectContentResponseDto>> getContentBySelectedContent(
             final OnboardingSelectContentRequestDto request) {
-        List<GenreCountDto> topGenresByContentIds = contentQueryRepositoryImpl.findTopGenresByContentIds(request.selectedContentIds(), request.recommendedContentIds());
+        List<GenreCountDto> topGenresByContentIds = contentQueryRepositoryImpl.findTopGenresByContentIds(request.selectedContentIds());
         List<OnboardingSelectContentResponseDto> contents = getOnboardingSelectContentResponseDtos(
                 topGenresByContentIds.stream().map((GenreCountDto::genre)).toList(), request);
 
@@ -111,7 +111,7 @@ public class OnboardingService {
     private List<OnboardingSelectContentResponseDto> getOnboardingSelectContentResponseDtos(List<String> topGenres,
                                                                                             OnboardingSelectContentRequestDto request) {
         List<OnboardingContentDto> result = contentQueryRepositoryImpl.findContentsByGenresOrderByMatchCountDesc(
-                topGenres);
+                topGenres, request.recommendedContentIds());
         result = duplicateFilter(result, request);
         return result.stream().map(
                         c -> new OnboardingSelectContentResponseDto(c.id(), c.thumbnailUrl(), c.title(),

@@ -87,10 +87,11 @@ class OnboardingServiceTest {
     void getContentBySelectedContent_returnsThreeDistinctRecommendations() {
         // given
         List<Long> selectedIds = List.of(1L, 2L);
+        List<Long> recommendedIds = List.of(6L, 7L, 8L);
         OnboardingSelectContentRequestDto req =
-                new OnboardingSelectContentRequestDto(selectedIds, List.of(6L, 7L, 8L));
+                new OnboardingSelectContentRequestDto(selectedIds, recommendedIds);
 
-        when(queryDslRepo.findTopGenresByContentIds(selectedIds, List.of(6L, 7L, 8L)))
+        when(queryDslRepo.findTopGenresByContentIds(selectedIds))
                 .thenReturn(List.of(
                         new GenreCountDto("Action", 3L),
                         new GenreCountDto("Drama",  2L)
@@ -104,7 +105,7 @@ class OnboardingServiceTest {
                 new OnboardingContentDto(5L, "url5", "title5", LocalDateTime.of(2020,1,1,1,1,1), 2L)
         );
         when(queryDslRepo.findContentsByGenresOrderByMatchCountDesc(
-                eq(List.of("Action", "Drama"))))
+                eq(List.of("Action", "Drama")), eq(recommendedIds)))
                 .thenReturn(repoReturn);
 
         // when
@@ -112,13 +113,13 @@ class OnboardingServiceTest {
 
         // then
         assertThat(actual.content()).containsExactly(
-                        new OnboardingSelectContentResponseDto(3L, "url3", "title3", 2022),
-                        new OnboardingSelectContentResponseDto(4L, "url4", "title4", 2021),
-                        new OnboardingSelectContentResponseDto(5L, "url5", "title5", 2020)
-                );
+                new OnboardingSelectContentResponseDto(3L, "url3", "title3", 2022),
+                new OnboardingSelectContentResponseDto(4L, "url4", "title4", 2021),
+                new OnboardingSelectContentResponseDto(5L, "url5", "title5", 2020)
+        );
 
-        verify(queryDslRepo).findTopGenresByContentIds(selectedIds, List.of(6L, 7L, 8L));
-        verify(queryDslRepo).findContentsByGenresOrderByMatchCountDesc(List.of("Action", "Drama"));
+        verify(queryDslRepo).findTopGenresByContentIds(selectedIds);
+        verify(queryDslRepo).findContentsByGenresOrderByMatchCountDesc(List.of("Action", "Drama"), recommendedIds);
         verifyNoMoreInteractions(queryDslRepo);
     }
 
