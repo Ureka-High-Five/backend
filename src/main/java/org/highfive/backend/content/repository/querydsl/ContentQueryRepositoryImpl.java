@@ -61,12 +61,12 @@ public class ContentQueryRepositoryImpl implements ContentQueryRepository {
                 .where(
                         m.type.eq(MetaType.GENRE),
                         mic.content.id.in(contentIds),
-                        recommendedContentIds != null && recommendedContentIds.isEmpty()
+                        recommendedContentIds != null && !recommendedContentIds.isEmpty()
                         ? mic.content.id.notIn(recommendedContentIds) : null
                 )
                 .groupBy(m.name)
                 .orderBy(mic.count().desc())
-                .limit(2)
+                .limit(3)
                 .fetch();
     }
 
