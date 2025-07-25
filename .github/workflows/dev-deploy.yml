@@ -2,7 +2,7 @@ name: DEV_CI/CD
 
 on:
   push:
-    branches: [develop]
+    branches: [ develop ]
 
 jobs:
   deploy:
@@ -114,6 +114,8 @@ jobs:
             echo "S3_ACCESS_KEY=${{ secrets.S3_ACCESS_KEY}}" >> .env
             echo "S3_SECRET_ACCESS_KEY=${{ secrets.S3_SECRET_ACCESS_KEY}}" >> .env
             echo "SLACK_WEBHOOK_LOG=${{ secrets.SLACK_WEBHOOK_LOG }}" >> .env
+            echo "LOKI_SERVER_IP=${{ secrets.LOKI_SERVER_IP }}" >> .env
+            
             docker-compose --env-file .env -f docker-compose-dev.yml down -v
             docker image prune -f
             docker-compose --env-file .env -f docker-compose-dev.yml up -d --build
