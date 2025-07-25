@@ -69,7 +69,7 @@ class ContentQueryRepositoryImplTest {
 
         // when
         List<GenreCountDto> result =
-                contentQueryRepositoryImpl.findTopGenresByContentIds(List.of(1L, 2L, 3L));
+                contentQueryRepositoryImpl.findTopGenresByContentIds(List.of(1L, 2L, 3L), List.of(4L, 5L, 6L));
 
         // then
         assertThat(result).hasSize(2);

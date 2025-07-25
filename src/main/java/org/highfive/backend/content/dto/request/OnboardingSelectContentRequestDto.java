@@ -5,6 +5,9 @@ import java.util.List;
 
 public record OnboardingSelectContentRequestDto(
         @NotNull
-        List<Long> selectedContentIds
+        List<Long> selectedContentIds,
+
+        @NotNull
+        List<Long> recommendedContentIds
 ) {
 }

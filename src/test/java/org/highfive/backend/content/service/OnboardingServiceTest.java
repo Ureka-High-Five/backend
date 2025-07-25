@@ -88,9 +88,9 @@ class OnboardingServiceTest {
         // given
         List<Long> selectedIds = List.of(1L, 2L);
         OnboardingSelectContentRequestDto req =
-                new OnboardingSelectContentRequestDto(selectedIds);
+                new OnboardingSelectContentRequestDto(selectedIds, List.of(6L, 7L, 8L));
 
-        when(queryDslRepo.findTopGenresByContentIds(selectedIds))
+        when(queryDslRepo.findTopGenresByContentIds(selectedIds, List.of(6L, 7L, 8L)))
                 .thenReturn(List.of(
                         new GenreCountDto("Action", 3L),
                         new GenreCountDto("Drama",  2L)
@@ -117,7 +117,7 @@ class OnboardingServiceTest {
                         new OnboardingSelectContentResponseDto(5L, "url5", "title5", 2020)
                 );
 
-        verify(queryDslRepo).findTopGenresByContentIds(selectedIds);
+        verify(queryDslRepo).findTopGenresByContentIds(selectedIds, List.of(6L, 7L, 8L));
         verify(queryDslRepo).findContentsByGenresOrderByMatchCountDesc(List.of("Action", "Drama"));
         verifyNoMoreInteractions(queryDslRepo);
     }

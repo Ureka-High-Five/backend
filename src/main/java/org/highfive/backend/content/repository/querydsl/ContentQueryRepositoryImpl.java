@@ -47,7 +47,7 @@ public class ContentQueryRepositoryImpl implements ContentQueryRepository {
                 .fetch();
     }
 
-    public List<GenreCountDto> findTopGenresByContentIds(List<Long> contentIds) {
+    public List<GenreCountDto> findTopGenresByContentIds(List<Long> contentIds, List<Long> recommendedContentIds) {
         QMetaInfoContents mic = QMetaInfoContents.metaInfoContents;
         QMetaInfo m = QMetaInfo.metaInfo;
 
@@ -60,7 +60,9 @@ public class ContentQueryRepositoryImpl implements ContentQueryRepository {
                 .join(m).on(mic.metaInfo.id.eq(m.id))
                 .where(
                         m.type.eq(MetaType.GENRE),
-                        mic.content.id.in(contentIds)
+                        mic.content.id.in(contentIds),
+                        recommendedContentIds != null && recommendedContentIds.isEmpty()
+                        ? mic.content.id.notIn(recommendedContentIds) : null
                 )
                 .groupBy(m.name)
                 .orderBy(mic.count().desc())

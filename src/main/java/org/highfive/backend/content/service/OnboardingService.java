@@ -61,7 +61,7 @@ public class OnboardingService {
 
     public Response<List<OnboardingSelectContentResponseDto>> getContentBySelectedContent(
             final OnboardingSelectContentRequestDto request) {
-        List<GenreCountDto> topGenresByContentIds = contentQueryRepositoryImpl.findTopGenresByContentIds(request.selectedContentIds());
+        List<GenreCountDto> topGenresByContentIds = contentQueryRepositoryImpl.findTopGenresByContentIds(request.selectedContentIds(), request.recommendedContentIds());
         List<OnboardingSelectContentResponseDto> contents = getOnboardingSelectContentResponseDtos(
                 topGenresByContentIds.stream().map((GenreCountDto::genre)).toList(), request);
 
