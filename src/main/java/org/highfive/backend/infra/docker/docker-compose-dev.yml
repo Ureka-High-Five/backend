@@ -46,6 +46,6 @@ services:
     volumes:
       - /home/ec2-user/app-logs:/home/ec2-user/app-logs:ro
       - ./promtail-config.yml:/etc/promtail/config.yml
-    command: -config.file=/etc/promtail/config.yml
+    command: -config.file=/etc/promtail/config.yml -config.expand-env=true
     depends_on:
       - app
