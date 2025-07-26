@@ -9,13 +9,13 @@ import org.highfive.backend.action.Action;
 import org.highfive.backend.action.ActionLogStamp;
 import org.highfive.backend.global.dto.CursorPageResponse;
 import org.highfive.backend.global.dto.Response;
+import org.highfive.backend.shorts.dto.response.CreateShortsCommentResponseDto;
 import org.highfive.backend.shorts.dto.request.CreateShortsCommentRequestDto;
 import org.highfive.backend.shorts.dto.request.ShortsDislikeRequestDto;
 import org.highfive.backend.shorts.dto.request.ShortsLikeCreateRequestDto;
 import org.highfive.backend.shorts.dto.response.GetShortsCommentResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsCommentsByIdResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsCommentsByTimeResponseDto;
-import org.highfive.backend.shorts.dto.response.ShortsCommentsResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsLikeTimeResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsLikedUserItemDto;
 import org.highfive.backend.shorts.dto.response.ShortsResponseDto;
@@ -38,7 +38,7 @@ public class ShortsController {
     private final ShortsService shortsService;
 
     @PostMapping("/comment")
-    public Response<Void> createShortsComment(
+    public Response<CreateShortsCommentResponseDto> createShortsComment(
             @Valid @RequestBody final CreateShortsCommentRequestDto requestDto,
             @AuthenticationPrincipal User user
     ) {
