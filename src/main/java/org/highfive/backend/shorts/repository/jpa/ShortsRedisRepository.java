@@ -41,6 +41,6 @@ public class ShortsRedisRepository {
         }
 
         int endIndex = Math.min(startIndex + size, all.size());
-        return (startIndex >= all.size()) ? Collections.emptyList() : all.subList(startIndex, endIndex);
+        return all.subList(startIndex, endIndex);
     }
 }
