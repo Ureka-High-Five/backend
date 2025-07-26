@@ -25,6 +25,7 @@ import org.highfive.backend.shorts.dto.mapper.ShortsMapper;
 import org.highfive.backend.shorts.dto.request.CreateShortsCommentRequestDto;
 import org.highfive.backend.shorts.dto.request.ShortsDislikeRequestDto;
 import org.highfive.backend.shorts.dto.request.ShortsLikeCreateRequestDto;
+import org.highfive.backend.shorts.dto.response.CreateShortsCommentResponseDto;
 import org.highfive.backend.shorts.dto.response.GetShortsCommentResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsCommentsByIdResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsCommentsByTimeResponseDto;
@@ -64,16 +65,17 @@ public class ShortsService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Response<Void> createShortsComment(CreateShortsCommentRequestDto requestDto, User user) {
+    public Response<CreateShortsCommentResponseDto> createShortsComment(CreateShortsCommentRequestDto requestDto, User user) {
         SlangValidator.validate(requestDto.comment());
 
         Shorts existedShorts = shortsRepository.findById(requestDto.shortsId())
                 .orElseThrow(() -> new BusinessException(SHORTS_NOT_FOUND));
 
         ShortsComment shortsComment = ShortsCommentMapper.toShortsComment(requestDto, user, existedShorts);
-        shortsCommentRepository.save(shortsComment);
+        ShortsComment saved = shortsCommentRepository.save(shortsComment);
+        CreateShortsCommentResponseDto response = ShortsCommentMapper.toCreateShortsCommentResponseDto(saved);
 
-        return Response.ok(null);
+        return Response.ok(response);
     }
 
     @Transactional
