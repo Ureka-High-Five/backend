@@ -1,6 +1,7 @@
 package org.highfive.backend.shorts.dto.mapper;
 
 import org.highfive.backend.shorts.dto.request.CreateShortsCommentRequestDto;
+import org.highfive.backend.shorts.dto.response.CreateShortsCommentResponseDto;
 import org.highfive.backend.shorts.dto.response.GetShortsCommentResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsCommentsByIdResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsCommentsByTimeResponseDto;
@@ -32,5 +33,11 @@ public class ShortsCommentMapper {
 
     public static ShortsCommentsResponseDto toShortsCommentResponseDto(ShortsComment shortsComment) {
         return new ShortsCommentsResponseDto(shortsComment.getId(), shortsComment.getUser().getName(), shortsComment.getUser().getId(), shortsComment.getUser().getProfileUrl(), shortsComment.getMessage(), shortsComment.getCreatedAt().toString());
+    }
+
+    public static CreateShortsCommentResponseDto toCreateShortsCommentResponseDto(ShortsComment sc) {
+        String userName = sc.getUser().getName();
+        String profileUrl = sc.getUser().getProfileUrl();
+        return new CreateShortsCommentResponseDto(sc.getId(), sc.getMessage(), sc.getTime(), userName, profileUrl);
     }
 }
