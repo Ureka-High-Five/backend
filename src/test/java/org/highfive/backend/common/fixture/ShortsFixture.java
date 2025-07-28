@@ -13,7 +13,7 @@ public class ShortsFixture {
                 .thumbnailUrl("test-url")
                 .shortsLikeTimeLogs(List.of())
                 .likeCount(10)
-                .runningTime(100)
+                .trailerTime(100)
                 .build();
     }
 
@@ -25,7 +25,7 @@ public class ShortsFixture {
                 .thumbnailUrl("test-url")
                 .shortsLikeTimeLogs(List.of())
                 .likeCount(10)
-                .runningTime(100)
+                .trailerTime(100)
                 .build();
     }
 }
