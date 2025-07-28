@@ -18,7 +18,7 @@ public class S3Controller {
     private final S3Service s3Service;
 
     @EditorOnly
-    @GetMapping("/presignedUrl")
+    @GetMapping("/presignedUrl/{type}")
     public Response<PresignedUploadResponse> getPresignedUrl(@PathVariable final String type) {
         return s3Service.generatePresignedUrl(type);
     }
