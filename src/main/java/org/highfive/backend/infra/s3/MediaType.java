@@ -17,14 +17,6 @@ public enum MediaType {
         this.folder = folder;
     }
 
-    public String getContentType() {
-        return contentType;
-    }
-
-    public String getFolder() {
-        return folder;
-    }
-
     public static MediaType from(final String type) {
         return Arrays.stream(values())
                 .filter(t -> t.name().equalsIgnoreCase(type))
