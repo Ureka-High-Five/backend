@@ -93,8 +93,8 @@ public class User extends BaseEntity {
         this.userRole = role;
     }
 
-    public void updateUserWatchInfo(final long averageRating, final long viewCount) {
-        this.averageRating = averageRating;
+    public void updateUserWatchInfo(final long averageViewTime, final long viewCount) {
+        this.averageViewTime = averageViewTime;
         this.viewCount = viewCount;
     }
 
