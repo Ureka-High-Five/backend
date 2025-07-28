@@ -23,7 +23,7 @@ public class ContentMapper {
                                                                       List<String> actors, List<String> genres) {
         return new ContentDetailResponseDto(content.getTitle(), genres, content.getRunningTime(), content.getGrade(),
                 content.getPostUrl(), actors, director, content.getOpenDate().getYear(), content.getDescription(),
-                content.getShorts().getFirst().getId());
+                content.getShorts().getFirst().getId(), content.getVideoUrl());
     }
 
     public static SearchContentResponseDto toSearchContentResponseDto(final Content content) {

@@ -12,6 +12,7 @@ public record ContentDetailResponseDto(
         String director,
         int openYear,
         String contentDescription,
-        Long shortsId
+        Long shortsId,
+        String videoUrl
 ) {
 }

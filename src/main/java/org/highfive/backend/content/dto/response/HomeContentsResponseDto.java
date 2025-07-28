@@ -14,7 +14,8 @@ public record HomeContentsResponseDto(
             String posterUrl,
             String description,
             List<String> genre,
-            String title
+            String title,
+            String videoUrl
     ) {
     }
 
