@@ -61,7 +61,7 @@ public class HomeContentService {
         final Content content = contentsByUserVector.getFirst();
         final List<String> genres = getGenres(content);
         return new MainRecommendDto(content.getId(), content.getPostUrl(), content.getDescription(), genres,
-                content.getTitle());
+                content.getTitle(), content.getVideoUrl());
     }
 
     private List<PersonalRecommendDto> recommendContentsByUser(final User user, final int count) {
