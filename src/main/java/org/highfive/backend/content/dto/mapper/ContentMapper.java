@@ -60,6 +60,6 @@ public class ContentMapper {
         String fileName = s3VideoUrl.substring(s3VideoUrl.lastIndexOf("/") + 1);
         String baseName = fileName.replace(".mp4", "");
         String folderName = baseName + "_shorts";
-        return String.format("https://%s.s3.%s.amazonaws.com/shorts_segment/%s/", bucket, awsRegion, folderName);
+        return String.format("https://%s.s3.%s.amazonaws.com/video_segment/%s/", bucket, awsRegion, folderName);
     }
 }
