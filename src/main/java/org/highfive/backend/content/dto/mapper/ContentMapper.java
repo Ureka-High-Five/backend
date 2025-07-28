@@ -1,16 +1,23 @@
 package org.highfive.backend.content.dto.mapper;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
 import org.highfive.backend.content.dto.request.AdminAddContentRequestDto;
 import org.highfive.backend.content.dto.response.ContentDetailResponseDto;
 import org.highfive.backend.content.dto.response.SearchContentResponseDto;
 import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.content.entity.ContentType;
 import org.highfive.backend.global.dto.CursorPageResponse;
+import org.springframework.beans.factory.annotation.Value;
+
+import java.time.LocalDate;
+import java.util.List;
 
 public class ContentMapper {
+
+    @Value("${cloud.aws.s3.bucket}")
+    private static String bucket;
+
+    @Value("${cloud.aws.region.static}")
+    private static String awsRegion;
 
     public static ContentDetailResponseDto toContentDetailResponseDto(Content content, String director,
                                                                       List<String> actors, List<String> genres) {
@@ -37,9 +44,9 @@ public class ContentMapper {
         return Content.builder()
                 .title(request.title())
                 .description(request.description())
-                .videoUrl(request.videoUrl())
+                .videoUrl(convertToSegmentUrl(request.videoUrl()))
                 .postUrl(request.postUrl())
-                .openDate(LocalDateTime.from(LocalDate.parse(request.openDate()).atStartOfDay()))
+                .openDate(LocalDate.parse(request.openDate()).atStartOfDay())
                 .runningTime(request.runningTime())
                 .totalRound(request.totalRound())
                 .contentType(ContentType.valueOf(request.type()))
@@ -47,5 +54,12 @@ public class ContentMapper {
                 .popularity(100)
                 .thumbnailUrl(request.postUrl())
                 .build();
+    }
+
+    private static String convertToSegmentUrl(final String s3VideoUrl) {
+        String fileName = s3VideoUrl.substring(s3VideoUrl.lastIndexOf("/") + 1);
+        String baseName = fileName.replace(".mp4", "");
+        String folderName = baseName + "_shorts";
+        return String.format("https://%s.s3.%s.amazonaws.com/video_segment/%s/", bucket, awsRegion, folderName);
     }
 }
