@@ -42,7 +42,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public class Content extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @Column(nullable = false)
