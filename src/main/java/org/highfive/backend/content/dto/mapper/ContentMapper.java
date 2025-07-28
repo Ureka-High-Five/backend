@@ -15,7 +15,8 @@ public class ContentMapper {
     public static ContentDetailResponseDto toContentDetailResponseDto(Content content, String director,
                                                                       List<String> actors, List<String> genres) {
         return new ContentDetailResponseDto(content.getTitle(), genres, content.getRunningTime(), content.getGrade(),
-                content.getPostUrl(), actors, director, content.getOpenDate().getYear(), content.getDescription());
+                content.getPostUrl(), actors, director, content.getOpenDate().getYear(), content.getDescription(),
+                content.getShorts().getFirst().getId());
     }
 
     public static SearchContentResponseDto toSearchContentResponseDto(final Content content) {

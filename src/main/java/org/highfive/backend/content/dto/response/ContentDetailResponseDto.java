@@ -11,6 +11,7 @@ public record ContentDetailResponseDto(
         List<String> actors,
         String director,
         int openYear,
-        String contentDescription
+        String contentDescription,
+        Long shortsId
 ) {
 }
