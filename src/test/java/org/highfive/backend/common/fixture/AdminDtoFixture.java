@@ -20,6 +20,7 @@ public class AdminDtoFixture {
                 .genres(List.of("thriller"))
                 .actors(List.of("톰 크루즈"))
                 .director("딘 데블로이스")
+                .trailerTime(120)
                 .build();
     }
 
@@ -39,6 +40,7 @@ public class AdminDtoFixture {
                 .actors(List.of("톰 크루즈"))
                 .director("딘 데블로이스")
                 .grade(15)
+                .trailerTime(120)
                 .build();
     }
 
