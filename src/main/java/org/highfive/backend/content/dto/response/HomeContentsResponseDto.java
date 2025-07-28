@@ -35,7 +35,8 @@ public record HomeContentsResponseDto(
             Long userId,
             String userName,
             String thumbnailUrl,
-            String title
+            String title,
+            String profileUrl
     ) {
     }
 }

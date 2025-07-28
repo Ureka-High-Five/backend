@@ -1,8 +1,8 @@
 package org.highfive.backend.infra.s3.service;
 
-import com.nimbusds.common.contenttype.ContentType;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.global.dto.Response;
+import org.highfive.backend.infra.s3.MediaType;
 import org.highfive.backend.infra.s3.dto.PresignedUploadResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,6 @@ import java.util.UUID;
 public class S3Service {
 
     private final int DURATION = 5;
-    private final String FOLDDER = "curation_thumbnail";
 
     private final S3Presigner s3Presigner;
 
@@ -29,13 +28,14 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public Response<PresignedUploadResponse> generatePresignedUrl() {
-        final String key = FOLDDER + "/" + UUID.randomUUID();
+    public Response<PresignedUploadResponse> generatePresignedUrl(final String type) {
 
+        final MediaType mediaType = MediaType.from(type);
+        final String key = mediaType.getFolder() + "/" + UUID.randomUUID();
         final PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bucket)
                 .key(key)
-                .contentType(ContentType.IMAGE_JPEG.toString())
+                .contentType(mediaType.getContentType())
                 .build();
 
         final PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()

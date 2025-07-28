@@ -29,6 +29,7 @@ public class CurationMapper {
                 curation.getThumbnailUrl(),
                 curation.getUser().getProfileUrl(),
                 curation.getUser().getName(),
+                curation.getDescription(),
                 curation.getUser().getId()
         );
     }
@@ -38,7 +39,8 @@ public class CurationMapper {
                 .map(curation -> new MyCurationResponseDto(
                         curation.getId(),
                         curation.getTitle(),
-                        curation.getThumbnailUrl()
+                        curation.getThumbnailUrl(),
+                        curation.getDescription()
                 ))
                 .toList();
     }
@@ -51,7 +53,8 @@ public class CurationMapper {
                     return new CurationDetailResponseDto.ContentDto(
                             content.getId(),
                             content.getTitle(),
-                            content.getThumbnailUrl()
+                            content.getThumbnailUrl(),
+                            content.getDescription()
                     );
                 })
                 .toList();
@@ -63,7 +66,8 @@ public class CurationMapper {
                         c.getUser().getId(),
                         c.getUser().getName(),
                         c.getThumbnailUrl(),
-                        c.getTitle()))
+                        c.getTitle(),
+                        c.getUser().getProfileUrl()))
                 .limit(4)
                 .toList();
     }
