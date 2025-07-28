@@ -23,7 +23,8 @@ OTT 서비스의 대표적인 문제인 개인 취향에 맞는 콘텐츠를 찾
 ## ⚙️ 기술적 특징
 
 ### 🏗 시스템 아키텍처
-<img width="3588" height="2397" alt="rabbitmq" src="https://github.com/user-attachments/assets/a0bbb624-82a6-4cc2-b592-bb85b5a9226d" />
+<img width="4367" height="2397" alt="인프라최신화0729" src="https://github.com/user-attachments/assets/ac10f9a7-82f3-48a7-97fd-1af10caff843" />
+
 
 
 
