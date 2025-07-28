@@ -8,13 +8,16 @@ import java.util.List;
 import org.highfive.backend.common.fixture.ContentFixture;
 import org.highfive.backend.common.fixture.MetaInfoContentsFixture;
 import org.highfive.backend.common.fixture.MetaInfoFixture;
+import org.highfive.backend.common.fixture.ShortsFixture;
 import org.highfive.backend.content.entity.Content;
+import org.highfive.backend.content.repository.jpa.ContentRepository;
 import org.highfive.backend.metadata.entity.MetaInfo;
 import org.highfive.backend.metadata.entity.MetaInfoContents;
 import org.highfive.backend.metadata.entity.MetaType;
 import org.highfive.backend.metadata.repository.jpa.MetaInfoContentsRepository;
-import org.highfive.backend.content.repository.jpa.ContentRepository;
 import org.highfive.backend.metadata.repository.jpa.MetaInfoRepository;
+import org.highfive.backend.shorts.entity.Shorts;
+import org.highfive.backend.shorts.repository.jpa.ShortsRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,6 +42,9 @@ public class ContentIntegrationTest {
 
     @Autowired
     private MetaInfoRepository metaInfoRepository;
+
+    @Autowired
+    private ShortsRepository shortsRepository;
 
     @Autowired
     private MockMvc mockMvc;
@@ -68,6 +74,10 @@ public class ContentIntegrationTest {
 
         Content contentWithMeta = ContentFixture.createContentWithMetaInfo(savedContent, metaInfoContents);
         savedContent = contentRepository.save(contentWithMeta);
+
+        Shorts shorts = ShortsFixture.createShorts(savedContent);
+        shortsRepository.save(shorts);
+        savedContent.getShorts().add(shorts);
 
     }
 
