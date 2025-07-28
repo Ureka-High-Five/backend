@@ -10,16 +10,18 @@ import java.util.Optional;
 import org.highfive.backend.common.fixture.ContentFixture;
 import org.highfive.backend.common.fixture.MetaInfoContentsFixture;
 import org.highfive.backend.common.fixture.MetaInfoFixture;
+import org.highfive.backend.common.fixture.ShortsFixture;
 import org.highfive.backend.content.dto.response.ContentDetailResponseDto;
 import org.highfive.backend.content.entity.Content;
-import org.highfive.backend.metadata.entity.MetaInfo;
-import org.highfive.backend.metadata.entity.MetaInfoContents;
-import org.highfive.backend.metadata.entity.MetaType;
 import org.highfive.backend.content.exception.ContentErrorCode;
 import org.highfive.backend.content.repository.querydsl.ContentQueryRepositoryImpl;
 import org.highfive.backend.global.code.SuccessCode;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
+import org.highfive.backend.metadata.entity.MetaInfo;
+import org.highfive.backend.metadata.entity.MetaInfoContents;
+import org.highfive.backend.metadata.entity.MetaType;
+import org.highfive.backend.shorts.entity.Shorts;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -57,6 +59,9 @@ public class ContentServiceTest {
         );
 
         Content contentWithMeta = ContentFixture.createContentWithMetaInfo(content, metaInfoContents);
+
+        Shorts shorts = ShortsFixture.createShorts(contentWithMeta);
+        contentWithMeta.getShorts().add(shorts);
 
         when(contentQueryRepositoryImpl.findWithMetaInfoById(contentId)).thenReturn(Optional.of(contentWithMeta));
 

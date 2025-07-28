@@ -2,6 +2,7 @@ package org.highfive.backend.shorts.controller;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Positive;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -9,10 +10,10 @@ import org.highfive.backend.action.Action;
 import org.highfive.backend.action.ActionLogStamp;
 import org.highfive.backend.global.dto.CursorPageResponse;
 import org.highfive.backend.global.dto.Response;
-import org.highfive.backend.shorts.dto.response.CreateShortsCommentResponseDto;
 import org.highfive.backend.shorts.dto.request.CreateShortsCommentRequestDto;
 import org.highfive.backend.shorts.dto.request.ShortsDislikeRequestDto;
 import org.highfive.backend.shorts.dto.request.ShortsLikeCreateRequestDto;
+import org.highfive.backend.shorts.dto.response.CreateShortsCommentResponseDto;
 import org.highfive.backend.shorts.dto.response.GetShortsCommentResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsCommentsByIdResponseDto;
 import org.highfive.backend.shorts.dto.response.ShortsCommentsByTimeResponseDto;
@@ -63,7 +64,7 @@ public class ShortsController {
     public Response<List<ShortsCommentsByTimeResponseDto>> getCommentsByTime(
             @PathVariable Long shortsId,
             @RequestParam @Positive Long time,
-            @RequestParam @Positive Integer duration) {
+            @RequestParam @Min(5) Integer duration) {
         return shortsService.getCommentsByTime(shortsId, time, duration);
     }
 
@@ -98,7 +99,7 @@ public class ShortsController {
     @GetMapping("/liked")
     public Response<CursorPageResponse<ShortsLikedUserItemDto>> likedShorts(final @AuthenticationPrincipal User user,
                                                                             @RequestParam @Nullable final String cursor,
-                                                                            @RequestParam(value = "5") final int size) {
+                                                                            @RequestParam(defaultValue = "5") final int size) {
         return shortsService.likedShorts(user, cursor, size);
     }
 

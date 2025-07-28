@@ -53,6 +53,10 @@ public record AdminUpdateContentRequestDto(
         List<String> actors,
 
         @NotBlank
-        String director
+        String director,
+
+        @NotNull
+        @Positive
+        Integer trailerTime
 ) {
 }

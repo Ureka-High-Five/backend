@@ -98,6 +98,9 @@ public class Content extends BaseEntity {
 
     private LocalDateTime deletedAt;
 
+    @Column(nullable = false)
+    private int trailerTime;
+
     public void updateEmbedding(String embedding) {
         this.embedding = embedding;
     }

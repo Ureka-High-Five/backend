@@ -2,6 +2,7 @@ package org.highfive.backend.content.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import java.util.List;
 import lombok.Builder;
@@ -43,7 +44,11 @@ public record AdminAddContentRequestDto(
         List<String> actors,
 
         @NotBlank
-        String director
+        String director,
+
+        @NotNull
+        @Positive
+        Integer trailerTime
 ) {
 }
 
