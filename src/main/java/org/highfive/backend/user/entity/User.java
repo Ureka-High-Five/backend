@@ -89,12 +89,13 @@ public class User extends BaseEntity {
         this.userRole = userRole;
     }
 
-    public boolean isAdmin() {
-        return this.userRole == UserRole.ADMIN;
-    }
-
     public void updateUserRole(final UserRole role) {
         this.userRole = role;
+    }
+
+    public void updateUserWatchInfo(final long averageViewTime, final long viewCount) {
+        this.averageViewTime = averageViewTime;
+        this.viewCount = viewCount;
     }
 
 }
