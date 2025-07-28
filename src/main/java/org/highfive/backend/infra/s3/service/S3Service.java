@@ -1,6 +1,5 @@
 package org.highfive.backend.infra.s3.service;
 
-import com.nimbusds.common.contenttype.ContentType;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.infra.s3.MediaType;
