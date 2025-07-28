@@ -1,5 +1,6 @@
 package org.highfive.backend.action.log.strategy;
 
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.highfive.backend.action.Action;
@@ -14,8 +15,6 @@ import org.highfive.backend.shorts.exception.ShortsErrorCode;
 import org.highfive.backend.shorts.repository.jpa.ShortsRepository;
 import org.highfive.backend.user.dto.request.CreateContentWatchLogRequestDto;
 import org.springframework.stereotype.Component;
-
-import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -38,12 +37,12 @@ public class WatchActionLogStrategy implements ActionLogStrategy {
             Shorts shorts = shortsRepository.findById(info.id)
                     .orElseThrow(() -> new BusinessException(ShortsErrorCode.SHORTS_NOT_FOUND));
             contentId = shorts.getContent().getId();
-            watchRate = calcWatchRate(shorts.getRunningTime(), watchTime);
+            watchRate = calcWatchRate(shorts.getTrailerTime(), watchTime);
         } else if ("VIDEO".equals(info.type)) {
             Content content = contentRepository.findById(info.id)
                     .orElseThrow(() -> new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND));
             contentId = content.getId();
-            watchRate = calcWatchRate(content.getRunningTime(), watchTime);
+            watchRate = calcWatchRate(content.getTrailerTime(), watchTime);
         } else {
             throw new BusinessException(ContentErrorCode.VIDEO_TYPE_NOT_FOUND);
         }
@@ -68,8 +67,8 @@ public class WatchActionLogStrategy implements ActionLogStrategy {
         throw new BusinessException(GlobalErrorCode.BAD_REQUEST);
     }
 
-    private double calcWatchRate(int runningTime, int watchTime) {
-        double ratio = (double) watchTime / runningTime;
+    private double calcWatchRate(int trailerTime, int watchTime) {
+        double ratio = (double) watchTime / trailerTime;
         double percent = ratio * 100.0;
 
         return Math.round(percent * 1000.0) / 1000.0;
