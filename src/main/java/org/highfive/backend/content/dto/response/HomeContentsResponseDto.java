@@ -34,9 +34,15 @@ public record HomeContentsResponseDto(
             Long curationId,
             Long userId,
             String userName,
-            String thumbnailUrl,
+            List<CurationContentsDto> contents,
             String title,
             String profileUrl
+    ) {
+    }
+
+    public record CurationContentsDto(
+            Long contentId,
+            String thumbnailUrl
     ) {
     }
 }

@@ -1,6 +1,7 @@
 package org.highfive.backend.curation.dto.mapper;
 
 import java.util.List;
+import org.highfive.backend.content.dto.response.HomeContentsResponseDto.CurationContentsDto;
 import org.highfive.backend.content.dto.response.HomeContentsResponseDto.CurationDto;
 import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.curation.dto.request.CreateCurationRequestDto;
@@ -61,13 +62,20 @@ public class CurationMapper {
     }
 
     public static List<CurationDto> toCurationDto(List<Curation> curations) {
-        return curations.stream().map(c -> new CurationDto(
-                        c.getId(),
-                        c.getUser().getId(),
-                        c.getUser().getName(),
-                        c.getThumbnailUrl(),
-                        c.getTitle(),
-                        c.getUser().getProfileUrl()))
+        return curations.stream().map(c -> {
+                    List<CurationContents> curationContents = c.getCurationContents();
+                    List<CurationContentsDto> curationContentsDtoList = curationContents.stream()
+                            .map(cc -> new CurationContentsDto(cc.getContent().getId(), cc.getContent().getThumbnailUrl()))
+                            .toList();
+                    return new CurationDto(
+                            c.getId(),
+                            c.getUser().getId(),
+                            c.getUser().getName(),
+                            curationContentsDtoList,
+                            c.getTitle(),
+                            c.getUser().getProfileUrl());
+                    }
+                )
                 .limit(4)
                 .toList();
     }
