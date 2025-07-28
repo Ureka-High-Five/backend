@@ -8,13 +8,15 @@ public record CurationDetailResponseDto(
         String thumbnailUrl,
         String profileUrl,
         String editorName,
+        String description,
         long editorId
 ) {
 
     public record ContentDto(
             long id,
             String title,
-            String thumbnailUrl
+            String thumbnailUrl,
+            String description
     ) {
     }
 }
