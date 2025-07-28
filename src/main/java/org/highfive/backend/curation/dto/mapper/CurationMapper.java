@@ -63,7 +63,8 @@ public class CurationMapper {
                         c.getUser().getId(),
                         c.getUser().getName(),
                         c.getThumbnailUrl(),
-                        c.getTitle()))
+                        c.getTitle(),
+                        c.getUser().getProfileUrl()))
                 .limit(4)
                 .toList();
     }
