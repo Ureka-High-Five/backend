@@ -46,6 +46,7 @@ public class ContentMapper {
                 .grade(15)
                 .popularity(100)
                 .thumbnailUrl(request.postUrl())
+                .trailerTime(request.trailerTime())
                 .build();
     }
 }
