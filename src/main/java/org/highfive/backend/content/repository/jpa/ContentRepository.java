@@ -64,16 +64,16 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
     );
 
     @Query(value = """
-    SELECT con.*
-    FROM contents con
-    JOIN contents_vector cv ON con.id = cv.content_id
+    SELECT c.*
+    FROM contents c
+    JOIN contents_vector cv ON c.id = cv.content_id
     JOIN users_vector u ON u.user_id = :userId
-    WHERE c.deletedAt IS NULL
+    WHERE c.deleted_at IS NULL
     ORDER BY cv.embedding <#> u.embedding
     LIMIT :count
 """, nativeQuery = true)
     List<Content> findRecommendedContentsByUser(
-            Long userId,
-            int count
+            @Param("userId") Long userId,
+            @Param("count") int count
     );
 }
