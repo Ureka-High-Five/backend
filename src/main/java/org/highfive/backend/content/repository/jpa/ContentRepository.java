@@ -51,14 +51,15 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
     );
 
     @Query(value = """
-        SELECT * FROM contents
-        WHERE title LIKE :input
-          AND (:cursor IS NULL OR id < :cursor)
-        ORDER BY id DESC
-    """, nativeQuery = true)
+    SELECT c FROM Content c
+    WHERE c.title LIKE :input
+    AND (:cursor IS NULL OR c.id < :cursor)
+    AND c.deletedAt IS NULL
+    ORDER BY c.id DESC
+    """)
     List<Content> searchByInput(
-            @Param("input") String input,
-            @Param("cursor") Long cursor,
+            String input,
+            Long cursor,
             Pageable pageable
     );
 
