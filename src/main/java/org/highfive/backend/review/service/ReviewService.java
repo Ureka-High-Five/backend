@@ -117,7 +117,7 @@ public class ReviewService {
         return new Response<>(OK.getCode(), null, null);
     }
 
-    public float calculateUserAverageRating(Long userId) {
+    private float calculateUserAverageRating(Long userId) {
         final List<Review> reviews = reviewRepository.findAllByUserId(userId);
 
         if (reviews.isEmpty()) {
@@ -128,9 +128,8 @@ public class ReviewService {
 
         return (float) (sum / reviews.size());
     }
-
-    @Transactional
-    public void updateUserAverageRating(Long userId) {
+    
+    private void updateUserAverageRating(Long userId) {
         float averageRating = calculateUserAverageRating(userId);
 
         User exsitedUser = userRepository.findById(userId)
