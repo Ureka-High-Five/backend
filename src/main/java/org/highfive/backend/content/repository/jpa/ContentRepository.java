@@ -20,7 +20,7 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
           FROM contents c
           JOIN meta_info_contents mic ON mic.content_id = c.id
           JOIN meta_info m ON m.id = mic.meta_info_id
-          WHERE m.type = 'GENRE'
+          WHERE m.type = 'GENRE' AND c.deleted_at IS NULL
         ) ranked
         WHERE rn = 1
         ORDER BY popularity DESC
@@ -28,26 +28,32 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
         """, nativeQuery = true)
     List<MostPopularContentPerGenreDto> findTopContentPerGenre(@Param("limit") int limit);
 
-    @Query("SELECT new map(c.id as contentId, m.name as genreName) " +
-            "FROM MetaInfoContents mic " +
-            "JOIN mic.metaInfo m " +
-            "JOIN mic.content c " +
-            "WHERE m.type = 'GENRE' AND c.id IN :contentIds")
+    @Query("""
+    SELECT new map(c.id as contentId, m.name as genreName)
+    FROM MetaInfoContents mic
+    JOIN mic.metaInfo m
+    JOIN mic.content c
+    WHERE m.type = 'GENRE'
+      AND c.id IN :contentIds
+      AND c.deletedAt IS NULL
+    """)
     List<Map<String, Object>> findContentGenresByContentIds(@Param("contentIds") List<Long> contentIds);
 
-    @Query(value = """
-    SELECT c.id, c.thumbnail_url
-    FROM contents c
-    JOIN meta_info_contents mic ON mic.content_id = c.id
-    JOIN meta_info m ON m.id = mic.meta_info_id
+    @Query("""
+    SELECT new org.highfive.backend.content.dto.response.TopContentsByGenreDto(
+        c.id, c.thumbnailUrl
+    )
+    FROM MetaInfoContents mic
+    JOIN mic.metaInfo m
+    JOIN mic.content c
     WHERE m.type = 'GENRE'
       AND m.name = :genre
+      AND c.deletedAt IS NULL
     ORDER BY c.popularity DESC
-    LIMIT :limit
-    """, nativeQuery = true)
+    """)
     List<TopContentsByGenreDto> findTopContentsByGenre(
             String genre,
-            int limit
+            Pageable pageable
     );
 
     @Query(value = """
