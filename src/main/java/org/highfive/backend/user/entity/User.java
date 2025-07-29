@@ -98,4 +98,8 @@ public class User extends BaseEntity {
         this.viewCount = viewCount;
     }
 
+    public void updateUserAverageRating(final float averageRating) {
+        this.averageRating = averageRating;
+    }
+
 }
