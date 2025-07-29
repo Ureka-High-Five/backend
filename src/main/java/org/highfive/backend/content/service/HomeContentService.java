@@ -26,6 +26,7 @@ import org.highfive.backend.user.entity.preference.PreferMetaInfoRepository;
 import org.highfive.backend.user.repository.jpa.UserRepository;
 import org.highfive.backend.user.repository.redis.UserRedisRepository;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -81,7 +82,7 @@ public class HomeContentService {
         final List<String> preferGenresByUser = preferMetaInfoRepository.findPreferGenresByUser(user.getId(), count);
         final Map<String, List<GenreContentDto>> result = new HashMap<>();
         for (String genre : preferGenresByUser) {
-            List<TopContentsByGenreDto> topContentsByGenre = contentRepository.findTopContentsByGenre(genre, 5);
+            List<TopContentsByGenreDto> topContentsByGenre = contentRepository.findTopContentsByGenre(genre, Pageable.ofSize(5));
             result.put(genre,
                     topContentsByGenre.stream().map(tc -> new GenreContentDto(tc.contentId(), tc.thumbnailUrl()))
                             .toList());
