@@ -68,6 +68,7 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
     FROM contents con
     JOIN contents_vector cv ON con.id = cv.content_id
     JOIN users_vector u ON u.user_id = :userId
+    WHERE c.deletedAt IS NULL
     ORDER BY cv.embedding <#> u.embedding
     LIMIT :count
 """, nativeQuery = true)
