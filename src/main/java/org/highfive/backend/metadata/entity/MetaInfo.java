@@ -1,13 +1,7 @@
 package org.highfive.backend.metadata.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -25,7 +19,12 @@ import org.highfive.backend.global.entity.BaseEntity;
 public class MetaInfo extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "meta_info_seq_generator")
+    @SequenceGenerator(
+            name = "meta_info_seq_generator",
+            sequenceName = "meta_info_seq",
+            allocationSize = 50
+    )
     private Long id;
 
     @Column(nullable = false)
