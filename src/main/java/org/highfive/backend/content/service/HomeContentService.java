@@ -41,12 +41,17 @@ public class HomeContentService {
     private final CurationRepository curationRepository;
 
     private final int PAGE_SIZE = 4;
+    private final int CONTENTS_PER_GENRE = 5;
+    private final int VECTOR_BASED_RECOMMEND_LIMIT = 1;
+    private final int PERSON_RECOMMEND_COUNT = 4;
+    private final int GENRE_RECOMMEND_PER_GENRE_COUNT= 2;
+    private final String GENRE_NAME = "genreName";
 
     @Transactional
     public Response<HomeContentsResponseDto> getHomeContents(final User user) {
         final MainRecommendDto mainRecommend = recommendMainContentsByUser(user);
-        final List<PersonalRecommendDto> personalRecommends = recommendContentsByUser(user, 4);
-        final Map<String, List<GenreContentDto>> genreRecommends = recommendContentsByUserGenre(user, 2);
+        final List<PersonalRecommendDto> personalRecommends = recommendContentsByUser(user, PERSON_RECOMMEND_COUNT);
+        final Map<String, List<GenreContentDto>> genreRecommends = recommendContentsByUserGenre(user, GENRE_RECOMMEND_PER_GENRE_COUNT);
 
         final PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
         final List<CurationDto> curations = CurationMapper.toCurationDto(
@@ -58,7 +63,7 @@ public class HomeContentService {
     }
 
     private MainRecommendDto recommendMainContentsByUser(final User user) {
-        final List<Content> contentsByUserVector = recommendContentsByVector(user, 1);
+        final List<Content> contentsByUserVector = recommendContentsByVector(user, VECTOR_BASED_RECOMMEND_LIMIT);
         final Content content = contentsByUserVector.getFirst();
         final List<String> genres = getGenres(content);
         return new MainRecommendDto(content.getId(), content.getPostUrl(), content.getDescription(), genres,
@@ -82,7 +87,7 @@ public class HomeContentService {
         final List<String> preferGenresByUser = preferMetaInfoRepository.findPreferGenresByUser(user.getId(), count);
         final Map<String, List<GenreContentDto>> result = new HashMap<>();
         for (String genre : preferGenresByUser) {
-            List<TopContentsByGenreDto> topContentsByGenre = contentRepository.findTopContentsByGenre(genre, Pageable.ofSize(5));
+            List<TopContentsByGenreDto> topContentsByGenre = contentRepository.findTopContentsByGenre(genre, Pageable.ofSize(CONTENTS_PER_GENRE));
             result.put(genre,
                     topContentsByGenre.stream().map(tc -> new GenreContentDto(tc.contentId(), tc.thumbnailUrl()))
                             .toList());
@@ -95,7 +100,7 @@ public class HomeContentService {
                 List.of(content.getId()));
         final List<String> genres = new ArrayList<>();
         for (Map<String, Object> genreInfo : contentGenresByContentIds) {
-            String genreName = (String) genreInfo.get("genreName");
+            String genreName = (String) genreInfo.get(GENRE_NAME);
             genres.add(genreName);
         }
         return genres;
