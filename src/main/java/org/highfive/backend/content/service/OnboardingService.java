@@ -1,22 +1,11 @@
 package org.highfive.backend.content.service;
 
-import static org.highfive.backend.global.code.SuccessCode.OK;
-
-import java.time.Year;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.highfive.backend.auth.dto.response.TokenResponseDto;
 import org.highfive.backend.auth.service.TokenService;
 import org.highfive.backend.content.dto.request.OnboardingSelectContentRequestDto;
-import org.highfive.backend.content.dto.response.GenreCountDto;
-import org.highfive.backend.content.dto.response.MostPopularContentPerGenreDto;
-import org.highfive.backend.content.dto.response.OnboardingContentDto;
-import org.highfive.backend.content.dto.response.OnboardingInitContentsResponseDto;
-import org.highfive.backend.content.dto.response.OnboardingSelectContentResponseDto;
+import org.highfive.backend.content.dto.response.*;
 import org.highfive.backend.content.exception.ContentErrorCode;
 import org.highfive.backend.content.repository.jpa.ContentRepository;
 import org.highfive.backend.content.repository.querydsl.ContentQueryRepositoryImpl;
@@ -35,13 +24,19 @@ import org.highfive.backend.user.entity.Gender;
 import org.highfive.backend.user.entity.User;
 import org.highfive.backend.user.entity.UserRole;
 import org.highfive.backend.user.entity.preference.MongoUserWeight;
-import org.highfive.backend.user.entity.preference.PreferMetaInfo;
-import org.highfive.backend.user.entity.preference.PreferMetaInfoRepository;
 import org.highfive.backend.user.repository.jpa.UserRepository;
 import org.highfive.backend.user.repository.mongo.UserWeightRepository;
 import org.highfive.backend.user.repository.redis.UserRedisRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Year;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.highfive.backend.global.code.SuccessCode.OK;
 
 @Slf4j
 @Service
@@ -179,7 +174,7 @@ public class OnboardingService {
             userWeightRepository.save(MongoUserWeight.builder()
                     .metaInfoId(metaInfoId)
                     .name(metaInfoName)
-                    .type(MetaType.GENRE)
+                    .type(MetaType.GENRE.toString())
                     .weight(weight)
                     .userId(user.getId())
                     .build());

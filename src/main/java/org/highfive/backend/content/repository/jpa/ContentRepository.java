@@ -1,14 +1,14 @@
 package org.highfive.backend.content.repository.jpa;
 
-import java.util.List;
-import java.util.Map;
 import org.highfive.backend.content.dto.response.MostPopularContentPerGenreDto;
-import org.highfive.backend.content.dto.response.TopContentsByGenreDto;
 import org.highfive.backend.content.entity.Content;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import java.util.List;
+import java.util.Map;
 
 public interface ContentRepository extends JpaRepository<Content, Long> {
 
@@ -39,23 +39,6 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
     """)
     List<Map<String, Object>> findContentGenresByContentIds(@Param("contentIds") List<Long> contentIds);
 
-    @Query("""
-    SELECT new org.highfive.backend.content.dto.response.TopContentsByGenreDto(
-        c.id, c.thumbnailUrl
-    )
-    FROM MetaInfoContents mic
-    JOIN mic.metaInfo m
-    JOIN mic.content c
-    WHERE m.type = 'GENRE'
-      AND m.name = :genre
-      AND c.deletedAt IS NULL
-    ORDER BY c.popularity DESC
-    """)
-    List<TopContentsByGenreDto> findTopContentsByGenre(
-            String genre,
-            Pageable pageable
-    );
-
     @Query(value = """
     SELECT c FROM Content c
     WHERE c.title LIKE :input
@@ -70,16 +53,12 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
     );
 
     @Query(value = """
-        SELECT * FROM (
-            SELECT c.*
-            FROM contents c
-            JOIN contents_vector cv ON c.id = cv.content_id
-            JOIN users_vector u ON u.user_id = :userId
-            WHERE c.deleted_at IS NULL
-            ORDER BY cv.embedding <#> u.embedding
-            LIMIT 30
-        ) AS similar_contents
-        ORDER BY random()
+        SELECT c.*
+        FROM contents c
+        JOIN contents_vector cv ON c.id = cv.content_id
+        JOIN users_vector u ON u.user_id = :userId
+        WHERE c.deleted_at IS NULL
+        ORDER BY cv.embedding <#> u.embedding
         LIMIT :count
     """, nativeQuery = true)
     List<Content> findRecommendedContentsByUser(

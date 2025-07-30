@@ -1,6 +1,7 @@
 package org.highfive.backend.content.repository.querydsl;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.highfive.backend.content.dto.ContentGenreDto;
 import org.highfive.backend.content.dto.response.GenreCountDto;
 import org.highfive.backend.content.dto.response.OnboardingContentDto;
+import org.highfive.backend.content.dto.response.TopContentsByGenreDto;
 import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.content.entity.QContent;
 import org.highfive.backend.metadata.entity.MetaType;
@@ -142,4 +144,23 @@ public class ContentQueryRepositoryImpl implements ContentQueryRepository {
         return Optional.ofNullable(result);
     }
 
+    public List<TopContentsByGenreDto> findTopContentsByGenreRandom(String genre, int limit) {
+        QMetaInfoContents mic = QMetaInfoContents.metaInfoContents;
+        QMetaInfo m = QMetaInfo.metaInfo;
+        QContent c = QContent.content;
+
+        return queryFactory
+                .select(Projections.constructor(TopContentsByGenreDto.class, c.id, c.thumbnailUrl))
+                .from(mic)
+                .join(mic.metaInfo, m)
+                .join(mic.content, c)
+                .where(
+                        m.type.eq(MetaType.valueOf("GENRE")),
+                        m.name.eq(genre),
+                        c.deletedAt.isNull()
+                )
+                .orderBy(Expressions.numberTemplate(Double.class, "function('RANDOM')").asc())
+                .limit(limit)
+                .fetch();
+    }
 }
