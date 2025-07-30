@@ -34,9 +34,11 @@ import org.highfive.backend.user.dto.request.SubmitOnboardingRequestDto;
 import org.highfive.backend.user.entity.Gender;
 import org.highfive.backend.user.entity.User;
 import org.highfive.backend.user.entity.UserRole;
+import org.highfive.backend.user.entity.preference.MongoUserWeight;
 import org.highfive.backend.user.entity.preference.PreferMetaInfo;
 import org.highfive.backend.user.entity.preference.PreferMetaInfoRepository;
 import org.highfive.backend.user.repository.jpa.UserRepository;
+import org.highfive.backend.user.repository.mongo.UserWeightRepository;
 import org.highfive.backend.user.repository.redis.UserRedisRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,10 +56,10 @@ public class OnboardingService {
     private final WeightManager weightManager;
     private final UserRepository userRepository;
     private final ContentRepository contentRepository;
-    private final PreferMetaInfoRepository preferMetaInfoRepository;
     private final ContentQueryRepositoryImpl contentQueryRepositoryImpl;
     private final MetaInfoRepository metaInfoRepository;
     private final UserRedisRepository userRedisRepository;
+    private final UserWeightRepository userWeightRepository;
 
     public Response<List<OnboardingSelectContentResponseDto>> getContentBySelectedContent(
             final OnboardingSelectContentRequestDto request) {
@@ -143,58 +145,44 @@ public class OnboardingService {
 
     private void initVector(final SubmitOnboardingRequestDto request, final User user) {
         List<Long> contentIds = request.selectedContentIds();
-        Map<String, Integer> genreCount = countGenre(contentIds);
-        FastApiOnboardingResponseDto response = fastApiClient.onboardingSubmit(genreCount);
+        Map<String, Integer> genreCountMap = countGenre(contentIds);
+        FastApiOnboardingResponseDto response = fastApiClient.onboardingSubmit(genreCountMap);
 
         String vector = response.userVector();
         userRepository.upsertUserVector(user.getId(), vector);
         userRedisRepository.setUserVector(user.getId(), vector);
 
-        Map<String, Double> genreWeights = weightManager.calcWeight(genreCount);
+        Map<String, Double> genreWeights = weightManager.calcWeight(genreCountMap);
         updateUserWeight(user, genreWeights);
     }
 
     private Map<String, Integer> countGenre(final List<Long> contentIds) {
-        final Map<String, Integer> genreCount = new HashMap<>();
+        final Map<String, Integer> genreCountMap = new HashMap<>();
 
         List<Map<String, Object>> results = contentQueryRepositoryImpl.findContentGenresByContentIds(contentIds);
 
         for (Map<String, Object> row : results) {
             String genreName = (String) row.get("genreName");
-            genreCount.put(genreName, genreCount.getOrDefault(genreName, 0) + 1);
+            genreCountMap.put(genreName, genreCountMap.getOrDefault(genreName, 0) + 1);
         }
-        return genreCount;
+        return genreCountMap;
     }
 
     private void updateUserWeight(final User user, final Map<String, Double> genreWeights) {
         for (Map.Entry<String, Double> entry : genreWeights.entrySet()) {
-            final String genreName = entry.getKey();
+            final String metaInfoName = entry.getKey();
             final double weight = entry.getValue();
 
-            if (weight == 0) {
-                continue;
-            }
-
-            final MetaInfo metaInfo = metaInfoRepository.findByNameAndType(genreName, MetaType.GENRE);
+            final MetaInfo metaInfo = metaInfoRepository.findByNameAndType(metaInfoName, MetaType.GENRE);
             Long metaInfoId = metaInfo.getId();
-            PreferMetaInfo preferMetaInfo = preferMetaInfoRepository.findByMetaInfoAndUser(metaInfoId, user.getId())
-                    .orElse(null);
 
-            if (preferMetaInfo != null) {
-                preferMetaInfo.updateWeight(weight);
-                return;
-            }
-
-            saveUserWeight(user, weight, metaInfo);
+            userWeightRepository.save(MongoUserWeight.builder()
+                    .metaInfoId(metaInfoId)
+                    .name(metaInfoName)
+                    .type(MetaType.GENRE)
+                    .weight(weight)
+                    .userId(user.getId())
+                    .build());
         }
-    }
-
-    private void saveUserWeight(User user, double weight, MetaInfo metaInfo) {
-        final PreferMetaInfo prefer = PreferMetaInfo.builder()
-                .user(user)
-                .weight(weight)
-                .metaInfo(metaInfo)
-                .build();
-        preferMetaInfoRepository.save(prefer);
     }
 }
