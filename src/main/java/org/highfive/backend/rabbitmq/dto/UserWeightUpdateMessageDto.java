@@ -7,6 +7,7 @@ public record UserWeightUpdateMessageDto(
         String id,
         Long userId,
         List<Long> metaInfoIds,
+        List<String> metaInfoTypes,
         List<String> metaInfoNames,
         Action actionType,
         double value

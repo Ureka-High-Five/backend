@@ -43,11 +43,17 @@ public class ActionLogService {
         List<MetaInfoContents> metaInfoContents = metaInfoContentsRepository.findByContentId(actionLog.getContentId());
         List<Long> metaInfoIds = extractMetaInfoIds(metaInfoContents);
         List<String> metaInfoName = extractMetaInfoNames(metaInfoContents);
-
+        List<String> metaInfoType = extractMetaInfoType(metaInfoContents);
         UserWeightUpdateMessageDto message = MessageMapper.toUserWeightUpdateMessageDto(actionLog.getId(), actionLog.getUserId(),
-                metaInfoIds, metaInfoName, actionLog.getAction(), actionLog.getValue());
+                metaInfoIds, metaInfoType, metaInfoName, actionLog.getAction(), actionLog.getValue());
 
         producer.sendWeightUpdateMessage(message);
+    }
+
+    private List<String> extractMetaInfoType(final List<MetaInfoContents> metaInfoContents) {
+        return metaInfoContents.stream()
+                .map(meta -> meta.getMetaInfo().getType().toString())
+                .toList();
     }
 
     private List<Long> extractMetaInfoIds(final List<MetaInfoContents> metaInfoContents) {
