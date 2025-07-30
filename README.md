@@ -55,6 +55,11 @@ OTT 서비스의 대표적인 문제인 개인 취향에 맞는 콘텐츠를 찾
 <br/>
 <img width="500" height="500" alt="스크린샷 2025-07-28 174011" src="https://github.com/user-attachments/assets/e1d95ad8-e3e0-43fb-b0ae-15b173793aaf" />
 
+##
+
+### 플로우 차트 
+
+<img width="5136" height="1876" alt="image" src="https://github.com/user-attachments/assets/6326a10c-c937-4ab2-9ab7-8595d512bd80" />
 
 
 
