@@ -3,7 +3,9 @@ package org.highfive.backend.infra.s3.service;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.infra.s3.MediaType;
-import org.highfive.backend.infra.s3.dto.PresignedUploadResponse;
+import org.highfive.backend.infra.s3.dto.ContentsPresignedUrlResponseDto;
+import org.highfive.backend.infra.s3.dto.CurationPresignedUrlResponseDto;
+import org.highfive.backend.infra.s3.dto.UrlPair;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
@@ -18,7 +20,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class S3Service {
 
-    private final int DURATION = 5;
+    private static final int DURATION_MINUTES = 5;
 
     private final S3Presigner s3Presigner;
 
@@ -28,27 +30,58 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public Response<PresignedUploadResponse> generatePresignedUrl(final String type) {
+    public Response<ContentsPresignedUrlResponseDto> generateContentsPreSignedUrl() {
+        final UUID uuid = UUID.randomUUID();
 
-        final MediaType mediaType = MediaType.from(type);
-        final String key = mediaType.getFolder() + "/" + UUID.randomUUID();
-        final PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                .bucket(bucket)
-                .key(key)
-                .contentType(mediaType.getContentType())
-                .build();
+        final UrlPair image = generatePreSignedPair(MediaType.CONTENT_IMAGE, uuid);
+        final UrlPair shorts = generatePreSignedPair(MediaType.SHORTS, uuid);
+        final UrlPair video = generatePreSignedPair(MediaType.VIDEO, uuid);
 
-        final PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
-                .putObjectRequest(putObjectRequest)
-                .signatureDuration(Duration.ofMinutes(DURATION))
-                .build();
-
-        final URL url = s3Presigner.presignPutObject(presignRequest).url();
-
-        return Response.ok(new PresignedUploadResponse(url.toString(), getImageUrl(key)));
+        return Response.ok(new ContentsPresignedUrlResponseDto(
+                image.preSignedUrl(), image.accessUrl(),
+                shorts.preSignedUrl(), shorts.accessUrl(),
+                video.preSignedUrl(), video.accessUrl()
+        ));
     }
 
-    private String getImageUrl(final String key) {
+    public Response<CurationPresignedUrlResponseDto> generateCurationPreSignedUrl() {
+        final UUID uuid = UUID.randomUUID();
+
+        final UrlPair image = generatePreSignedPair(MediaType.CURATION_IMAGE, uuid);
+
+        return Response.ok(new CurationPresignedUrlResponseDto(
+                image.preSignedUrl(), image.accessUrl()
+        ));
+    }
+
+    private UrlPair generatePreSignedPair(MediaType mediaType, UUID uuid) {
+        final String key = buildKey(mediaType, uuid);
+        final String preSignedUrl = createPreSignedUrl(key, mediaType.getContentType());
+        final String accessUrl = buildUrl(key);
+        return new UrlPair(preSignedUrl, accessUrl);
+    }
+
+    private String createPreSignedUrl(String key, String contentType) {
+        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                .bucket(bucket)
+                .key(key)
+                .contentType(contentType)
+                .build();
+
+        PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
+                .putObjectRequest(putObjectRequest)
+                .signatureDuration(Duration.ofMinutes(DURATION_MINUTES))
+                .build();
+
+        URL url = s3Presigner.presignPutObject(presignRequest).url();
+        return url.toString();
+    }
+
+    private String buildKey(MediaType mediaType, UUID uuid) {
+        return mediaType.getFolder() + "/" + uuid + mediaType.getExtension();
+    }
+
+    private String buildUrl(String key) {
         return "https://" + bucket + ".s3." + awsRegion + ".amazonaws.com/" + key;
     }
 }
