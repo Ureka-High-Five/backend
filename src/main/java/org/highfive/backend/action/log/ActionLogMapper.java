@@ -1,5 +1,7 @@
 package org.highfive.backend.action.log;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.highfive.backend.metadata.entity.MetaInfo;
 import org.highfive.backend.metadata.entity.MetaInfoContents;
 
@@ -9,18 +11,18 @@ import java.util.List;
 public class ActionLogMapper {
 
     public static MetaInfoLog extractMetaInfoLog(final List<MetaInfoContents> metaINfoContents) {
-        List<String> genres = new ArrayList<>();
-        List<String> actors = new ArrayList<>();
-        String director = "";
-        String country = "";
+        Map<Long, String> genres = new HashMap<>();
+        Map<Long, String> actors = new HashMap<>();
+        Map<Long, String> director = new HashMap<>();
+        Map<Long, String> country = new HashMap<>();
 
         for(MetaInfoContents metaInfoContents : metaINfoContents) {
             MetaInfo metaInfo = metaInfoContents.getMetaInfo();
             switch(metaInfo.getType()) {
-                case ACTOR -> actors.add(metaInfo.getName());
-                case GENRE -> genres.add(metaInfo.getName());
-                case DIRECTOR -> director = metaInfo.getName();
-                case COUNTRY -> country = metaInfo.getName();
+                case ACTOR -> actors.put(metaInfo.getId(), metaInfo.getName());
+                case GENRE -> genres.put(metaInfo.getId(), metaInfo.getName());
+                case DIRECTOR -> director.put(metaInfo.getId(), metaInfo.getName());
+                case COUNTRY -> country.put(metaInfo.getId(), metaInfo.getName());
             }
         }
 
