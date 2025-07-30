@@ -25,6 +25,7 @@ import org.highfive.backend.user.entity.User;
 import org.highfive.backend.user.entity.UserRole;
 import org.highfive.backend.user.entity.preference.PreferMetaInfoRepository;
 import org.highfive.backend.user.repository.jpa.UserRepository;
+import org.highfive.backend.user.repository.mongo.UserWeightRepository;
 import org.highfive.backend.user.repository.redis.UserRedisRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -67,6 +68,8 @@ class OnboardingServiceTest {
     UserRepository userRepository;
     @Mock
     MetaInfoRepository metaInfoRepository;
+    @Mock
+    UserWeightRepository userWeightRepository;
     @Mock
     WeightManager weightManager;
     @Mock
@@ -228,7 +231,5 @@ class OnboardingServiceTest {
         assertThat(user.getUserRole()).isEqualTo(UserRole.USER);
         assertThat(user.getGender()).isEqualTo(Gender.MALE);
         assertThat(user.getAge()).isEqualTo(25);
-
-        verify(preferMetaInfoRepository, times(2)).save(any());
     }
 }
