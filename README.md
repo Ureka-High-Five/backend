@@ -45,11 +45,16 @@ OTT 서비스의 대표적인 문제인 개인 취향에 맞는 콘텐츠를 찾
 
 ## 
 
-### 🔄 추천 플로우차트
+### 🔄 모델 변경
+이전 모델
+<br/>
+<img width="500" height="500" alt="스크린샷 2025-07-28 140705" src="https://github.com/user-attachments/assets/cba010f0-1cb4-4348-bf40-a07b56e7fc43" />
 
-<img width="1462" height="1122" alt="image" src="https://github.com/user-attachments/assets/3d835c8c-bfdc-4f63-b0bd-9e4bfeba9695" />
+<br/>
+현재 모델
+<br/>
+<img width="500" height="500" alt="스크린샷 2025-07-28 174011" src="https://github.com/user-attachments/assets/e1d95ad8-e3e0-43fb-b0ae-15b173793aaf" />
 
-<img width="1000" height="960" alt="image" src="https://github.com/user-attachments/assets/dad1cc09-e8af-4c7c-937b-1123aacad454" />
 
 
 
