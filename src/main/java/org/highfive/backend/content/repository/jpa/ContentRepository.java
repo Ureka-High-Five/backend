@@ -39,23 +39,6 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
     """)
     List<Map<String, Object>> findContentGenresByContentIds(@Param("contentIds") List<Long> contentIds);
 
-    @Query("""
-    SELECT new org.highfive.backend.content.dto.response.TopContentsByGenreDto(
-        c.id, c.thumbnailUrl
-    )
-    FROM MetaInfoContents mic
-    JOIN mic.metaInfo m
-    JOIN mic.content c
-    WHERE m.type = 'GENRE'
-      AND m.name = :genre
-      AND c.deletedAt IS NULL
-    ORDER BY c.popularity DESC
-    """)
-    List<TopContentsByGenreDto> findTopContentsByGenre(
-            String genre,
-            Pageable pageable
-    );
-
     @Query(value = """
     SELECT c FROM Content c
     WHERE c.title LIKE :input
