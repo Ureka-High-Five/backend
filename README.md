@@ -13,9 +13,6 @@ OTT 서비스의 대표적인 문제인 개인 취향에 맞는 콘텐츠를 찾
 ### 🎯 개발 목표
 
 사용자 행동을 실시간으로 반영한 추천 시스템 구축
-  - Redis Stream(메시징 처리)으로 실시간 가중치 계산을 비동기 처리합니다.
-  - ELK를 이용하여 로그를 관리합니다.
-  - 쓰기 DB와 읽기 DB를 분리하여 DB 부하를 줄입니다.
 
 
 <br/>
@@ -57,9 +54,16 @@ OTT 서비스의 대표적인 문제인 개인 취향에 맞는 콘텐츠를 찾
 
 ##
 
-### 플로우 차트 
+###  플로우 차트 
 
-<img width="5136" height="1876" alt="image" src="https://github.com/user-attachments/assets/6326a10c-c937-4ab2-9ab7-8595d512bd80" />
+<img width="5136" height="1876" alt="image" src="https://github.com/user-attachments/assets/548847a9-ef59-4a32-a338-969cfbdea75b" />
+
+##
+
+### 스케줄러 
+
+<img width="5504" height="2284" alt="image" src="https://github.com/user-attachments/assets/b6f67e60-2ce8-4fe5-924c-bb87b673ee2d" />
+
 
 
 
