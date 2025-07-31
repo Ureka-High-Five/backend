@@ -61,7 +61,7 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
         JOIN users_vector u ON u.user_id = :userId
         WHERE c.deleted_at IS NULL
         ORDER BY cv.embedding <#> u.embedding
-        LIMIT 20
+        LIMIT 10
     ) AS top_similar_contents
     ORDER BY random()
     LIMIT :count
