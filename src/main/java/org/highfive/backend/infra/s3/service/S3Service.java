@@ -85,7 +85,8 @@ public class S3Service {
     }
 
     public String createSegmentUrl(final MediaType mediaType, final String uuid) {
-        return buildKey(mediaType, UUID.fromString(uuid));
+        final String key = buildKey(mediaType, UUID.fromString(uuid));
+        return buildUrl(key);
     }
 
     private String buildKey(MediaType mediaType, UUID uuid) {
