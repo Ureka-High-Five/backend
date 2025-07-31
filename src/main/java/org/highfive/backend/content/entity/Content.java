@@ -105,6 +105,14 @@ public class Content extends BaseEntity {
         this.embedding = embedding;
     }
 
+    public void updateThumbnailUrl(final String thumbnailUrl) {
+        this.thumbnailUrl = thumbnailUrl;
+    }
+
+    public void addShorts(final Shorts shorts) {
+        this.shorts.add(shorts);
+    }
+
     public Content updateFromDto(AdminUpdateContentRequestDto request) {
         this.title = request.title();
         this.description = request.description();
