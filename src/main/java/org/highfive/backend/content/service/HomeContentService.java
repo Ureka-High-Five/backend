@@ -93,7 +93,7 @@ public class HomeContentService {
         final List<String> preferGenresByUser = userWeightRepository.findTop2Genres(user.getId(), PageRequest.of(0,2)).stream().map(MongoUserWeight::getName).toList();
         for (String genre : preferGenresByUser) {
             List<TopContentsByGenreDto> topContentsByGenre = contentQueryRepository.findTopContentsByGenreRandom(GenreMapper.CONVERT_DB_GENRE.get(genre), CONTENTS_PER_GENRE);
-            result.put(genre,
+            result.put(GenreMapper.CONVERT_HOME_GENRE.get(genre),
                     topContentsByGenre.stream().map(tc -> new GenreContentDto(tc.contentId(), tc.thumbnailUrl()))
                             .toList());
         }
