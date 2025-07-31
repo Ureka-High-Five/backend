@@ -53,14 +53,19 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
     );
 
     @Query(value = """
+    SELECT *
+    FROM (
         SELECT c.*
         FROM contents c
         JOIN contents_vector cv ON c.id = cv.content_id
         JOIN users_vector u ON u.user_id = :userId
         WHERE c.deleted_at IS NULL
         ORDER BY cv.embedding <#> u.embedding
-        LIMIT :count
-    """, nativeQuery = true)
+        LIMIT 20
+    ) AS top_similar_contents
+    ORDER BY random()
+    LIMIT :count
+""", nativeQuery = true)
     List<Content> findRecommendedContentsByUser(
             Long userId,
             int count
