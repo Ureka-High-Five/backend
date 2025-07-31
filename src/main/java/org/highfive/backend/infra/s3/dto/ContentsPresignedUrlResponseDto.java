@@ -6,6 +6,7 @@ public record ContentsPresignedUrlResponseDto(
         String shortsPresignedUrl,
         String shortsUrl,
         String videoPresignedUrl,
-        String videoUrl
+        String videoUrl,
+        String uuid
 ) {
 }
