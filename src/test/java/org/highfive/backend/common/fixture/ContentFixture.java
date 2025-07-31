@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.content.entity.ContentType;
+import org.highfive.backend.content.entity.ContentVector;
 import org.highfive.backend.metadata.entity.MetaInfoContents;
 
 public class ContentFixture {
@@ -20,7 +21,6 @@ public class ContentFixture {
                 .runningTime(120)
                 .grade(15)
                 .contentType(ContentType.MOVIE)
-                .embedding("test-embedding")
                 .popularity(100)
                 .build();
     }
@@ -36,7 +36,6 @@ public class ContentFixture {
                 .runningTime(120)
                 .grade(15)
                 .contentType(ContentType.MOVIE)
-                .embedding("test-embedding")
                 .popularity(100)
                 .totalRound(10)
                 .build();
@@ -54,7 +53,6 @@ public class ContentFixture {
                 .runningTime(120)
                 .grade(15)
                 .contentType(ContentType.MOVIE)
-                .embedding("test-embedding")
                 .popularity(popularity)
                 .build();
     }
@@ -71,8 +69,14 @@ public class ContentFixture {
                 .runningTime(120)
                 .grade(15)
                 .contentType(ContentType.MOVIE)
-                .embedding("test-embedding")
                 .popularity(100)
+                .build();
+    }
+
+    public static ContentVector createContentVector(Content content, String vector) {
+        return ContentVector.builder()
+                .content(content)
+                .embedding(vector)
                 .build();
     }
 
@@ -88,7 +92,6 @@ public class ContentFixture {
                 .runningTime(content.getRunningTime())
                 .grade(content.getGrade())
                 .contentType(content.getContentType())
-                .embedding(content.getEmbedding())
                 .popularity(content.getPopularity())
                 .metaInfoContents(metaInfoContents)
                 .build();
