@@ -8,8 +8,10 @@ import org.highfive.backend.content.dto.request.AdminUpdateContentRequestDto;
 import org.highfive.backend.content.dto.response.AdminAddContentResponseDto;
 import org.highfive.backend.content.dto.response.AdminUpdateContentResponseDto;
 import org.highfive.backend.content.entity.Content;
+import org.highfive.backend.content.entity.ContentVector;
 import org.highfive.backend.content.exception.ContentErrorCode;
 import org.highfive.backend.content.repository.jpa.ContentRepository;
+import org.highfive.backend.content.repository.jpa.ContentVectorRepository;
 import org.highfive.backend.global.client.fastapi.FastApiClient;
 import org.highfive.backend.global.client.fastapi.dto.response.FastApiVectorFromGenresDto;
 import org.highfive.backend.global.dto.Response;
@@ -37,14 +39,15 @@ public class AdminContentService {
     private final MetaInfoRepository metaInfoRepository;
     private final S3Service s3Service;
     private final ShortsRepository shortsRepository;
+    private final ContentVectorRepository contentVectorRepository;
 
     @Transactional
     public Response<AdminAddContentResponseDto> addContent(final AdminAddContentRequestDto request) {
         final Content content = ContentMapper.fromAdminAddContentRequestDto(request);
         final String vector = getEmbeddingByGenres(request.genres());
         final String uuid = request.uuid();
-        content.updateEmbedding(vector);
-
+        final ContentVector contentVector = ContentVector.builder().embedding(vector).build();
+        contentVector.updateContent(content);
         final Content savedContent = contentRepository.save(content);
         updatePosterThumbnailUrl(savedContent, uuid);
 
@@ -79,14 +82,19 @@ public class AdminContentService {
     @Transactional
     public Response<AdminUpdateContentResponseDto> updateContent(final AdminUpdateContentRequestDto request) {
         final Content content = getUpdateContent(request);
-
         updateGenres(request, content);
         updateDirector(request, content);
         updateActors(request, content);
-
-        final FastApiVectorFromGenresDto response = fastApiClient.vectorFromGenres(request.genres());
-        content.updateEmbedding(response.vector());
+        updateEmbedding(request, content);
         return Response.ok(new AdminUpdateContentResponseDto(content.getId()));
+    }
+
+    private void updateEmbedding(final AdminUpdateContentRequestDto request, final Content content) {
+        final FastApiVectorFromGenresDto response = fastApiClient.vectorFromGenres(request.genres());
+        final String vector = response.vector();
+        final Long contentId = content.getId();
+        final ContentVector contentVector = contentVectorRepository.findById(contentId).orElseThrow(() -> new BusinessException(ContentErrorCode.CONTENT_VECTOR_ERROR));
+        contentVector.updateEmbedding(vector);
     }
 
     @Transactional
