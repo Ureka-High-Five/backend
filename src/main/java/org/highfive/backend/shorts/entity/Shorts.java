@@ -50,4 +50,9 @@ public class Shorts extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "shorts", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ShortsLikeTimeLog> shortsLikeTimeLogs = new ArrayList<>();
+
+    public void updateContent(final Content content) {
+        this.content = content;
+        content.addShorts(this);
+    }
 }
