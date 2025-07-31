@@ -76,6 +76,7 @@ public class ShortsController {
     }
 
     @PostMapping("/dislike")
+    @ActionLogStamp(Action.DISLIKE)
     public Response<Void> dislike(@AuthenticationPrincipal final User user,
                                   @RequestBody @Valid final ShortsDislikeRequestDto dto) {
         return shortsService.dislike(user, dto);

@@ -1,5 +1,5 @@
 package org.highfive.backend.action;
 
 public enum Action {
-    CLICK, WATCH, LIKE, RATING,
+    CLICK, WATCH, LIKE, RATING, DISLIKE,
 }

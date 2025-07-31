@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.highfive.backend.action.Action;
 import org.highfive.backend.action.log.strategy.ActionLogStrategy;
 import org.highfive.backend.action.log.strategy.ClickActionLogStrategy;
+import org.highfive.backend.action.log.strategy.DislikeActionLogStrategy;
 import org.highfive.backend.action.log.strategy.LikeActionLogStrategy;
 import org.highfive.backend.action.log.strategy.RatingActionLogStrategy;
 import org.highfive.backend.action.log.strategy.WatchActionLogStrategy;
@@ -22,6 +23,7 @@ public class ActionLogStrategyFactory {
     private final WatchActionLogStrategy watchStrategy;
     private final RatingActionLogStrategy ratingStrategy;
     private final LikeActionLogStrategy likeStrategy;
+    private final DislikeActionLogStrategy dislikeStrategy;
     private final Map<Action, ActionLogStrategy> strategyMap = new HashMap<>();
 
     @PostConstruct
@@ -30,6 +32,7 @@ public class ActionLogStrategyFactory {
         strategyMap.put(Action.WATCH, watchStrategy);
         strategyMap.put(Action.RATING, ratingStrategy);
         strategyMap.put(Action.LIKE, likeStrategy);
+        strategyMap.put(Action.DISLIKE, dislikeStrategy);
     }
 
     public ActionLogStrategy getStrategy(Action action) {
