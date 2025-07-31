@@ -16,6 +16,7 @@ import org.highfive.backend.curation.dto.mapper.CurationMapper;
 import org.highfive.backend.curation.repository.jpa.CurationRepository;
 import org.highfive.backend.global.code.SuccessCode;
 import org.highfive.backend.global.dto.Response;
+import org.highfive.backend.metadata.dto.GenreMapper;
 import org.highfive.backend.user.entity.User;
 import org.highfive.backend.user.entity.preference.MongoUserWeight;
 import org.highfive.backend.user.entity.preference.PreferMetaInfoRepository;
@@ -39,7 +40,6 @@ public class HomeContentService {
 
     private final UserRedisRepository userRedisRepository;
     private final ContentRepository contentRepository;
-    private final PreferMetaInfoRepository preferMetaInfoRepository;
     private final UserWeightRepository userWeightRepository;
     private final UserRepository userRepository;
     private final CurationRepository curationRepository;
@@ -92,7 +92,7 @@ public class HomeContentService {
         final Map<String, List<GenreContentDto>> result = new HashMap<>();
         final List<String> preferGenresByUser = userWeightRepository.findTop2Genres(user.getId(), PageRequest.of(0,2)).stream().map(MongoUserWeight::getName).toList();
         for (String genre : preferGenresByUser) {
-            List<TopContentsByGenreDto> topContentsByGenre = contentQueryRepository.findTopContentsByGenreRandom(genre, CONTENTS_PER_GENRE);
+            List<TopContentsByGenreDto> topContentsByGenre = contentQueryRepository.findTopContentsByGenreRandom(GenreMapper.CONVERT_DB_GENRE.get(genre), CONTENTS_PER_GENRE);
             result.put(genre,
                     topContentsByGenre.stream().map(tc -> new GenreContentDto(tc.contentId(), tc.thumbnailUrl()))
                             .toList());
