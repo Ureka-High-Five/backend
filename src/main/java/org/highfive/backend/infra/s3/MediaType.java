@@ -10,8 +10,8 @@ public enum MediaType {
     CONTENT_IMAGE("image/jpeg", "poster", ".jpg"),
     VIDEO("video/mp4", "video",".mp4"),
     SHORTS("video/mp4", "shorts_video",".mp4"),
-    VIDEO_SEGMENT("video/mp4", "video_segment", ".m3u8"),
-    SHORTS_SEGMENT("video/mp4", "shorts_segment", ".m3u8"),
+    VIDEO_SEGMENT("application/vnd.apple.mpegurl", "video_segment", ".m3u8"),
+    SHORTS_SEGMENT("application/vnd.apple.mpegurl", "shorts_segment", ".m3u8"),
     POSTER_THUMBNAIL_URL("image/jpeg", "poster_thumbnail", ".jpg"),
     SHORTS_THUMBNAIL_URL("image/jpeg", "shorts_thumbnail", ".jpg");
 
