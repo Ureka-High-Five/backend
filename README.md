@@ -5,7 +5,7 @@
 OTT 서비스의 대표적인 문제인 개인 취향에 맞는 콘텐츠를 찾기 어려운 경험을 해결하고자,  
 **사용자 행동 데이터 기반의 개인화 추천 시스템**을 구축합니다.
 
-명시적 입력 없이도 행동 로그만으로 사용자 취향을 파악하고,  
+명시적 입력 없이도 행동 로그만으로 사용자 취향을 파악하고
 이를 기반으로 한 정교한 콘텐츠 추천 기능을 갖춘 백엔드 아키텍처를 설계·구현합니다.
 
 <br/>
@@ -43,24 +43,31 @@ OTT 서비스의 대표적인 문제인 개인 취향에 맞는 콘텐츠를 찾
 ## 
 
 ### 🔄 모델 변경
-이전 모델
-<br/>
-<img width="500" height="500" alt="스크린샷 2025-07-28 140705" src="https://github.com/user-attachments/assets/cba010f0-1cb4-4348-bf40-a07b56e7fc43" />
 
-<br/>
-현재 모델
-<br/>
-<img width="500" height="500" alt="스크린샷 2025-07-28 174011" src="https://github.com/user-attachments/assets/e1d95ad8-e3e0-43fb-b0ae-15b173793aaf" />
+<img width="978" height="573" alt="추천 알고리즘 (4)" src="https://github.com/user-attachments/assets/d7fb5355-b5ba-4f8d-a921-e37818625caa" />
+
 
 ##
 
-###  플로우 차트 
+### 🌤️ 플로우 차트 
+
+사용자 행동 로그 발생 시 최소한의 지연(latency)으로 실시간 추천을 제공하기 위해 하나의 추천 워크플로우를 여러 개의 트랜잭션으로 분리하였으며, 각 단계에 대한 보상 트랜잭션을 설계 및 구현하였습니다.
+
+- 각 트랜잭션이 실패할 경우 실패 로그는 MongoDB에 기록됩니다.
+
+- Log Reprocessing Scheduler가 1분 주기로 실패 로그를 조회하여 재처리를 시도합니다.
+
+- Weight Resizing Scheduler는 매일 실행되며 과거 가중치를 재조정함과 동시에 모든 실패 로그를 다시 시도합니다.
+
+- 재처리 스케줄러조차 실패할 경우 해당 로그는 파일로 저장되며, 이는 Promtail + Loki + Grafana를 통해 슬랙 알림으로 전송됩니다.
+
+<br/>
 
 <img width="5136" height="1876" alt="image" src="https://github.com/user-attachments/assets/548847a9-ef59-4a32-a338-969cfbdea75b" />
 
 ##
 
-### 스케줄러 
+### 🪄스케줄러 
 
 <img width="5504" height="2284" alt="image" src="https://github.com/user-attachments/assets/b6f67e60-2ce8-4fe5-924c-bb87b673ee2d" />
 
