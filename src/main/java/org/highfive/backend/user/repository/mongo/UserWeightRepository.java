@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface UserWeightRepository extends MongoRepository<MongoUserWeight, String> {
 
-    @Query(value = "{ 'user_id': ?0, 'type': 'genre' }", sort = "{ 'weight': -1 }")
+    @Query(value = "{ 'user_id': ?0, 'type': 'GENRE' }", sort = "{ 'weight': -1 }")
     List<MongoUserWeight> findTop2Genres(Long userId, Pageable pageable);
 }
