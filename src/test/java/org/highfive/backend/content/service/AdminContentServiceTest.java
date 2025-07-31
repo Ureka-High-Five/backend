@@ -17,6 +17,7 @@ import org.highfive.backend.content.dto.request.AdminUpdateContentRequestDto;
 import org.highfive.backend.content.dto.response.AdminAddContentResponseDto;
 import org.highfive.backend.content.dto.response.AdminUpdateContentResponseDto;
 import org.highfive.backend.content.entity.Content;
+import org.highfive.backend.infra.s3.service.S3Service;
 import org.highfive.backend.metadata.entity.MetaInfo;
 import org.highfive.backend.metadata.entity.MetaInfoContents;
 import org.highfive.backend.metadata.entity.MetaType;
@@ -28,6 +29,7 @@ import org.highfive.backend.global.client.fastapi.dto.response.FastApiVectorFrom
 import org.highfive.backend.global.code.GlobalErrorCode;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
+import org.highfive.backend.shorts.repository.jpa.ShortsRepository;
 import org.highfive.backend.user.entity.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -56,6 +58,12 @@ class AdminContentServiceTest {
 
     @Mock
     private FastApiClient fastApiClient;
+
+    @Mock
+    private S3Service s3Service;
+
+    @Mock
+    private ShortsRepository shortsRepository;
 
     @Test
     @Transactional
