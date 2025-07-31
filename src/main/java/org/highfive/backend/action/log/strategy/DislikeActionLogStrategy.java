@@ -1,0 +1,51 @@
+package org.highfive.backend.action.log.strategy;
+
+import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.highfive.backend.action.Action;
+import org.highfive.backend.action.log.ActionLog;
+import org.highfive.backend.global.code.GlobalErrorCode;
+import org.highfive.backend.global.exception.BusinessException;
+import org.highfive.backend.shorts.dto.request.ShortsDislikeRequestDto;
+import org.highfive.backend.shorts.entity.Shorts;
+import org.highfive.backend.shorts.exception.ShortsErrorCode;
+import org.highfive.backend.shorts.repository.jpa.ShortsRepository;
+import org.springframework.stereotype.Component;
+
+@Component
+@RequiredArgsConstructor
+public class DislikeActionLogStrategy implements ActionLogStrategy {
+
+    private final ShortsRepository shortsRepository;
+
+    @Override
+    public ActionLog createLog(ProceedingJoinPoint joinPoint, long userId, long timestamp) {
+        long shortsId = extractShortsId(joinPoint);
+        long contentId = getContentIdByShortsId(shortsId);
+        return ActionLog.builder()
+                .id(UUID.randomUUID().toString())
+                .userId(userId)
+                .contentId(contentId)
+                .action(Action.DISLIKE)
+                .value(1)
+                .timestamp(timestamp)
+                .build();
+    }
+
+    private long extractShortsId(ProceedingJoinPoint joinPoint) {
+        Object[] args = joinPoint.getArgs();
+        for (Object arg : args) {
+            if (arg instanceof ShortsDislikeRequestDto dto) {
+                return dto.shortsId();
+            }
+        }
+        throw new BusinessException(GlobalErrorCode.BAD_REQUEST);
+    }
+
+    private long getContentIdByShortsId(long shortsId) {
+        Shorts shorts = shortsRepository.findById(shortsId)
+                .orElseThrow(() -> new BusinessException(ShortsErrorCode.SHORTS_NOT_FOUND));
+        return shorts.getContent().getId();
+    }
+}
