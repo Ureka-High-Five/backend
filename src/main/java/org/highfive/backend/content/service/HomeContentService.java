@@ -1,6 +1,13 @@
 package org.highfive.backend.content.service;
 
+import static org.highfive.backend.global.util.VectorUtil.convertUserVector;
+
+import io.opentelemetry.instrumentation.annotations.WithSpan;
 import jakarta.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.highfive.backend.content.dto.response.HomeContentsResponseDto;
@@ -19,19 +26,12 @@ import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.metadata.dto.GenreMapper;
 import org.highfive.backend.user.entity.User;
 import org.highfive.backend.user.entity.preference.MongoUserWeight;
-import org.highfive.backend.user.entity.preference.PreferMetaInfoRepository;
 import org.highfive.backend.user.repository.jpa.UserRepository;
 import org.highfive.backend.user.repository.mongo.UserWeightRepository;
 import org.highfive.backend.user.repository.redis.UserRedisRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.highfive.backend.global.util.VectorUtil.convertUserVector;
 
 @Slf4j
 @Service
@@ -49,14 +49,16 @@ public class HomeContentService {
     private final int CONTENTS_PER_GENRE = 5;
     private final int VECTOR_BASED_RECOMMEND_LIMIT = 1;
     private final int PERSON_RECOMMEND_COUNT = 4;
-    private final int GENRE_RECOMMEND_PER_GENRE_COUNT= 2;
+    private final int GENRE_RECOMMEND_PER_GENRE_COUNT = 2;
     private final String GENRE_NAME = "genreName";
 
     @Transactional
+    @WithSpan
     public Response<HomeContentsResponseDto> getHomeContents(final User user) {
         final MainRecommendDto mainRecommend = recommendMainContentsByUser(user);
         final List<PersonalRecommendDto> personalRecommends = recommendContentsByUser(user, PERSON_RECOMMEND_COUNT);
-        final Map<String, List<GenreContentDto>> genreRecommends = recommendContentsByUserGenre(user, GENRE_RECOMMEND_PER_GENRE_COUNT);
+        final Map<String, List<GenreContentDto>> genreRecommends = recommendContentsByUserGenre(user,
+                GENRE_RECOMMEND_PER_GENRE_COUNT);
 
         final PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
         final List<CurationDto> curations = CurationMapper.toCurationDto(
@@ -90,9 +92,11 @@ public class HomeContentService {
 
     private Map<String, List<GenreContentDto>> recommendContentsByUserGenre(final User user, final int count) {
         final Map<String, List<GenreContentDto>> result = new HashMap<>();
-        final List<String> preferGenresByUser = userWeightRepository.findTop2Genres(user.getId(), PageRequest.of(0,2)).stream().map(MongoUserWeight::getName).toList();
+        final List<String> preferGenresByUser = userWeightRepository.findTop2Genres(user.getId(), PageRequest.of(0, 2))
+                .stream().map(MongoUserWeight::getName).toList();
         for (String genre : preferGenresByUser) {
-            List<TopContentsByGenreDto> topContentsByGenre = contentQueryRepository.findTopContentsByGenreRandom(GenreMapper.CONVERT_DB_GENRE.get(genre), CONTENTS_PER_GENRE);
+            List<TopContentsByGenreDto> topContentsByGenre = contentQueryRepository.findTopContentsByGenreRandom(
+                    GenreMapper.CONVERT_DB_GENRE.get(genre), CONTENTS_PER_GENRE);
             result.put(GenreMapper.CONVERT_HOME_GENRE.get(genre),
                     topContentsByGenre.stream().map(tc -> new GenreContentDto(tc.contentId(), tc.thumbnailUrl()))
                             .toList());
