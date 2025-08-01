@@ -14,7 +14,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewQue
 
     @Query("""
                 SELECT new org.highfive.backend.user.dto.response.RatedContentResponseDto(
-                    r.id, c.thumbnailUrl, c.title, r.reviewText, r.rating
+                    r.id, c.thumbnailUrl, c.title, r.reviewText, r.rating, c.id
                 )
                 FROM Review r
                 JOIN r.content c
