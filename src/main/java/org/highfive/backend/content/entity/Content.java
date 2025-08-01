@@ -34,8 +34,7 @@ public class Content extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contents_seq_gen")
     @SequenceGenerator(
             name = "contents_seq_gen",
-            sequenceName = "contents_sequence",
-            allocationSize = 50
+            sequenceName = "contents_sequence"
     )
     private Long id;
 
