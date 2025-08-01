@@ -30,9 +30,4 @@ public class ContentVector extends BaseEntity {
     public void updateEmbedding(final String embedding) {
         this.embedding = embedding;
     }
-
-    public void updateContent(Content content) {
-        this.content = content;
-        content.updateContentVector(this);
-    }
 }
