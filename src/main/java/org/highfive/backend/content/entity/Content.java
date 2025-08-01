@@ -91,7 +91,7 @@ public class Content extends BaseEntity {
     @Column(nullable = false)
     private int trailerTime;
 
-    @OneToOne(mappedBy = "content", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "content", orphanRemoval = true)
     private ContentVector contentVector;
 
     public void updateThumbnailUrl(final String thumbnailUrl) {
