@@ -11,4 +11,4 @@ RUN apk add --no-cache curl && \
 
 EXPOSE 8080
 
-ENTRYPOINT ["sh", "-c", "java -javaagent:opentelemetry-javaagent.jar -jar app.jar"]
+ENTRYPOINT ["java", "-javaagent:opentelemetry-javaagent.jar", "-jar", "app.jar"]
