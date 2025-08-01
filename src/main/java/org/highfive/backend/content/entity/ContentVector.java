@@ -13,7 +13,11 @@ import org.highfive.backend.global.entity.BaseEntity;
 @AllArgsConstructor
 public class ContentVector extends BaseEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "content_vector_seq_gen")
+    @SequenceGenerator(
+            name = "content_vector_seq_gen",
+            sequenceName = "content_vector_sequence"
+    )
     private Long id;
 
     @Column(nullable = false, columnDefinition = "TEXT")
