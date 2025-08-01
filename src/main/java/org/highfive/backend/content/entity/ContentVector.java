@@ -20,7 +20,7 @@ public class ContentVector extends BaseEntity {
     )
     private Long id;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(nullable = false, columnDefinition = "vector(64)")
     private String embedding;
 
     @OneToOne(fetch = FetchType.LAZY)

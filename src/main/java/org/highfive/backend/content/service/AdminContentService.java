@@ -49,8 +49,9 @@ public class AdminContentService {
         final ContentVector contentVector = ContentVector.builder().embedding(vector).build();
         contentVector.updateContent(content);
         final Content savedContent = contentRepository.save(content);
-        updatePosterThumbnailUrl(savedContent, uuid);
+        contentVectorRepository.upsertContentVector(savedContent.getId(), vector);
 
+        updatePosterThumbnailUrl(savedContent, uuid);
         setGenres(request, content);
         setActors(request, content);
         setDirector(request, content);
