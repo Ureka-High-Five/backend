@@ -1,14 +1,5 @@
 package org.highfive.backend.content.service;
 
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
 import org.highfive.backend.common.fixture.AdminDtoFixture;
 import org.highfive.backend.common.fixture.ContentFixture;
 import org.highfive.backend.common.fixture.UserFixture;
@@ -17,17 +8,20 @@ import org.highfive.backend.content.dto.request.AdminUpdateContentRequestDto;
 import org.highfive.backend.content.dto.response.AdminAddContentResponseDto;
 import org.highfive.backend.content.dto.response.AdminUpdateContentResponseDto;
 import org.highfive.backend.content.entity.Content;
+import org.highfive.backend.content.entity.ContentVector;
+import org.highfive.backend.content.repository.jpa.ContentRepository;
+import org.highfive.backend.content.repository.jpa.ContentVectorRepository;
+import org.highfive.backend.global.client.fastapi.FastApiClient;
+import org.highfive.backend.global.client.fastapi.dto.response.FastApiVectorFromGenresDto;
+import org.highfive.backend.global.dto.Response;
+import org.highfive.backend.global.exception.BusinessException;
+import org.highfive.backend.infra.s3.service.S3Service;
 import org.highfive.backend.metadata.entity.MetaInfo;
 import org.highfive.backend.metadata.entity.MetaInfoContents;
 import org.highfive.backend.metadata.entity.MetaType;
-import org.highfive.backend.content.repository.jpa.ContentRepository;
 import org.highfive.backend.metadata.repository.jpa.MetaInfoContentsRepository;
 import org.highfive.backend.metadata.repository.jpa.MetaInfoRepository;
-import org.highfive.backend.global.client.fastapi.FastApiClient;
-import org.highfive.backend.global.client.fastapi.dto.response.FastApiVectorFromGenresDto;
-import org.highfive.backend.global.code.GlobalErrorCode;
-import org.highfive.backend.global.dto.Response;
-import org.highfive.backend.global.exception.BusinessException;
+import org.highfive.backend.shorts.repository.jpa.ShortsRepository;
 import org.highfive.backend.user.entity.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -38,6 +32,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class AdminContentServiceTest {
@@ -56,6 +59,15 @@ class AdminContentServiceTest {
 
     @Mock
     private FastApiClient fastApiClient;
+
+    @Mock
+    private S3Service s3Service;
+
+    @Mock
+    private ShortsRepository shortsRepository;
+
+    @Mock
+    private ContentVectorRepository contentVectorRepository;
 
     @Test
     @Transactional
@@ -121,18 +133,22 @@ class AdminContentServiceTest {
         given(metaInfoRepository.findByNameAndType("톰 크루즈", MetaType.ACTOR)).willReturn(actor);
         given(metaInfoRepository.findByNameAndType("딘 데블로이스", MetaType.DIRECTOR)).willReturn(director);
 
+        Content content = ContentFixture.createContent(1L);
+
         given(contentRepository.findById(any(Long.class)))
                 .willReturn(Optional.of(ContentFixture.createContent(1L)));
 
+        given(contentVectorRepository.findById(any(Long.class)))
+                .willReturn(Optional.of(ContentFixture.createContentVector(content, "MOCK_VEC")));
+
         AdminUpdateContentRequestDto request = AdminDtoFixture.getValidAdminUpdateContentRequestDto();
-        User admin = UserFixture.createAdmin(1L);
 
         // when
         Response<AdminUpdateContentResponseDto> response = adminContentService.updateContent(request);
         ArgumentCaptor<MetaInfoContents> captor = ArgumentCaptor.forClass(MetaInfoContents.class);
 
         // then
-        Content content = contentRepository.findById(request.contentId()).orElse(null);
+        content = contentRepository.findById(request.contentId()).orElse(null);
         Long contentId = response.content().contentId();
         Assertions.assertNotNull(contentId);
         Assertions.assertNotNull(content);

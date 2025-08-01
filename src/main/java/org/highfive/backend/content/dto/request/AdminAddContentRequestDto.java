@@ -48,7 +48,10 @@ public record AdminAddContentRequestDto(
 
         @NotNull
         @Positive
-        Integer trailerTime
+        Integer trailerTime,
+
+        @NotBlank
+        String uuid
 ) {
 }
 

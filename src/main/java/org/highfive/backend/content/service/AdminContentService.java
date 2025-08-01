@@ -8,18 +8,24 @@ import org.highfive.backend.content.dto.request.AdminUpdateContentRequestDto;
 import org.highfive.backend.content.dto.response.AdminAddContentResponseDto;
 import org.highfive.backend.content.dto.response.AdminUpdateContentResponseDto;
 import org.highfive.backend.content.entity.Content;
+import org.highfive.backend.content.entity.ContentVector;
 import org.highfive.backend.content.exception.ContentErrorCode;
 import org.highfive.backend.content.repository.jpa.ContentRepository;
+import org.highfive.backend.content.repository.jpa.ContentVectorRepository;
 import org.highfive.backend.global.client.fastapi.FastApiClient;
 import org.highfive.backend.global.client.fastapi.dto.response.FastApiVectorFromGenresDto;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
+import org.highfive.backend.infra.s3.MediaType;
+import org.highfive.backend.infra.s3.service.S3Service;
 import org.highfive.backend.metadata.entity.MetaInfo;
 import org.highfive.backend.metadata.entity.MetaInfoContents;
 import org.highfive.backend.metadata.entity.MetaType;
 import org.highfive.backend.metadata.exception.MetaInfoErrorCode;
 import org.highfive.backend.metadata.repository.jpa.MetaInfoContentsRepository;
 import org.highfive.backend.metadata.repository.jpa.MetaInfoRepository;
+import org.highfive.backend.shorts.entity.Shorts;
+import org.highfive.backend.shorts.repository.jpa.ShortsRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,34 +37,64 @@ public class AdminContentService {
     private final MetaInfoContentsRepository metaInfoContentsRepository;
     private final FastApiClient fastApiClient;
     private final MetaInfoRepository metaInfoRepository;
+    private final S3Service s3Service;
+    private final ShortsRepository shortsRepository;
+    private final ContentVectorRepository contentVectorRepository;
 
     @Transactional
     public Response<AdminAddContentResponseDto> addContent(final AdminAddContentRequestDto request) {
         final Content content = ContentMapper.fromAdminAddContentRequestDto(request);
         final String vector = getEmbeddingByGenres(request.genres());
-        content.updateEmbedding(vector);
-
+        final String uuid = request.uuid();
+        final ContentVector contentVector = ContentVector.builder().embedding(vector).build();
+        contentVector.updateContent(content);
         final Content savedContent = contentRepository.save(content);
+        updatePosterThumbnailUrl(savedContent, uuid);
 
         setGenres(request, content);
         setActors(request, content);
         setDirector(request, content);
         setCountry(request, content);
+        updateShorts(content, uuid, request.trailerTime());
 
         return Response.ok(new AdminAddContentResponseDto(savedContent.getId()));
+    }
+
+    private void updatePosterThumbnailUrl(final Content content, final String uuid) {
+        final String posterThumbnailUrl = s3Service.createThumbnailUrl(MediaType.POSTER_THUMBNAIL_URL, uuid);
+        content.updateThumbnailUrl(posterThumbnailUrl);
+    }
+
+    private void updateShorts(final Content content, final String uuid, final int trailerTime) {
+        final String shortsThumbnailUrl = s3Service.createThumbnailUrl(MediaType.SHORTS_THUMBNAIL_URL, uuid);
+        final String shortsSegmentUrl = s3Service.createSegmentUrl(MediaType.SHORTS_SEGMENT, uuid);
+        final Shorts shorts = Shorts.builder()
+                .shortsUrl(shortsSegmentUrl)
+                .trailerTime(trailerTime)
+                .thumbnailUrl(shortsThumbnailUrl)
+                .likeCount(0)
+                .build();
+
+        shorts.updateContent(content);
+        shortsRepository.save(shorts);
     }
 
     @Transactional
     public Response<AdminUpdateContentResponseDto> updateContent(final AdminUpdateContentRequestDto request) {
         final Content content = getUpdateContent(request);
-
         updateGenres(request, content);
         updateDirector(request, content);
         updateActors(request, content);
-
-        final FastApiVectorFromGenresDto response = fastApiClient.vectorFromGenres(request.genres());
-        content.updateEmbedding(response.vector());
+        updateEmbedding(request, content);
         return Response.ok(new AdminUpdateContentResponseDto(content.getId()));
+    }
+
+    private void updateEmbedding(final AdminUpdateContentRequestDto request, final Content content) {
+        final FastApiVectorFromGenresDto response = fastApiClient.vectorFromGenres(request.genres());
+        final String vector = response.vector();
+        final Long contentId = content.getId();
+        final ContentVector contentVector = contentVectorRepository.findById(contentId).orElseThrow(() -> new BusinessException(ContentErrorCode.CONTENT_VECTOR_ERROR));
+        contentVector.updateEmbedding(vector);
     }
 
     @Transactional

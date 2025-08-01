@@ -40,7 +40,8 @@ public class S3Service {
         return Response.ok(new ContentsPresignedUrlResponseDto(
                 image.preSignedUrl(), image.accessUrl(),
                 shorts.preSignedUrl(), shorts.accessUrl(),
-                video.preSignedUrl(), video.accessUrl()
+                video.preSignedUrl(), video.accessUrl(),
+                uuid.toString()
         ));
     }
 
@@ -75,6 +76,17 @@ public class S3Service {
 
         URL url = s3Presigner.presignPutObject(presignRequest).url();
         return url.toString();
+    }
+
+    // 썸네일 url 만들기
+    public String createThumbnailUrl(final MediaType mediaType, final String uuid) {
+        final String key = buildKey(mediaType, UUID.fromString(uuid));
+        return buildUrl(key);
+    }
+
+    public String createSegmentUrl(final MediaType mediaType, final String uuid) {
+        final String key = buildKey(mediaType, UUID.fromString(uuid));
+        return buildUrl(key);
     }
 
     private String buildKey(MediaType mediaType, UUID uuid) {

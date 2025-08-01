@@ -1,18 +1,7 @@
 package org.highfive.backend.content.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -42,7 +31,11 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public class Content extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contents_seq_gen")
+    @SequenceGenerator(
+            name = "contents_seq_gen",
+            sequenceName = "contents_sequence"
+    )
     private Long id;
 
     @Column(nullable = false)
@@ -71,9 +64,6 @@ public class Content extends BaseEntity {
     @Column(nullable = false)
     private ContentType contentType;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
-    private String embedding;
-
     @Column(nullable = false)
     private int grade;
 
@@ -81,11 +71,11 @@ public class Content extends BaseEntity {
     private int popularity;
 
     @Builder.Default
-    @OneToMany(mappedBy = "content")
+    @OneToMany(mappedBy = "content", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Episode> episodes = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "content")
+    @OneToMany(mappedBy = "content", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Shorts> shorts = new ArrayList<>();
 
     @Builder.Default
@@ -101,8 +91,19 @@ public class Content extends BaseEntity {
     @Column(nullable = false)
     private int trailerTime;
 
-    public void updateEmbedding(String embedding) {
-        this.embedding = embedding;
+    @OneToOne(mappedBy = "content", cascade = CascadeType.ALL, orphanRemoval = true)
+    private ContentVector contentVector;
+
+    public void updateThumbnailUrl(final String thumbnailUrl) {
+        this.thumbnailUrl = thumbnailUrl;
+    }
+
+    public void addShorts(final Shorts shorts) {
+        this.shorts.add(shorts);
+    }
+
+    public void updateContentVector(final ContentVector contentVector) {
+        this.contentVector = contentVector;
     }
 
     public Content updateFromDto(AdminUpdateContentRequestDto request) {
