@@ -8,6 +8,7 @@ import org.highfive.backend.global.entity.BaseEntity;
 
 @Entity
 @Builder
+@Table(name = "contents_vector")
 @NoArgsConstructor
 @AllArgsConstructor
 public class ContentVector extends BaseEntity {
