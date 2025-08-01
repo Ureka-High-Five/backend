@@ -44,19 +44,17 @@ public class AdminContentService {
     @Transactional
     public Response<AdminAddContentResponseDto> addContent(final AdminAddContentRequestDto request) {
         final Content content = ContentMapper.fromAdminAddContentRequestDto(request);
-        final String vector = getEmbeddingByGenres(request.genres());
         final String uuid = request.uuid();
-        final ContentVector contentVector = ContentVector.builder().embedding(vector).build();
-        contentVector.updateContent(content);
         final Content savedContent = contentRepository.save(content);
+        final String vector = getEmbeddingByGenres(request.genres());
         contentVectorRepository.upsertContentVector(savedContent.getId(), vector);
 
         updatePosterThumbnailUrl(savedContent, uuid);
-        setGenres(request, content);
-        setActors(request, content);
-        setDirector(request, content);
-        setCountry(request, content);
-        updateShorts(content, uuid, request.trailerTime());
+        setGenres(request, savedContent);
+        setActors(request, savedContent);
+        setDirector(request, savedContent);
+        setCountry(request, savedContent);
+        updateShorts(savedContent, uuid, request.trailerTime());
 
         return Response.ok(new AdminAddContentResponseDto(savedContent.getId()));
     }
