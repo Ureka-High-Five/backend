@@ -4,6 +4,11 @@ WORKDIR /app
 
 COPY build/libs/backend-0.0.1-SNAPSHOT.jar app.jar
 
+ENV OTEL_AGENT_VERSION=1.39.0
+RUN apk add --no-cache curl && \
+    curl -L "https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v${OTEL_AGENT_VERSION}/opentelemetry-javaagent.jar" \
+    -o opentelemetry-javaagent.jar
+
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["sh", "-c", "java -javaagent:opentelemetry-javaagent.jar -jar app.jar"]
