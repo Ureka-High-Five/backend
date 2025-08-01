@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.highfive.backend.global.entity.BaseEntity;
-import org.springframework.context.annotation.Profile;
 
 @Entity
 @Builder
