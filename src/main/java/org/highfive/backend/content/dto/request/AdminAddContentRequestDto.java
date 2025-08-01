@@ -23,6 +23,9 @@ public record AdminAddContentRequestDto(
         String postUrl,
 
         @NotBlank
+        String shortsUrl,
+
+        @NotBlank
         String countryName,
 
         @NotBlank
