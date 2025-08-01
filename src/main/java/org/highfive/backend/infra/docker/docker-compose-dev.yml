@@ -41,6 +41,7 @@ services:
       LOKI_SEVER_IP: ${LOKI_SERVER_IP}
       OTEL_SERVICE_NAME: ${OTEL_SERVICE_NAME}
       OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT}
+      OTEL_METRICS_EXPORTER: "none"
 
   promtail:
     image: grafana/promtail:2.9.4
