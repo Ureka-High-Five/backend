@@ -115,6 +115,8 @@ jobs:
             echo "S3_SECRET_ACCESS_KEY=${{ secrets.S3_SECRET_ACCESS_KEY}}" >> .env
             echo "SLACK_WEBHOOK_LOG=${{ secrets.SLACK_WEBHOOK_LOG }}" >> .env
             echo "LOKI_SERVER_IP=${{ secrets.LOKI_SERVER_IP }}" >> .env
+            echo "OTEL_EXPORTER_OTLP_ENDPOINT=${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}" >> .env
+            echo "OTEL_SERVICE_NAME=${{ secrets.OTEL_SERVICE_NAME }}" >> .env
             
             docker-compose --env-file .env -f docker-compose-dev.yml down -v
             docker image prune -f
