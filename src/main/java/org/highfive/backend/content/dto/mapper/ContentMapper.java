@@ -41,11 +41,11 @@ public class ContentMapper {
 
     }
 
-    public static Content fromAdminAddContentRequestDto(AdminAddContentRequestDto request) {
+    public static Content fromAdminAddContentRequestDto(AdminAddContentRequestDto request, final String videoUrl) {
         return Content.builder()
                 .title(request.title())
                 .description(request.description())
-                .videoUrl(convertToSegmentUrl(request.videoUrl()))
+                .videoUrl(videoUrl)
                 .postUrl(request.postUrl())
                 .openDate(LocalDate.parse(request.openDate()).atStartOfDay())
                 .runningTime(request.runningTime())
@@ -56,12 +56,5 @@ public class ContentMapper {
                 .thumbnailUrl(request.postUrl())
                 .trailerTime(request.trailerTime())
                 .build();
-    }
-
-    private static String convertToSegmentUrl(final String s3VideoUrl) {
-        String fileName = s3VideoUrl.substring(s3VideoUrl.lastIndexOf("/") + 1);
-        String baseName = fileName.replace(".mp4", "");
-        String folderName = baseName + "_shorts";
-        return String.format("https://%s.s3.%s.amazonaws.com/video_segment/%s/", bucket, awsRegion, folderName);
     }
 }

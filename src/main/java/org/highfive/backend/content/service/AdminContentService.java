@@ -43,8 +43,9 @@ public class AdminContentService {
 
     @Transactional
     public Response<AdminAddContentResponseDto> addContent(final AdminAddContentRequestDto request) {
-        final Content content = ContentMapper.fromAdminAddContentRequestDto(request);
         final String uuid = request.uuid();
+        final String videoUrl = s3Service.createSegmentUrl(MediaType.VIDEO_SEGMENT, uuid);
+        final Content content = ContentMapper.fromAdminAddContentRequestDto(request, videoUrl);
         final Content savedContent = contentRepository.save(content);
         final String vector = getEmbeddingByGenres(request.genres());
         contentVectorRepository.upsertContentVector(savedContent.getId(), vector);

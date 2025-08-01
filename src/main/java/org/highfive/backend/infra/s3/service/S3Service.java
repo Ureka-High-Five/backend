@@ -78,7 +78,6 @@ public class S3Service {
         return url.toString();
     }
 
-    // 썸네일 url 만들기
     public String createThumbnailUrl(final MediaType mediaType, final String uuid) {
         final String key = buildKey(mediaType, UUID.fromString(uuid));
         return buildUrl(key);
@@ -89,11 +88,11 @@ public class S3Service {
         return buildUrl(key);
     }
 
-    private String buildKey(MediaType mediaType, UUID uuid) {
-        return mediaType.getFolder() + "/" + uuid + mediaType.getExtension();
+    private String buildKey(final MediaType mediaType, final UUID uuid) {
+        return mediaType.getFolder() + "/" + uuid + "/" + uuid + mediaType.getExtension();
     }
 
-    private String buildUrl(String key) {
+    private String buildUrl(final String key) {
         return "https://" + bucket + ".s3." + awsRegion + ".amazonaws.com/" + key;
     }
 }
