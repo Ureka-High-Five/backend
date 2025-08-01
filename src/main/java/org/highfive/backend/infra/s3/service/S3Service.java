@@ -56,7 +56,15 @@ public class S3Service {
     }
 
     private UrlPair generatePreSignedPair(MediaType mediaType, UUID uuid) {
-        final String key = buildKey(mediaType, uuid);
+        String key = "";
+        if(mediaType.equals(MediaType.CURATION_IMAGE)) {
+            key = buildImageKey(mediaType, uuid);
+        }
+
+        if(mediaType.equals(MediaType.SHORTS) || mediaType.equals(MediaType.VIDEO)) {
+            key = buildVideoKey(mediaType, uuid);
+        }
+
         final String preSignedUrl = createPreSignedUrl(key, mediaType.getContentType());
         final String accessUrl = buildUrl(key);
         return new UrlPair(preSignedUrl, accessUrl);
