@@ -79,16 +79,20 @@ public class S3Service {
     }
 
     public String createThumbnailUrl(final MediaType mediaType, final String uuid) {
-        final String key = buildKey(mediaType, UUID.fromString(uuid));
+        final String key = buildImageKey(mediaType, UUID.fromString(uuid));
         return buildUrl(key);
     }
 
     public String createSegmentUrl(final MediaType mediaType, final String uuid) {
-        final String key = buildKey(mediaType, UUID.fromString(uuid));
+        final String key = buildVideoKey(mediaType, UUID.fromString(uuid));
         return buildUrl(key);
     }
 
-    private String buildKey(final MediaType mediaType, final UUID uuid) {
+    private String buildImageKey(final MediaType mediaType, final UUID uuid) {
+        return mediaType.getFolder() + "/" + uuid + mediaType.getExtension();
+    }
+
+    private String buildVideoKey(final MediaType mediaType, final UUID uuid) {
         return mediaType.getFolder() + "/" + uuid + "/" + uuid + mediaType.getExtension();
     }
 
