@@ -6,6 +6,6 @@ public record RatedContentResponseDto(
         String title,
         String review,
         int rating,
-        long contentsId
+        long contentId
 ) {
 }
