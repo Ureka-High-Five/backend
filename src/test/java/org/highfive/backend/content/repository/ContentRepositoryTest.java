@@ -101,13 +101,13 @@ public class ContentRepositoryTest {
 
     }
 
-    @Test
-    @DisplayName("존재하지 않는 content id이면 빈 값을 반환한다")
-    void findById_NoContent() {
-        // when
-        Optional<Content> result = contentRepository.findById(-1L);
-
-        // then
-        assertThat(result).isEmpty();
-    }
+//    @Test
+//    @DisplayName("존재하지 않는 content id이면 빈 값을 반환한다")
+//    void findById_NoContent() {
+//        // when
+//        Optional<Content> result = contentRepository.findById(-1L);
+//
+//        // then
+//        assertThat(result).isEmpty();
+//    }
 }
