@@ -113,14 +113,11 @@ public class ShortsService {
 
     public Response<List<ShortsCommentsByTimeResponseDto>> getCommentsByTime(long shortsId, long time, int duration) {
         List<ShortsCommentsByTimeResponseDto> response = new ArrayList<>();
-        for (long targetTime = time; targetTime < time + duration; targetTime += duration / 5) {
-            List<ShortsCommentsByTimeResponseDto> result = shortsCommentRepository.findByShortsIdAndTimeOrderByCreatedAtDesc(
-                            shortsId, targetTime)
-                    .stream()
-                    .map(ShortsCommentMapper::toShortsCommentsByTimeResponseDto)
-                    .toList();
-            if (addCommentsUntilLimit(response, result)) {
-                break;
+        for (long targetTime = time; targetTime < time + duration; targetTime++) {
+            Optional<ShortsComment> optionalComment = shortsCommentRepository.findFirstByShortsIdAndTimeOrderByCreatedAtDesc(shortsId, targetTime);
+            if (optionalComment.isPresent()) {
+                ShortsComment shortsComment = optionalComment.get();
+                response.add(ShortsCommentMapper.toShortsCommentsByTimeResponseDto(shortsComment));
             }
         }
 
@@ -211,13 +208,6 @@ public class ShortsService {
         Collections.shuffle(result);
 
         shortsRedisRepository.saveAll(userId, result);
-    }
-
-    private boolean addCommentsUntilLimit(List<ShortsCommentsByTimeResponseDto> response,
-                                          List<ShortsCommentsByTimeResponseDto> result) {
-        int remain = 5 - response.size();
-        response.addAll(result.subList(0, Math.min(result.size(), remain)));
-        return response.size() == 5;
     }
 
     private List<ShortsResponseDto> getRecommendResult(final User user, final List<ShortsDto> recommend) {

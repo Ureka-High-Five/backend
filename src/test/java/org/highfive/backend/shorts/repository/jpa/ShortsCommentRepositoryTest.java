@@ -3,6 +3,7 @@ package org.highfive.backend.shorts.repository.jpa;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import java.util.Optional;
 import org.highfive.backend.common.fixture.ContentFixture;
 import org.highfive.backend.common.fixture.ShortsFixture;
 import org.highfive.backend.common.fixture.UserFixture;
@@ -59,11 +60,11 @@ class ShortsCommentRepositoryTest {
         Thread.sleep(2);
         shortsCommentRepository.save(ShortsComment.of(testUser, savedShorts, "comment3", 5L));
 
-        List<ShortsComment> result = shortsCommentRepository.findByShortsIdAndTimeOrderByCreatedAtDesc(savedShorts.getId(), 5L);
+        Optional<ShortsComment> result = shortsCommentRepository.findFirstByShortsIdAndTimeOrderByCreatedAtDesc(savedShorts.getId(), 5L);
 
         // then
-        assertThat(result.size()).isEqualTo(3);
-        assertThat(result.getFirst().getMessage()).isEqualTo("comment3");
+        assertThat(result.get()).isNotNull();
+        assertThat(result.get().getMessage()).isEqualTo("comment3");
     }
 
     @Test
@@ -73,9 +74,9 @@ class ShortsCommentRepositoryTest {
         shortsCommentRepository.save(ShortsComment.of(testUser, savedShorts, "comment2", 5L));
         shortsCommentRepository.save(ShortsComment.of(testUser, savedShorts, "comment3", 5L));
 
-        List<ShortsComment> result = shortsCommentRepository.findByShortsIdAndTimeOrderByCreatedAtDesc(savedShorts.getId(), 6L);
+        Optional<ShortsComment> result = shortsCommentRepository.findFirstByShortsIdAndTimeOrderByCreatedAtDesc(savedShorts.getId(), 6L);
 
         // then
-        assertThat(result.size()).isEqualTo(0);
+        assertThat(result.isEmpty()).isTrue();
     }
 }
