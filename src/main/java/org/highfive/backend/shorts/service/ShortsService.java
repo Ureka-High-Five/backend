@@ -185,6 +185,11 @@ public class ShortsService {
     }
 
     private void generateShorts(final List<Long> cachedIds, final Long userId) {
+
+        if(cachedIds.isEmpty()) {
+            cachedIds.add(-1L);
+        }
+
         final List<ShortsDto> recommended = shortsRepository.findRecommendedShortsByUser(cachedIds, userId, RECOMMEND_SHORTS_COUNT);
 
         final List<Long> contentIds = recommended.stream()
