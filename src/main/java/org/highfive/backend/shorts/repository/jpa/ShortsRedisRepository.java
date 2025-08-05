@@ -43,4 +43,15 @@ public class ShortsRedisRepository {
         int endIndex = Math.min(startIndex + size, all.size());
         return all.subList(startIndex, endIndex);
     }
+
+    public List<Long> findShortsIdsByUserId(final Long userId) {
+        String key = SHORTS_KEY_PREFIX + userId;
+        List<ShortsDto> all = redisTemplate.opsForList().range(key, 0, -1);
+        if (all == null || all.isEmpty()) return Collections.emptyList();
+
+        return all.stream()
+                .map(ShortsDto::contentId)
+                .distinct()
+                .toList();
+    }
 }
