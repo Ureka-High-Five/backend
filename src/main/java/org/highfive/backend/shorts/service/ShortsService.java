@@ -72,8 +72,9 @@ public class ShortsService {
         final String userVector = convertUserVector(userRedisRepository.getUserVector(user.getId()));
         userRepository.upsertUserVector(user.getId(), userVector);
 
-        if (cursor == null || cursor == 0L) {
-            generateShortsCache(user.getId());
+        if (cursor == null || cursor == 0) {
+            List<Long> cachedShortsIds = shortsRedisRepository.findShortsIdsByUserId(user.getId());
+            generateShorts(cachedShortsIds, user.getId());
         }
 
         final List<ShortsDto> pagedShorts = shortsRedisRepository.findByCursor(user.getId(), cursor, size + 1);
@@ -183,8 +184,8 @@ public class ShortsService {
         return Response.ok(ShortsMapper.toShortsResponseDto(shorts, liked));
     }
 
-    private void generateShortsCache(final Long userId) {
-        final List<ShortsDto> recommended = shortsRepository.findRecommendedShortsByUser(userId, RECOMMEND_SHORTS_COUNT);
+    private void generateShorts(final List<Long> cachedIds, final Long userId) {
+        final List<ShortsDto> recommended = shortsRepository.findRecommendedShortsByUser(cachedIds, userId, RECOMMEND_SHORTS_COUNT);
 
         final List<Long> contentIds = recommended.stream()
                 .map(ShortsDto::contentId)
