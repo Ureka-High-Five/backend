@@ -54,11 +54,13 @@ public interface ShortsRepository extends JpaRepository<Shorts, Long> {
                 FROM contents con
                 JOIN contents_vector cv ON con.id = cv.content_id
                 JOIN users_vector u ON u.user_id = :userId
+                WHERE con.id NOT IN (:contentsId)
                 ORDER BY cv.embedding <#> u.embedding
                 LIMIT :count
             )
             """, nativeQuery = true)
     List<ShortsDto> findRecommendedShortsByUser(
+            List<Long> contentsId,
             Long userId,
             int count
     );
