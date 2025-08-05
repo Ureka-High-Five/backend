@@ -1,19 +1,7 @@
 package org.highfive.backend.shorts.service;
 
 
-import static org.highfive.backend.global.util.VectorUtil.convertUserVector;
-import static org.highfive.backend.shorts.dto.mapper.ShortsLikeTimeLogMapper.toShorts;
-import static org.highfive.backend.shorts.dto.mapper.ShortsLikeTimeLogMapper.toShortsLikeTimeLineDto;
-import static org.highfive.backend.shorts.dto.mapper.ShortsMapper.toShortsLikedUserResponseDtos;
-import static org.highfive.backend.shorts.exception.ShortsErrorCode.SHORTS_ALREADY_LIKED;
-import static org.highfive.backend.shorts.exception.ShortsErrorCode.SHORTS_LIKED_NOT_FOUND;
-import static org.highfive.backend.shorts.exception.ShortsErrorCode.SHORTS_NOT_FOUND;
-
 import jakarta.transaction.Transactional;
-
-import jakarta.validation.constraints.Positive;
-import java.util.*;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.highfive.backend.global.dto.CursorPageResponse;
@@ -25,14 +13,7 @@ import org.highfive.backend.shorts.dto.mapper.ShortsMapper;
 import org.highfive.backend.shorts.dto.request.CreateShortsCommentRequestDto;
 import org.highfive.backend.shorts.dto.request.ShortsDislikeRequestDto;
 import org.highfive.backend.shorts.dto.request.ShortsLikeCreateRequestDto;
-import org.highfive.backend.shorts.dto.response.CreateShortsCommentResponseDto;
-import org.highfive.backend.shorts.dto.response.GetShortsCommentResponseDto;
-import org.highfive.backend.shorts.dto.response.ShortsCommentsByIdResponseDto;
-import org.highfive.backend.shorts.dto.response.ShortsCommentsByTimeResponseDto;
-import org.highfive.backend.shorts.dto.response.ShortsCommentsResponseDto;
-import org.highfive.backend.shorts.dto.response.ShortsLikeTimeResponseDto;
-import org.highfive.backend.shorts.dto.response.ShortsLikedUserItemDto;
-import org.highfive.backend.shorts.dto.response.ShortsResponseDto;
+import org.highfive.backend.shorts.dto.response.*;
 import org.highfive.backend.shorts.entity.Shorts;
 import org.highfive.backend.shorts.entity.ShortsComment;
 import org.highfive.backend.shorts.entity.ShortsLikeTimeLog;
@@ -47,6 +28,14 @@ import org.highfive.backend.user.repository.jpa.UserRepository;
 import org.highfive.backend.user.repository.redis.UserRedisRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+
+import java.util.*;
+
+import static org.highfive.backend.global.util.VectorUtil.convertUserVector;
+import static org.highfive.backend.shorts.dto.mapper.ShortsLikeTimeLogMapper.toShorts;
+import static org.highfive.backend.shorts.dto.mapper.ShortsLikeTimeLogMapper.toShortsLikeTimeLineDto;
+import static org.highfive.backend.shorts.dto.mapper.ShortsMapper.toShortsLikedUserResponseDtos;
+import static org.highfive.backend.shorts.exception.ShortsErrorCode.*;
 
 @Slf4j
 @Service
@@ -83,8 +72,9 @@ public class ShortsService {
         final String userVector = convertUserVector(userRedisRepository.getUserVector(user.getId()));
         userRepository.upsertUserVector(user.getId(), userVector);
 
-        if (cursor == null) {
-            generateShortsCache(user.getId());
+        if (cursor == null || cursor == 0) {
+            List<Long> cachedShortsIds = shortsRedisRepository.findShortsIdsByUserId(user.getId());
+            generateShorts(cachedShortsIds, user.getId());
         }
 
         final List<ShortsDto> pagedShorts = shortsRedisRepository.findByCursor(user.getId(), cursor, size + 1);
@@ -194,8 +184,8 @@ public class ShortsService {
         return Response.ok(ShortsMapper.toShortsResponseDto(shorts, liked));
     }
 
-    private void generateShortsCache(final Long userId) {
-        final List<ShortsDto> recommended = shortsRepository.findRecommendedShortsByUser(userId, RECOMMEND_SHORTS_COUNT);
+    private void generateShorts(final List<Long> cachedIds, final Long userId) {
+        final List<ShortsDto> recommended = shortsRepository.findRecommendedShortsByUser(cachedIds, userId, RECOMMEND_SHORTS_COUNT);
 
         final List<Long> contentIds = recommended.stream()
                 .map(ShortsDto::contentId)
