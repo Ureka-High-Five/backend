@@ -131,10 +131,9 @@ CPU 사용률은 10% 미만으로 안정적입니다.
 <br/>  
 
 
-##  플로우 차트
+##  📊 플로우 차트
 
-
-
+<img width="1400" height="1000" alt="image" src="https://github.com/user-attachments/assets/548847a9-ef59-4a32-a338-969cfbdea75b" />
 
 
 ### 🏗 시스템 아키텍처
