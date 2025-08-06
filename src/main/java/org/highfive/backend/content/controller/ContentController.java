@@ -2,15 +2,20 @@ package org.highfive.backend.content.controller;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.highfive.backend.action.Action;
 import org.highfive.backend.action.ActionLogStamp;
 import org.highfive.backend.content.dto.response.ContentDetailResponseDto;
 import org.highfive.backend.content.dto.response.ContentVideoResponseDto;
+import org.highfive.backend.content.dto.response.HomeContentsResponseDto.PersonalRecommendDto;
 import org.highfive.backend.content.dto.response.SearchContentResponseDto;
 import org.highfive.backend.content.service.ContentService;
+import org.highfive.backend.content.service.HomeContentService;
 import org.highfive.backend.global.dto.CursorPageResponse;
 import org.highfive.backend.global.dto.Response;
+import org.highfive.backend.user.entity.User;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ContentController {
 
     private final ContentService contentService;
+    private final HomeContentService homeContentService;
 
     @ActionLogStamp(Action.CLICK)
     @GetMapping("/{contentId}/detail")
@@ -47,4 +53,10 @@ public class ContentController {
         return contentService.getContentVideo(contentId);
     }
 
+    @GetMapping("/vector")
+    public Response<List<PersonalRecommendDto>> getVectorContent(
+            @AuthenticationPrincipal User user
+    ) {
+        return Response.ok(homeContentService.recommendContentsByUser(user, 5));
+    }
 }

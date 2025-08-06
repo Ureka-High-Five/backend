@@ -77,7 +77,7 @@ public class HomeContentService {
                 content.getTitle(), content.getVideoUrl());
     }
 
-    private List<PersonalRecommendDto> recommendContentsByUser(final User user, final int count) {
+    public List<PersonalRecommendDto> recommendContentsByUser(final User user, final int count) {
         return recommendContentsByVector(user, count).stream()
                 .map(dto -> new PersonalRecommendDto(dto.getId(), dto.getThumbnailUrl()))
                 .toList();
