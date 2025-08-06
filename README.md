@@ -22,7 +22,7 @@ LEAD:ME는 사용자의 명시적 입력 없이 **행동 데이터만으로** �
 ### 초기 버전
 <img width="800" height="500" alt="image" src="https://github.com/user-attachments/assets/289601ab-721f-4389-97b2-a15f28d82c33" />
 
-**초기 버전 설계의 한계점**
+**한계점**
 - API 서버와 추천 로직이 하나의 서버에 집중되어 트래픽 증가 시 병목이 발생할 수 있습니다.
 - 사용자 행동 데이터를 실시간으로 반영하므로 RDB에 과도한 부하가 발생합니다.
 - 장애 발생 시 사용자 행동 데이터가 유실될 가능성이 존재합니다.
@@ -31,8 +31,12 @@ LEAD:ME는 사용자의 명시적 입력 없이 **행동 데이터만으로** �
 
 ### 최종 버전
 
-<img width="1200" height="800" alt="image" src="https://github.com/user-attachments/assets/548847a9-ef59-4a32-a338-969cfbdea75b" />
+<img width="1400" height="1000" alt="image" src="https://github.com/user-attachments/assets/548847a9-ef59-4a32-a338-969cfbdea75b" />
 
+**보완점**
+- API 서버(Spring Boot)와 추천 로직 서버(FastAPI)를 분리하여 역할과 책임을 명확히 분리했습니다.
+- MongoDB와 Redis를 함께 사용하여 RDB의 부하를 줄이고, 데이터 접근 속도를 향상시켰습니다.
+- 장애 발생 시에도 사용자 행동 로그가 유실되지 않도록, 로그 기반 상태 관리 및 복구 메커니즘을 도입했습니다.
 
 
 <br/>
