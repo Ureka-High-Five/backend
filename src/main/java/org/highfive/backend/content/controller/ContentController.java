@@ -57,6 +57,6 @@ public class ContentController {
     public Response<List<PersonalRecommendDto>> getVectorContent(
             @AuthenticationPrincipal User user
     ) {
-        return Response.ok(homeContentService.recommendContentsByUser(user, 5));
+        return Response.ok(homeContentService.recommendContentsByOnlyVector(user, 5));
     }
 }
