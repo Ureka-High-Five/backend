@@ -20,12 +20,22 @@ LEAD:ME는 사용자의 명시적 입력 없이 **행동 데이터만으로** �
 ## 🏛️ 시스템 설계
 
 ### 초기 버전
+<img width="800" height="500" alt="image" src="https://github.com/user-attachments/assets/289601ab-721f-4389-97b2-a15f28d82c33" />
 
+**초기 버전 설계의 한계점**
+- API 서버와 추천 로직이 하나의 서버에 집중되어 트래픽 증가 시 병목이 발생할 수 있습니다.
+- 사용자 행동 데이터를 실시간으로 반영하므로 RDB에 과도한 부하가 발생합니다.
+- 장애 발생 시 사용자 행동 데이터가 유실될 가능성이 존재합니다.
+
+<br/>
 
 ### 최종 버전
 
-<img width="800" height="300" alt="image" src="https://github.com/user-attachments/assets/548847a9-ef59-4a32-a338-969cfbdea75b" />
+<img width="1200" height="800" alt="image" src="https://github.com/user-attachments/assets/548847a9-ef59-4a32-a338-969cfbdea75b" />
 
+
+
+<br/>
 
 ### 🏗 시스템 아키텍처
 <img width="4367" height="2397" alt="08:02_아키텍처" src="https://github.com/user-attachments/assets/c63937f9-a916-4612-b7c5-ea5619c95a85" />
