@@ -69,6 +69,13 @@ public class HomeContentService {
         return new Response<>(SuccessCode.OK.getCode(), result, null);
     }
 
+    @Transactional
+    public List<PersonalRecommendDto> recommendContentsByOnlyVector(final User user, final int count) {
+        return recommendContentsByVector(user, count).stream()
+                .map(dto -> new PersonalRecommendDto(dto.getId(), dto.getThumbnailUrl()))
+                .toList();
+    }
+
     private MainRecommendDto recommendMainContentsByUser(final User user) {
         final List<Content> contentsByUserVector = recommendContentsByVector(user, VECTOR_BASED_RECOMMEND_LIMIT);
         final Content content = contentsByUserVector.getFirst();
@@ -77,7 +84,7 @@ public class HomeContentService {
                 content.getTitle(), content.getVideoUrl());
     }
 
-    public List<PersonalRecommendDto> recommendContentsByUser(final User user, final int count) {
+    private List<PersonalRecommendDto> recommendContentsByUser(final User user, final int count) {
         return recommendContentsByVector(user, count).stream()
                 .map(dto -> new PersonalRecommendDto(dto.getId(), dto.getThumbnailUrl()))
                 .toList();
