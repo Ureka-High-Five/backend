@@ -366,6 +366,45 @@ action log 조회 → 로그 기반으로 시간 가중 감쇠 함수 적용 →
 
 ##
 
+### 🪄 콘텐츠 데이터 수집 파이프라인 (From TMDB & YouTube)
+
+TMDB와 YouTube 데이터를 활용한 반자동 콘텐츠 수집 및 정제 파이프라인을 소개합니다.<br/>
+장르, 영상, 썸네일, 메타정보 등 다양한 요소를 수집하고 이를 RDB 테이블 및 벡터 임베딩에 맞게 자동으로 처리합니다.<br/>
+수집된 데이터는 콘텐츠 제공에 활용됩니다.
+
+
+```mermaid
+sequenceDiagram
+    participant Dev as Developer (Script 실행)
+    participant TMDB as TMDB API
+    participant YouTube as YouTube
+    participant S3 as AWS S3
+    participant Lambda1 as Serverless Image Thumbnail Pipeline
+    participant Lambda2 as Serverless Video Transcoding Pipeline
+    participant RDB as PostgreSQL
+
+    Dev->>TMDB: 1. id_collect.py 실행 (조건 기반 TMDB ID 수집)
+    Dev->>Dev: 2. filtering_id.py 실행 (기존 DB에 들어있는 컨텐츠와 중복된 ID 제거)
+    Dev->>TMDB: 3. apiScript.py 실행 (상세 정보 + 메타 수집)
+    Dev->>TMDB: 4. 포스터 다운로드 스크립트 실행 
+    Dev->>YouTube: 5. 영상 및 쇼츠 다운로드 스크립트 실행
+    Dev->>S3: 6. AWS S3에 영상/쇼츠/포스터 업로드
+    S3-->>Lambda1: Trigger → 이미지 썸네일 파이프라인 실행
+    S3-->>Lambda2: Trigger → 영상 트랜스코딩 파이프라인 실행 (mp4 -> segment(.ts)로 변환)
+    Dev->>Dev: 7. content / metainfo / shorts CSV 정제
+    Dev->>Dev: 8. contentToEmbedding.py 실행 (벡터 임베딩)
+    Dev->>RDB : 9. Data 추가
+
+```
+<br/>
+
+> AWS를 활용한 Serverless data pipleline은 아래와 같습니다. 
+
+<img width="600" height="400" alt="image" src="https://github.com/user-attachments/assets/eef37c15-c2c9-4847-a9d4-791f70178df9" />
+
+
+##
+
 
 ## 🏗️ 전체 시스템 아키텍처
 
