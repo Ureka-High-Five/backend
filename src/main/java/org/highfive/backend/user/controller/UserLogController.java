@@ -35,6 +35,6 @@ public class UserLogController {
             @Valid @RequestBody final UpdateUserWeightByClickRequestDto request,
             @AuthenticationPrincipal User user
     ) {
-        return userLogService.updateUserWeightByClick(request.contentId());
+        return userLogService.updateUserWeightByClick(request);
     }
 }
