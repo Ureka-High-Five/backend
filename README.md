@@ -370,7 +370,8 @@ $set 연산을 $inc 연산으로 변경하여, 기존 값을 덮어쓰지 않고
 
 ### 🏗 시스템 아키텍처
 
-<img width="4367" height="2397" alt="08:02_아키텍처" src="https://github.com/user-attachments/assets/c63937f9-a916-4612-b7c5-ea5619c95a85" />
+<img width="823" height="415" alt="image" src="https://github.com/user-attachments/assets/519eae87-cdc6-4e08-a953-e8ca94c2a329" />
+
 
 ##
 
