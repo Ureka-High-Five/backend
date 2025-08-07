@@ -136,7 +136,7 @@ LEAD:ME는 사용자의 명시적 입력 없이 **행동 데이터만으로** �
 
 <img width="1400" height="1000" alt="image" src="https://github.com/user-attachments/assets/548847a9-ef59-4a32-a338-969cfbdea75b" />
 
-### 사용자 행동 처리 플로우
+### 💠 사용자 행동 처리 플로우
 
 ```mermaid
 sequenceDiagram
@@ -174,7 +174,7 @@ sequenceDiagram
 ```
 <br/> 
 
-### 추천 처리 플로우
+### 💠 추천 처리 플로우
 
 ```mermaid
 sequenceDiagram
@@ -201,7 +201,7 @@ sequenceDiagram
 ```
 <br/> 
 
-### 장애 복구 플로우
+### 💠 장애 복구 플로우
 
 ```mermaid
 sequenceDiagram
@@ -426,4 +426,10 @@ action log 조회 → 로그 기반으로 시간 가중 감쇠 함수 적용 →
 
 <br/>
 
-## 
+## 💚팀원 소개 
+
+|<img src="https://avatars.githubusercontent.com/u/96441638?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/89333351?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/107402704?v=4" width="150" height="150"/>|
+|:-:|:-:|:-:|
+|박상윤<br/>[@sangyunpark99](https://github.com/sangyunpark99)|최정민<br/>[@likerhythm](https://github.com/likerhythm)|황지연<br/>[@ghkdwldus0807](https://github.com/ghkdwldus0807)|
+|- 백엔드 기술 팀장 <br/>- 인프라 <br/>- API 개발 <br/>- 실시간 추천 서버 설계 |- 추천 시스템 구축 <br/>- 데일리 스케줄러 개발 <br/>- API 개발 <br/>- 실시간 추천 서버 설계|- 로깅 시스템 구축 <br/>- 로그 재처리 스케줄러 개발 <br/> - Data Pipeline 구축 <br/> - API 개발 <br/>- 실시간 추천 서버 설계 |
+
