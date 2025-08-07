@@ -1,9 +1,11 @@
 package org.highfive.backend.user.service;
 
+import static org.highfive.backend.content.exception.ContentErrorCode.CONTENT_NOT_FOUND;
 import static org.highfive.backend.user.exception.UserErrorCode.USER_NOT_FOUND_ERROR;
 
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.highfive.backend.content.repository.jpa.ContentRepository;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.user.dto.request.CreateContentWatchLogRequestDto;
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserLogService {
 
     private final UserRepository userRepository;
+    private final ContentRepository contentRepository;
 
     @Transactional
     public Response<Void> updateUserWatchInfo(final CreateContentWatchLogRequestDto request, final User user) {
@@ -36,4 +39,11 @@ public class UserLogService {
         return Response.ok(null);
     }
 
+    public Response<Void> updateUserWeightByClick(final Long contentId) {
+
+        contentRepository.findById(contentId).
+                orElseThrow(() -> new BusinessException(CONTENT_NOT_FOUND));
+
+        return Response.ok(null);
+    }
 }
