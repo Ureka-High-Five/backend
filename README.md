@@ -5,17 +5,22 @@
 OTT 서비스 사용자들은 자신의 취향에 맞는 콘텐츠를 찾기 어렵다는 문제를 자주 경험합니다.  
 LEAD:ME는 사용자의 명시적 입력 없이 **행동 데이터만으로** 개인화된 콘텐츠를 추천하는 백엔드 시스템을 설계하고 구축했습니다.
 
+<br/>
+
 ## 🎯 개발 목표
 
 - 사용자 행동 데이터를 실시간으로 반영하는 백엔드 시스템을 구축합니다.
 - **인프라 사용 비용을 최소화**하면서도, **최소 사양 환경에서도 안정적으로 운영 가능한** 백엔드 아키텍처를 구성합니다.
 - 장애나 예외 상황에서도 사용자 행동 데이터가 안전하게 수집·저장되도록 아키텍처를 설계합니다.
 
+<br/>
+<br/>
+
 ## 🏛️ 시스템 아키텍처 설계 과정
 
 ### 초기 버전의 한계점 파악
 
-<img width="800" height="400" alt="image" src="https://github.com/user-attachments/assets/512971dd-0e55-4f75-b2a9-86d5640e1632" />
+<img width="600" height="300" alt="image" src="https://github.com/user-attachments/assets/512971dd-0e55-4f75-b2a9-86d5640e1632" />
 
 초기 설계에서는 다음과 같은 한계점들이 발견되었습니다:
 
@@ -61,7 +66,7 @@ LEAD:ME는 사용자의 명시적 입력 없이 **행동 데이터만으로** �
 
 <br/>
 
-### 1. 행동 기반 가중치 업데이트 성능
+### 1️⃣ 행동 기반 가중치 업데이트 성능
 
 ```
 사용자 행동 → 컨텐츠 메타 정보 조회 → 사용자 가중치 업데이트 → 사용자 벡터 재계산
@@ -82,7 +87,7 @@ LEAD:ME는 사용자의 명시적 입력 없이 **행동 데이터만으로** �
 
 <br/>
 
-### 2. 실시간 동기 처리 성능
+### 2️⃣ 실시간 동기 처리 성능
 
 ```
 사용자 행동 → DB에 가중치, 벡터값 업데이트
@@ -105,7 +110,7 @@ LEAD:ME는 사용자의 명시적 입력 없이 **행동 데이터만으로** �
 
 <br/>
 
-### 3. 데이터베이스 분산 효과
+### 3️⃣ 데이터베이스 분산 효과
 
 데이터베이스 역할 분리로 안정적인 성능을 확보했습니다:
 
@@ -116,11 +121,13 @@ LEAD:ME는 사용자의 명시적 입력 없이 **행동 데이터만으로** �
 
 **MongoDB CPU 사용률**
 
-<img width="2422" height="947" alt="mongoDBcpu" src="https://github.com/user-attachments/assets/a79f9102-f8e9-462c-9605-4f0b096974e8" />
+<img width="605" height="250" alt="mongoDBcpu" src="https://github.com/user-attachments/assets/a79f9102-f8e9-462c-9605-4f0b096974e8" />
+
+<br/>
 
 **PostgreSQL CPU 사용률**
 
-<img width="2414" height="946" alt="postgreDB_cpu" src="https://github.com/user-attachments/assets/fbf4637f-9c6a-407a-a41b-9080aa309efa" />
+<img width="605" height="250" alt="postgreDB_cpu" src="https://github.com/user-attachments/assets/fbf4637f-9c6a-407a-a41b-9080aa309efa" />
 
 <br/>
 <br/>
@@ -130,6 +137,24 @@ LEAD:ME는 사용자의 명시적 입력 없이 **행동 데이터만으로** �
 <img width="1400" height="1000" alt="image" src="https://github.com/user-attachments/assets/548847a9-ef59-4a32-a338-969cfbdea75b" />
 
 ### 사용자 행동 처리 플로우
+
+```mermaid
+sequenceDiagram
+    participant Web as Web Client
+    participant Spring as Springboot
+    participant MQ as RabbitMQ
+    participant Reco as 추천 서버 (FastAPI)
+    participant Mongo as MongoDB
+    participant Redis as Redis (User Vector Cache)
+
+    Web->>Spring: 사용자 행동 발생 (조회, 좋아요 등)
+    Spring->>Mongo: 행동 로그 저장
+    Spring-->>MQ: 행동 메시지 전송 (userId, contentId, 행동 타입 등)
+    MQ-->>Reco: 메시지 전달
+    Reco->>Mongo: 사용자 기존 메타/가중치 조회
+    Reco->>Reco: 가중치 계산 및 업데이트
+    Reco->>Redis: 사용자 벡터 캐싱
+```
 
 ```
 1. MongoDB에 사용자 행동 로그를 저장합니다.
@@ -150,6 +175,20 @@ LEAD:ME는 사용자의 명시적 입력 없이 **행동 데이터만으로** �
 
 ### 추천 처리 플로우
 
+```mermaid
+sequenceDiagram
+    participant Web as Web Client
+    participant Spring as Springboot
+    participant Redis as Redis (User Vector Cache)
+    participant PG as PostgreSQL (pgvector)
+    
+    Web->>Spring: 추천 요청
+    Spring->>Redis: 사용자 벡터 조회
+    Spring->>PG: 사용자 벡터 동기화 및 유사 콘텐츠 벡터 검색
+    PG-->>Spring: 추천 콘텐츠 목록 반환
+    Spring-->>Web: 최종 추천 응답
+```
+
 ```
 1. 웹 서버(Spring)에서 Redis에 캐싱된 사용자 벡터를 조회합니다.
 
@@ -161,6 +200,18 @@ LEAD:ME는 사용자의 명시적 입력 없이 **행동 데이터만으로** �
 ```
 
 ### 장애 복구 플로우
+
+```mermaid
+sequenceDiagram
+    participant Scheduler as 스케줄러 서버 (FastAPI)
+    participant Mongo as MongoDB (행동 로그 및 유저 가중치)
+
+    Scheduler->>Mongo: status = FAIL 로그 주기적 조회
+    loop 실패 로그 반복
+        Scheduler->>Scheduler: 가중치 재계산 수행
+        Scheduler->>Mongo: 유저 가중치 업데이트
+    end
+```
 
 ```
 1. 스케줄러 서버(FastAPI)는 1분 간격으로 사용자 행동 로그 중 status = FAIL로 기록된 항목을 조회합니다.
