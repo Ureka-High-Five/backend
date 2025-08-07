@@ -9,6 +9,8 @@ import org.highfive.backend.user.dto.request.CreateContentWatchLogRequestDto;
 import org.highfive.backend.user.entity.User;
 import org.highfive.backend.user.service.UserLogService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,5 +28,14 @@ public class UserLogController {
             @AuthenticationPrincipal User user
     ) {
         return userLogService.updateUserWatchInfo(request, user);
+    }
+
+    @ActionLogStamp(Action.CLICK)
+    @PatchMapping("/content/click/{contentId}")
+    public Response<Void> updateUserWeightByClick(
+            @PathVariable final Long contentId,
+            @AuthenticationPrincipal User user
+    ) {
+        return userLogService.updateUserWeightByClick(contentId);
     }
 }
