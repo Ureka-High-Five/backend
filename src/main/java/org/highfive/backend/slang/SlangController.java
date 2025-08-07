@@ -19,6 +19,6 @@ public class SlangController {
     public Response<SlangFilterResponseDto> slangFilter(
             @RequestBody SlangFilterRequestDto request
     ) {
-        return Response.ok(new SlangFilterResponseDto(slangFilterService.filteringSlang(request.word())));
+        return Response.ok(new SlangFilterResponseDto(slangFilterService.filteringSlang(request.text())));
     }
 }
