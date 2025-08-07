@@ -408,6 +408,10 @@ $set 연산을 $inc 연산으로 변경하여, 기존 값을 덮어쓰지 않고
 
 ## 기술 선택 이유
 
+주요 기술 스택 선정 이유는 Github Wiki를 참고해주세요.
+[📚 기술 스택 선정 이유 위키 바로가기](https://github.com/Ureka-High-Five/backend/wiki/%EA%B8%B0%EC%88%A0-%EC%8A%A4%ED%83%9D-%EC%84%A0%EC%A0%95-%EC%9D%B4%EC%9C%A0)
+
+
 ### 💡 우리의 개발 철학
 - 모듈 간 책임과 경계를 명확히 하기
 - 근거가 있는 선택의 결정을 하기
