@@ -342,20 +342,20 @@ $inc와 $set 연산이 동일 필드에 동시에 접근할 경우, user_weight 
 ```
 <br/>
 
-동시성 문제가 발생한 결과
+동시성 문제가 발생한 결과  
 <img width="303" height="100" alt="mongoDB_동시성" src="https://github.com/user-attachments/assets/24412ac4-2b3d-4b36-9fb1-88076600acee" />
 
 동시성 문제가 발생해서 가중치의 기대값인 20보다 작은 값이 나오게 됩니다.  
 
 <br/>
 
-✅ 문제 해결 전략
+✅ 문제 해결 전략  
 $set 연산을 $inc 연산으로 변경하여, 기존 값을 덮어쓰지 않고 변화량만 반영하도록 수정했습니다.
 이를 통해 모든 업데이트가 누락 없이 반영되며, 동시성 문제도 해결되었습니다.
 
 <br/>
 
-동시성 문제를 해결한 결과
+동시성 문제를 해결한 결과  
 <img width="303" height="100" alt="동시성문제해결" src="https://github.com/user-attachments/assets/7344dbee-d04d-4efc-b368-88e04c42730a" />
 
 가중치의 기대값인 20에 근접한 값이 나오게 됩니다.  
