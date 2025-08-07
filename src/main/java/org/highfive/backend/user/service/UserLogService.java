@@ -9,6 +9,7 @@ import org.highfive.backend.content.repository.jpa.ContentRepository;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.user.dto.request.CreateContentWatchLogRequestDto;
+import org.highfive.backend.user.dto.request.UpdateUserWeightByClickRequestDto;
 import org.highfive.backend.user.entity.User;
 import org.highfive.backend.user.repository.jpa.UserRepository;
 import org.springframework.stereotype.Service;
@@ -39,9 +40,9 @@ public class UserLogService {
         return Response.ok(null);
     }
 
-    public Response<Void> updateUserWeightByClick(final Long contentId) {
+    public Response<Void> updateUserWeightByClick(final UpdateUserWeightByClickRequestDto request) {
 
-        contentRepository.findById(contentId).
+        contentRepository.findById(request.contentId()).
                 orElseThrow(() -> new BusinessException(CONTENT_NOT_FOUND));
 
         return Response.ok(null);

@@ -6,6 +6,7 @@ import org.highfive.backend.action.Action;
 import org.highfive.backend.action.ActionLogStamp;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.user.dto.request.CreateContentWatchLogRequestDto;
+import org.highfive.backend.user.dto.request.UpdateUserWeightByClickRequestDto;
 import org.highfive.backend.user.entity.User;
 import org.highfive.backend.user.service.UserLogService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -29,11 +30,11 @@ public class UserLogController {
     }
 
     @ActionLogStamp(Action.CLICK)
-    @PostMapping("/content/click/{contentId}")
+    @PostMapping("/content/click")
     public Response<Void> updateUserWeightByClick(
-            @Valid @RequestBody final Long contentId,
+            @Valid @RequestBody final UpdateUserWeightByClickRequestDto request,
             @AuthenticationPrincipal User user
     ) {
-        return userLogService.updateUserWeightByClick(contentId);
+        return userLogService.updateUserWeightByClick(request);
     }
 }
