@@ -102,6 +102,8 @@ LEAD:ME는 사용자의 명시적 입력 없이 **행동 데이터만으로** �
 초기 버전에 비해 최종 버전의 응답 시간이 **1.16초** 단축되었습니다.  
 추천 서버는 벡터 값을 Redis에 먼저 저장하고, 이후 필요한 경우에만 PostgreSQL과 동기화하기 때문에, 사용자가 행동을 해도 DB I/O가 발생하지 않았습니다.  
 
+<br/>
+
 **📍초기 버전**  
 
 <img width="1388" height="126" alt="image" src="https://github.com/user-attachments/assets/c7e0cd67-a9d1-4986-9098-8b7565279c4b" />
@@ -138,7 +140,7 @@ CPU 사용률은 10% 미만으로 안정적입니다.
 ### 사용자 행동이 발생한 경우
 ```
 1. MongoDB에 사용자 행동 로그를 저장합니다.
- - 행동 정보(조회, 좋아요 등)을 이벤트 발생 시마다 기록합니다.
+ - 행동 정보(조회, 좋아요 등)를 이벤트 발생 시마다 기록합니다.
 
 2. 웹 서버(Spring)에서 사용자 행동에 대한 가중치 업데이트 이벤트를 RabbitMQ로 메시지를 보냅니다.
  - 메시지에는 사용자 ID, 컨텐츠 ID, 행동 타입, 컨텐츠 메타 정보, 상태값 등이 포함됩니다.
@@ -174,24 +176,7 @@ CPU 사용률은 10% 미만으로 안정적입니다.
 2. 조회된 실패 로그에 대해 가중치 업데이트 로직을 재실행하여, 누락되었던 사용자 가중치를 복구합니다.
 ```
 
-
-### 🏗 시스템 아키텍처
-<img width="4367" height="2397" alt="08:02_아키텍처" src="https://github.com/user-attachments/assets/c63937f9-a916-4612-b7c5-ea5619c95a85" />
-
-
-
-##
-
-### 🗃 ERD
-<img width="3022" height="1708" alt="image" src="https://github.com/user-attachments/assets/a419a1a0-9220-42b7-945f-013a9125ae29" />
-
-
->[▶️ERD CLOUD 바로가기](https://www.erdcloud.com/d/GLGXxrdRRm9f6ZaKE)
-
-<br/>
-
-
-## 
+## 고민한 기술 적용 사례
 
 ### 🎬 장르 임베딩 개선
 
@@ -202,35 +187,114 @@ CPU 사용률은 10% 미만으로 안정적입니다.
 해당 모델은 영화와 장르 간의 실제 연결 관계를 반영하여, 유사한 장르 간의 벡터가 더 가깝도록 임베딩되도록 학습됩니다. <br/>
 실제로 Thriller와 Action은 본 모델에서 유사한 벡터를 가지며 장르 간 의미적 유사성이 잘 반영되어 있습니다.
 
- <br/>
-
-<img width="978" height="573" alt="추천 알고리즘 (4)" src="https://github.com/user-attachments/assets/d7fb5355-b5ba-4f8d-a921-e37818625caa" />
-
-
-##
-
-### 🌤️ 플로우 차트 
-
-사용자 행동 로그 발생 시 최소한의 지연(latency)으로 실시간 추천을 제공하기 위해 하나의 추천 워크플로우를 여러 개의 트랜잭션으로 분리하였으며, 각 단계에 대한 보상 트랜잭션을 설계 및 구현하였습니다.
-
-- 각 트랜잭션이 실패할 경우 실패 로그는 MongoDB에 기록됩니다.
-
-- Log Reprocessing Scheduler가 1분 주기로 실패 로그를 조회하여 재처리를 시도합니다.
-
-- Weight Resizing Scheduler는 매일 실행되며 과거 가중치를 재조정함과 동시에 모든 실패 로그를 다시 시도합니다.
-
-- 재처리 스케줄러조차 실패할 경우 해당 로그는 파일로 저장되며, 이는 Promtail + Loki + Grafana를 통해 슬랙 알림으로 전송됩니다.
-
 <br/>
 
-<img width="5136" height="1876" alt="image" src="https://github.com/user-attachments/assets/548847a9-ef59-4a32-a338-969cfbdea75b" />
+<img width="1185" height="528" alt="image" src="https://github.com/user-attachments/assets/70b6390d-cd3e-46f5-bde0-41b622ce1bdb" />
 
-##
+<br/> 
+<br/> 
 
-### 🪄스케줄러 
+
+
+| Model   | Precision Test 결과 | 모델 크기 |
+|------------|-----------------|---------|
+| Google Word2Vec| 0.559 | 1.5 GB |
+| Node2Vec| 0.718 | 2.7MB |
+
+<br/>
+정확도 측면에서 Node2Vec이 Word2Vec보다 약 28% 향상된 성능을 보였고, 모델 크기 또한 Word2Vec 대비 99% 이상 작습니다.
+
+<br/> 
+<br/> 
+
+### 🪄스케줄러 사용
+
+사용자 행동 로그 기반 추천 시스템에서는 두 가지 스케줄러를 사용합니다.
 
 <img width="5504" height="2284" alt="image" src="https://github.com/user-attachments/assets/b6f67e60-2ce8-4fe5-924c-bb87b673ee2d" />
 
+<br/>
+<br/>
+
+⭐️ 실패 로그 재처리 스케줄러(1분 주기)
+
+사용자 행동이 발생했지만 가중치 반영에 실패한 경우, 해당 로그는 failed action log로 저장됩니다. 이를 1분마다 재처리하여 유실을 방지합니다.  
+
+<br/>
+
+📍 동작 흐름  
+```
+MongoDB에서 상태가 fail인 로그 조회 → 실패 로그의 가중치를 재계산 → 사용자 가중치 컬렉션(MongoDB)에 반영
+```
+
+이 구조는 시스템 일시적 오류나 장애로 인해 놓친 가중치 반영을 자동으로 복구하는 역할을 합니다.   
+
+<br/>
+<br/>
+
+⭐️ 가중치 노후화 보정 스케줄러(1일 주기)  
+
+사용자의 오래된 행동 로그는 시간이 지남에 따라 유효성이 낮아지므로, 이를 반영하여 유저 가중치를 재계산합니다.  
+
+<br/>
+
+📍 동작 흐름  
+```
+action log 조회 → 로그 기반으로 시간 가중 감쇠 함수 적용 → 감쇠된 값을 기반으로 벡터를 재계산 후 Redis에 저장
+```
+
+이 스케줄러는 장기간 사용하지 않은 행동 로그를 시간 감쇠 함수로 처리하여, 보다 실시간성 높은 추천 벡터를 유지하도록 돕습니다.  
+
+<br/>
+<br/>
+
+### 🪄 행동 로그 관리 전략
+
+<img width="718" height="384" alt="image" src="https://github.com/user-attachments/assets/17f40619-f8a1-4741-96be-c42b77ca62d8" />
+
+<br/>
+<br/>
+
+#### 📍 MongoDB 행동 로그 처리 효율화를 위한 컬렉션 분리 설계  
+
+MongoDB에 action_log 컬렉션과 managed_aciton_log 컬렉션이 존재합니다.  
+
+초기에는 모든 사용자 행동 로그를 하나의 aciton_log 컬렉션에 저장하고, 실패 로그 재처리 시 상태(status : FAIL)를 조건으로 전체 행동 로그 데이터를 매번 필터링했습니다. 하지만, 1분 주기로 수행되는 재처리 스케줄러의 전체 로그를 대상으로 필터링하는 방식은 행동 로그가 많아질수록 실패 로그만 필터링 하는데 많은 비용이 든다는 문제가 있습니다.  
+
+
+따라서, 실패한 로그만 별도로 managed_action_log 컬렉션에 저장하여, 재처리 시 해당 컬렉션만 조회하도록 구조를 분리하였습니다. 그 결과, 필터링 비용 없이 즉시 실패 로그만 조회가 가능해졌습니다.  
+
+
+<br/>
+
+
+#### 📍 행동 로그에 대한 상태값 관리  
+
+사용자 행동 로그 유실을 방지 하기 위해, PROCESSING, SUCCESS, FAIL 3가지 상태값으로 관리합니다.  
+```
+PROCESSING : 행동 로그가 MongoDB에 저장은 되었지만, 아직 가중치 업데이트 및 유저 백터 계산이 완료되지 않은 상태입니다.
+
+SUCCESS : 행동 로그의 가중치 업데이트 및 백터 계산이 성공적으로 완료된 상태입니다.
+
+FAIL : 시스템 오류 또는 예외로 인해 처리에 실패한 상태로, 1분마다 실행되는 스케줄러에 의해 재시도됩니다.  
+```
+
+
+
+
+### 🏗 시스템 아키텍처
+
+<img width="4367" height="2397" alt="08:02_아키텍처" src="https://github.com/user-attachments/assets/c63937f9-a916-4612-b7c5-ea5619c95a85" />
+
+##
+
+### 🗃 ERD
+<img width="3022" height="1708" alt="image" src="https://github.com/user-attachments/assets/a419a1a0-9220-42b7-945f-013a9125ae29" />
+
+
+>[▶️ERD CLOUD 바로가기](https://www.erdcloud.com/d/GLGXxrdRRm9f6ZaKE)
+
+<br/>
 
 
 
