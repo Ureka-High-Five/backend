@@ -43,7 +43,8 @@ public class SecurityConfig {
                                 "/content/init",
                                 "/content/recommend",
                                 "/content/search",
-                                "/actuator/prometheus"
+                                "/actuator/prometheus",
+                                "/slang/filter"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

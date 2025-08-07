@@ -34,6 +34,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final String CONTENT_SEARCH = "/content/search";
     private final String PROMETHEUS = "/actuator/prometheus";
     private final String OPTIONS = "OPTIONS";
+    private final String SLANG_FILTER = "/slang/filter";
 
     private final ObjectMapper objectMapper;
     private final TokenService tokenService;
@@ -62,6 +63,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 || requestURI.equals(ONBOARDING_INIT)
                 || requestURI.equals(CONTENT_SEARCH)
                 || requestURI.startsWith(PROMETHEUS)
+                || requestURI.startsWith(SLANG_FILTER)
                 || isOnboardingSelect(request, requestURI)) {
             filterChain.doFilter(request, response);
             return;
