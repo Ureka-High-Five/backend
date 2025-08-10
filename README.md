@@ -470,5 +470,5 @@ sequenceDiagram
 |<img src="https://avatars.githubusercontent.com/u/96441638?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/89333351?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/107402704?v=4" width="150" height="150"/>|
 |:-:|:-:|:-:|
 |박상윤<br/>[@sangyunpark99](https://github.com/sangyunpark99)|최정민<br/>[@likerhythm](https://github.com/likerhythm)|황지연<br/>[@ghkdwldus0807](https://github.com/ghkdwldus0807)|
-|- 백엔드 기술 팀장 <br/>- 인프라 <br/>- API 개발 <br/>- 실시간 추천 서버 설계 <br/>- 모니터링 구축 <br/>- CI/CD|- 추천 시스템 구축 <br/>- 데일리 스케줄러 개발 <br/>- API 개발 <br/>- 실시간 추천 서버 설계|- 로깅 시스템 구축 <br/>- 로그 재처리 스케줄러 개발 <br/> - Data Pipeline 구축 <br/> - API 개발 <br/>- 실시간 추천 서버 설계 |
+|- 백엔드 기술 팀장 <br/>- 인프라 <br/>- ERD 설계 <br/>- API 개발 <br/>- 실시간 추천 서버 설계 <br/>- 모니터링 구축 <br/>- CI/CD|- 추천 시스템 구축 <br/>- 데일리 스케줄러 개발 <br/>- ERD 설계 <br/>- API 개발 <br/>- 실시간 추천 서버 설계|- 로깅 시스템 구축 <br/>- 로그 재처리 스케줄러 개발 <br/> - Data Pipeline 구축 <br/> - API 개발 <br/>- ERD 설계 <br/>- 실시간 추천 서버 설계 |
 
