@@ -23,9 +23,12 @@ import org.highfive.backend.curation.dto.mapper.CurationMapper;
 import org.highfive.backend.curation.repository.jpa.CurationRepository;
 import org.highfive.backend.global.code.SuccessCode;
 import org.highfive.backend.global.dto.Response;
+import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.metadata.dto.GenreMapper;
 import org.highfive.backend.user.entity.User;
 import org.highfive.backend.user.entity.preference.MongoUserWeight;
+import org.highfive.backend.user.exception.UserErrorCode;
+import org.highfive.backend.user.repository.jdbc.UserVectorRepository;
 import org.highfive.backend.user.repository.jpa.UserRepository;
 import org.highfive.backend.user.repository.mongo.UserWeightRepository;
 import org.highfive.backend.user.repository.redis.UserRedisRepository;
@@ -42,6 +45,7 @@ public class HomeContentService {
     private final ContentRepository contentRepository;
     private final UserWeightRepository userWeightRepository;
     private final UserRepository userRepository;
+    private final UserVectorRepository userVectorRepository;
     private final CurationRepository curationRepository;
     private final ContentQueryRepositoryImpl contentQueryRepository;
 
@@ -84,7 +88,11 @@ public class HomeContentService {
     }
 
     private List<Content> recommendContentsByVector(final User user, final int count) {
-        final String rawVector = userRedisRepository.getUserVector(user.getId());
+        String rawVector = userRedisRepository.getUserVector(user.getId());
+        if(rawVector == null) {
+            rawVector = userVectorRepository.findEmbeddingByUserId(user.getId()).orElseThrow(() -> new BusinessException(UserErrorCode.USER_VECTOR_NOT_FOUND));
+            userRedisRepository.setUserVector(user.getId(), rawVector);
+        }
         final String userVector = convertUserVector(rawVector);
         userRepository.upsertUserVector(user.getId(), userVector);
         return contentRepository.findRecommendedContentsByUser(user.getId(), count);
