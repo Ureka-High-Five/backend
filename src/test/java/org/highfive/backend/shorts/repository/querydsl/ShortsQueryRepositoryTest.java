@@ -1,19 +1,12 @@
-package org.highfive.backend.content.repository.querydsl;
-
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+package org.highfive.backend.shorts.repository.querydsl;
 
 import jakarta.persistence.EntityManager;
 import org.highfive.backend.common.fixture.ContentFixture;
 import org.highfive.backend.common.fixture.ShortsFixture;
 import org.highfive.backend.config.TestQuerydslConfig;
-import org.highfive.backend.shorts.dto.response.ShortsItemDto;
 import org.highfive.backend.content.entity.Content;
-import org.highfive.backend.global.dto.CursorPageResponse;
-import org.highfive.backend.shorts.repository.querydsl.ShortsQueryRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
