@@ -1,4 +1,15 @@
-//package org.highfive.backend.content.integration;
+//package org.highfive.backend.review.integration;
+//
+//import static org.assertj.core.api.Assertions.assertThat;
+//import static org.highfive.backend.content.exception.ContentErrorCode.CONTENT_NOT_FOUND;
+//import static org.highfive.backend.review.exception.ReviewErrorCode.MY_REVIEW_NOT_FOUND;
+//import static org.highfive.backend.review.exception.ReviewErrorCode.REVIEW_NOT_FOUND;
+//import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+//import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+//import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+//import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+//import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+//import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 //
 //import com.fasterxml.jackson.databind.ObjectMapper;
 //import jakarta.transaction.Transactional;
@@ -6,11 +17,11 @@
 //import org.highfive.backend.common.fixture.ContentFixture;
 //import org.highfive.backend.common.fixture.ReviewFixture;
 //import org.highfive.backend.common.fixture.UserFixture;
+//import org.highfive.backend.content.entity.Content;
+//import org.highfive.backend.content.repository.jpa.ContentRepository;
 //import org.highfive.backend.review.dto.request.CreateReviewRequestDto;
 //import org.highfive.backend.review.dto.request.UpdateReviewRequestDto;
-//import org.highfive.backend.content.entity.Content;
 //import org.highfive.backend.review.entity.Review;
-//import org.highfive.backend.content.repository.jpa.ContentRepository;
 //import org.highfive.backend.review.repository.jpa.ReviewRepository;
 //import org.highfive.backend.user.entity.User;
 //import org.highfive.backend.user.repository.jpa.UserRepository;
@@ -28,15 +39,6 @@
 //import org.springframework.security.core.context.SecurityContextHolder;
 //import org.springframework.test.web.servlet.MockMvc;
 //import org.springframework.test.web.servlet.request.RequestPostProcessor;
-//
-//import static org.assertj.core.api.Assertions.assertThat;
-//import static org.highfive.backend.content.exception.ContentErrorCode.CONTENT_NOT_FOUND;
-//import static org.highfive.backend.review.exception.ReviewErrorCode.MY_REVIEW_NOT_FOUND;
-//import static org.highfive.backend.review.exception.ReviewErrorCode.REVIEW_NOT_FOUND;
-//import static org.highfive.backend.global.code.SuccessCode.NO_CONTENT;
-//import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-//import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-//import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 //
 //@SpringBootTest
 //@AutoConfigureMockMvc(addFilters = false)   // → Security 필터 전부 비활성화
@@ -77,14 +79,15 @@
 //
 //    @BeforeEach
 //    void init() {
-//        user    = userRepository.save(UserFixture.createUser(null));
+//        user = userRepository.save(UserFixture.createUser(null));
 //        content = contentRepository.save(ContentFixture.createContent(null));
 //
 //        Review review = reviewRepository.save(ReviewFixture.createReview(null, user, content));
 //        reviewId = review.getId();
 //    }
 //
-//    @Nested class CreateReview {
+//    @Nested
+//    class CreateReview {
 //        @Test
 //        @DisplayName("리뷰 생성에 성공한다")
 //        void createReview_success() throws Exception {
@@ -114,7 +117,8 @@
 //        }
 //    }
 //
-//    @Nested class UpdateReview {
+//    @Nested
+//    class UpdateReview {
 //
 //        @Test
 //        @DisplayName("리뷰 수정에 성공한다")
@@ -148,7 +152,8 @@
 //    }
 //
 //
-//    @Nested class DeleteReview {
+//    @Nested
+//    class DeleteReview {
 //
 //        @Test
 //        @DisplayName("리뷰를 성공적으로 삭제한다")
@@ -171,7 +176,8 @@
 //        }
 //    }
 //
-//    @Nested class ListReviewsByContent {
+//    @Nested
+//    class ListReviewsByContent {
 //
 //        @Test
 //        @DisplayName("리뷰 목록 조회 성공")
@@ -195,7 +201,8 @@
 //    }
 //
 //
-//    @Nested class MyReview {
+//    @Nested
+//    class MyReview {
 //
 //        @Test
 //        @DisplayName("내 리뷰 조회에 성공한다")

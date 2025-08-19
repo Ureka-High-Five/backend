@@ -1,4 +1,4 @@
-//package org.highfive.backend.content.repository;
+//package org.highfive.backend.review.repository.querydsl;
 //
 //import static org.assertj.core.api.Assertions.assertThat;
 //
@@ -8,9 +8,11 @@
 //import org.highfive.backend.common.fixture.ContentFixture;
 //import org.highfive.backend.common.fixture.ReviewFixture;
 //import org.highfive.backend.common.fixture.UserFixture;
-//import org.highfive.backend.review.dto.response.ReviewSimpleResponseDto;
 //import org.highfive.backend.content.entity.Content;
+//import org.highfive.backend.content.repository.jpa.ContentRepository;
 //import org.highfive.backend.global.dto.CursorPageResponse;
+//import org.highfive.backend.review.dto.response.ReviewSimpleResponseDto;
+//import org.highfive.backend.review.repository.jpa.ReviewRepository;
 //import org.highfive.backend.user.entity.User;
 //import org.highfive.backend.user.repository.jpa.UserRepository;
 //import org.junit.jupiter.api.BeforeEach;
@@ -49,14 +51,15 @@
 //
 //    @Test
 //    @DisplayName("리뷰가 여러 개 있을 때 첫 페이지를 요청하면 size만큼 최신순으로 반환되고 nextCursor를 준다")
-//    void findReviewsByCursor_firstPage_success(){
+//    void findReviewsByCursor_firstPage_success() {
 //        //given
 //        for (int i = 0; i < 5; i++) {
 //            reviewRepository.save(ReviewFixture.createReview(null, user, content));
 //        }
 //
 //        //when
-//        CursorPageResponse<ReviewSimpleResponseDto> response = reviewQueryRepository.findReviewsByCursor(content.getId(),null,3, user);
+//        CursorPageResponse<ReviewSimpleResponseDto> response = reviewQueryRepository.findReviewsByCursor(
+//                content.getId(), null, 3, user);
 //
 //        //then
 //        assertThat(response.items()).hasSize(3);
@@ -72,11 +75,11 @@
 //        }
 //
 //        CursorPageResponse<ReviewSimpleResponseDto> firstPage =
-//                reviewQueryRepository.findReviewsByCursor(content.getId(), null, 3,user);
+//                reviewQueryRepository.findReviewsByCursor(content.getId(), null, 3, user);
 //
 //        //when
 //        CursorPageResponse<ReviewSimpleResponseDto> secondPage =
-//                reviewQueryRepository.findReviewsByCursor(content.getId(), firstPage.nextCursor(), 3,user);
+//                reviewQueryRepository.findReviewsByCursor(content.getId(), firstPage.nextCursor(), 3, user);
 //
 //        //then
 //        assertThat(secondPage.items()).hasSize(2);
@@ -88,7 +91,7 @@
 //    void findReviewsByCursor_noReview() {
 //        // when
 //        CursorPageResponse<ReviewSimpleResponseDto> response =
-//                reviewQueryRepository.findReviewsByCursor(content.getId(), null, 3,user);
+//                reviewQueryRepository.findReviewsByCursor(content.getId(), null, 3, user);
 //
 //        // then
 //        assertThat(response.items()).isEmpty();
