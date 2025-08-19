@@ -1,4 +1,4 @@
-package org.highfive.backend.content.repository;
+package org.highfive.backend.content.repository.jpa;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.tuple;
@@ -8,13 +8,12 @@ import java.util.Optional;
 import org.highfive.backend.common.fixture.ContentFixture;
 import org.highfive.backend.content.dto.response.MostPopularContentPerGenreDto;
 import org.highfive.backend.content.entity.Content;
+import org.highfive.backend.global.config.QueryDslConfig;
 import org.highfive.backend.metadata.entity.MetaInfo;
 import org.highfive.backend.metadata.entity.MetaInfoContents;
 import org.highfive.backend.metadata.entity.MetaType;
-import org.highfive.backend.content.repository.jpa.ContentRepository;
 import org.highfive.backend.metadata.repository.jpa.MetaInfoContentsRepository;
 import org.highfive.backend.metadata.repository.jpa.MetaInfoRepository;
-import org.highfive.backend.global.config.QueryDslConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,15 +44,15 @@ public class ContentRepositoryTest {
         MetaInfo kids = metaInfoRepository.save(new MetaInfo(null, "KIDS", MetaType.GENRE, null));
 
         Content c1 = contentRepository.save(ContentFixture.createContentByPopularity(null, "c1", 10));
-        Content c2 = contentRepository.save(ContentFixture.createContentByPopularity(null, "c2",20));
-        Content c3 = contentRepository.save(ContentFixture.createContentByPopularity(null, "c3",30));
-        Content c4 = contentRepository.save(ContentFixture.createContentByPopularity(null, "c4",40));
-        Content c5 = contentRepository.save(ContentFixture.createContentByPopularity(null, "c5",50));
-        Content c6 = contentRepository.save(ContentFixture.createContentByPopularity(null, "c6",60));
-        Content c7 = contentRepository.save(ContentFixture.createContentByPopularity(null, "c7",70));
-        Content c8 = contentRepository.save(ContentFixture.createContentByPopularity(null, "c8",80));
-        Content c9 = contentRepository.save(ContentFixture.createContentByPopularity(null, "c9",90));
-        Content c10 = contentRepository.save(ContentFixture.createContentByPopularity(null, "c10",100));
+        Content c2 = contentRepository.save(ContentFixture.createContentByPopularity(null, "c2", 20));
+        Content c3 = contentRepository.save(ContentFixture.createContentByPopularity(null, "c3", 30));
+        Content c4 = contentRepository.save(ContentFixture.createContentByPopularity(null, "c4", 40));
+        Content c5 = contentRepository.save(ContentFixture.createContentByPopularity(null, "c5", 50));
+        Content c6 = contentRepository.save(ContentFixture.createContentByPopularity(null, "c6", 60));
+        Content c7 = contentRepository.save(ContentFixture.createContentByPopularity(null, "c7", 70));
+        Content c8 = contentRepository.save(ContentFixture.createContentByPopularity(null, "c8", 80));
+        Content c9 = contentRepository.save(ContentFixture.createContentByPopularity(null, "c9", 90));
+        Content c10 = contentRepository.save(ContentFixture.createContentByPopularity(null, "c10", 100));
 
         micRepository.save(new MetaInfoContents(null, action, c1));
         micRepository.save(new MetaInfoContents(null, action, c2));
