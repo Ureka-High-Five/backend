@@ -1,4 +1,4 @@
-package org.highfive.backend.content.repository;
+package org.highfive.backend.content.repository.querydsl;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
@@ -9,11 +9,10 @@ import org.highfive.backend.common.fixture.ContentFixture;
 import org.highfive.backend.content.dto.response.GenreCountDto;
 import org.highfive.backend.content.dto.response.OnboardingContentDto;
 import org.highfive.backend.content.entity.Content;
+import org.highfive.backend.content.repository.querydsl.ContentQueryRepositoryImplTest.QueryDslTestConfig;
 import org.highfive.backend.metadata.entity.MetaInfo;
 import org.highfive.backend.metadata.entity.MetaInfoContents;
 import org.highfive.backend.metadata.entity.MetaType;
-import org.highfive.backend.content.repository.ContentQueryRepositoryImplTest.QueryDslTestConfig;
-import org.highfive.backend.content.repository.querydsl.ContentQueryRepositoryImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,14 +47,17 @@ class ContentQueryRepositoryImplTest {
         //given
         MetaInfo action = new MetaInfo(null, "Action", MetaType.GENRE, null);
         MetaInfo comedy = new MetaInfo(null, "Comedy", MetaType.GENRE, null);
-        MetaInfo drama  = new MetaInfo(null, "Drama",  MetaType.GENRE, null);
+        MetaInfo drama = new MetaInfo(null, "Drama", MetaType.GENRE, null);
         em.persist(action);
         em.persist(comedy);
         em.persist(drama);
 
-        Content c1 = ContentFixture.createContent(null); em.persist(c1);
-        Content c2 = ContentFixture.createContent(null); em.persist(c2);
-        Content c3 = ContentFixture.createContent(null); em.persist(c3);
+        Content c1 = ContentFixture.createContent(null);
+        em.persist(c1);
+        Content c2 = ContentFixture.createContent(null);
+        em.persist(c2);
+        Content c3 = ContentFixture.createContent(null);
+        em.persist(c3);
 
         em.persist(new MetaInfoContents(null, action, c1));
         em.persist(new MetaInfoContents(null, comedy, c1));
@@ -74,7 +76,7 @@ class ContentQueryRepositoryImplTest {
         // then
         assertThat(result).hasSize(2);
 
-        GenreCountDto first  = result.get(0);
+        GenreCountDto first = result.get(0);
         GenreCountDto second = result.get(1);
 
         assertThat(first.genre()).isEqualTo("Action");
@@ -89,24 +91,31 @@ class ContentQueryRepositoryImplTest {
     void findContentsByGenresOrderByMatchCountDesc() {
         // given
         MetaInfo action = new MetaInfo(null, "Action", MetaType.GENRE, null);
-        MetaInfo drama  = new MetaInfo(null, "Drama",  MetaType.GENRE, null);
+        MetaInfo drama = new MetaInfo(null, "Drama", MetaType.GENRE, null);
         MetaInfo comedy = new MetaInfo(null, "Comedy", MetaType.GENRE, null);
-        em.persist(action); em.persist(drama); em.persist(comedy);
+        em.persist(action);
+        em.persist(drama);
+        em.persist(comedy);
 
-        Content c1 = ContentFixture.createContent(null); em.persist(c1);
-        Content c2 = ContentFixture.createContent(null); em.persist(c2);
-        Content c3 = ContentFixture.createContent(null); em.persist(c3);
+        Content c1 = ContentFixture.createContent(null);
+        em.persist(c1);
+        Content c2 = ContentFixture.createContent(null);
+        em.persist(c2);
+        Content c3 = ContentFixture.createContent(null);
+        em.persist(c3);
 
         em.persist(new MetaInfoContents(null, action, c1));
-        em.persist(new MetaInfoContents(null, drama,  c1));
+        em.persist(new MetaInfoContents(null, drama, c1));
         em.persist(new MetaInfoContents(null, action, c2));
-        em.persist(new MetaInfoContents(null, drama,  c3));
+        em.persist(new MetaInfoContents(null, drama, c3));
 
-        em.flush(); em.clear();
+        em.flush();
+        em.clear();
 
         // when
         List<OnboardingContentDto> result =
-                contentQueryRepositoryImpl.findContentsByGenresOrderByMatchCountDesc(List.of("Action", "Drama"), List.of());
+                contentQueryRepositoryImpl.findContentsByGenresOrderByMatchCountDesc(List.of("Action", "Drama"),
+                        List.of());
 
         // then
         assertThat(result).hasSize(3);

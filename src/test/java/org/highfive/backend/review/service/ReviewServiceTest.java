@@ -1,4 +1,4 @@
-//package org.highfive.backend.content.service;
+//package org.highfive.backend.review.service;
 //
 //import static org.highfive.backend.content.exception.ContentErrorCode.CONTENT_NOT_FOUND;
 //import static org.highfive.backend.review.exception.ReviewErrorCode.MY_REVIEW_NOT_FOUND;
@@ -13,15 +13,15 @@
 //import org.highfive.backend.common.fixture.ContentFixture;
 //import org.highfive.backend.common.fixture.ReviewFixture;
 //import org.highfive.backend.common.fixture.UserFixture;
+//import org.highfive.backend.content.entity.Content;
+//import org.highfive.backend.content.repository.jpa.ContentRepository;
+//import org.highfive.backend.global.dto.Response;
+//import org.highfive.backend.global.exception.BusinessException;
 //import org.highfive.backend.review.dto.request.CreateReviewRequestDto;
 //import org.highfive.backend.review.dto.request.UpdateReviewRequestDto;
 //import org.highfive.backend.review.dto.response.ContentMyReviewResponseDto;
-//import org.highfive.backend.content.entity.Content;
 //import org.highfive.backend.review.entity.Review;
-//import org.highfive.backend.content.repository.jpa.ContentRepository;
 //import org.highfive.backend.review.repository.jpa.ReviewRepository;
-//import org.highfive.backend.global.dto.Response;
-//import org.highfive.backend.global.exception.BusinessException;
 //import org.highfive.backend.user.entity.User;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.DisplayName;
@@ -43,7 +43,7 @@
 //    @InjectMocks
 //    private ReviewService reviewService;
 //
-//    private User user,anotherUser;
+//    private User user, anotherUser;
 //    private Content content;
 //    private Review review;
 //
@@ -57,7 +57,7 @@
 //
 //    @Test
 //    @DisplayName("리뷰 생성에 성공하면 201 코드를 반환한다")
-//    void createReview_success(){
+//    void createReview_success() {
 //        //given
 //        CreateReviewRequestDto reviewRequestDto = new CreateReviewRequestDto(2L, 5, "재밌어요!");
 //        when(contentRepository.findById(reviewRequestDto.contentId())).thenReturn(Optional.of(content));
@@ -90,9 +90,9 @@
 //
 //    @Test
 //    @DisplayName("리뷰 수정에 성공하면 200 성공 코드를 반환한다")
-//    void updateReview_success(){
+//    void updateReview_success() {
 //        //given
-//        UpdateReviewRequestDto dto = new UpdateReviewRequestDto("리뷰 수정합니다",3);
+//        UpdateReviewRequestDto dto = new UpdateReviewRequestDto("리뷰 수정합니다", 3);
 //        when(reviewRepository.findById(3L)).thenReturn(Optional.of(review));
 //
 //        // when
@@ -112,7 +112,7 @@
 //
 //        // when
 //        BusinessException exception = assertThrows(BusinessException.class, () -> {
-//            reviewService.updateReview(3L,new UpdateReviewRequestDto("남의 리뷰 수정 시도",1), anotherUser);
+//            reviewService.updateReview(3L, new UpdateReviewRequestDto("남의 리뷰 수정 시도", 1), anotherUser);
 //        });
 //
 //        //then
@@ -159,8 +159,8 @@
 //
 //        // then
 //        assertEquals(20000, response.code());
-//        assertEquals(review.getReviewText(),response.content().review());
-//        assertEquals(review.getRating(),response.content().rating());
+//        assertEquals(review.getReviewText(), response.content().review());
+//        assertEquals(review.getRating(), response.content().rating());
 //    }
 //
 //    @Test

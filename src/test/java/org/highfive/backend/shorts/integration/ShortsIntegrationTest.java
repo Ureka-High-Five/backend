@@ -1,5 +1,13 @@
-package org.highfive.backend.content.integration;
+package org.highfive.backend.shorts.integration;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.shorts.dto.request.ShortsDislikeRequestDto;
 import org.highfive.backend.shorts.dto.request.ShortsLikeCreateRequestDto;
@@ -17,15 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -62,7 +61,7 @@ class ShortsIntegrationTest {
         for (int i = 0; i < NUMBER_OF_THREADS; i++) {
             User user = userRepository.save(User.builder()
                     .name("User " + i)
-                            .email("user" + i + "@example.com")
+                    .email("user" + i + "@example.com")
                     .kakaoUserId("test-user-" + i)
                     .userRole(UserRole.USER)
                     .profileUrl("https://example.com/profile.jpg")
@@ -106,7 +105,7 @@ class ShortsIntegrationTest {
     @DisplayName("좋아요 취소 동시 요청 동시성 문제가 발생하지 않습니다.")
     void dislike_concurrency_test() throws InterruptedException {
 
-            // given
+        // given
         for (User user : testUsers) {
             ShortsLikeCreateRequestDto likeDto = new ShortsLikeCreateRequestDto(testShorts.getId(), 123L);
             shortsService.like(user, likeDto);
