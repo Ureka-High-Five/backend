@@ -92,9 +92,15 @@ public class HomeContentService {
 
     private List<Content> recommendContentsByVector(final User user, final int count) {
         final String rawVector = userRedisRepository.getUserVector(user.getId());
+        final Long userId = user.getId();
+
+        if(rawVector == null) {
+            return contentRepository.findRecommendedContentsByUser(userId, count);
+        }
+
         final String userVector = convertUserVector(rawVector);
         userRepository.upsertUserVector(user.getId(), userVector);
-        return contentRepository.findRecommendedContentsByUser(user.getId(), count);
+        return contentRepository.findRecommendedContentsByUser(userId, count);
     }
 
     private Map<String, List<GenreContentDto>> recommendContentsByUserGenre(final User user, final int count) {
