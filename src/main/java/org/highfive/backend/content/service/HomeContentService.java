@@ -88,14 +88,16 @@ public class HomeContentService {
     }
 
     private List<Content> recommendContentsByVector(final User user, final int count) {
-        String rawVector = userRedisRepository.getUserVector(user.getId());
+        final String rawVector = userRedisRepository.getUserVector(user.getId());
+        final Long userId = user.getId();
+
         if(rawVector == null) {
-            rawVector = userVectorRepository.findEmbeddingByUserId(user.getId()).orElseThrow(() -> new BusinessException(UserErrorCode.USER_VECTOR_NOT_FOUND));
-            userRedisRepository.setUserVector(user.getId(), rawVector);
+            return contentRepository.findRecommendedContentsByUser(userId, count);
         }
+
         final String userVector = convertUserVector(rawVector);
         userRepository.upsertUserVector(user.getId(), userVector);
-        return contentRepository.findRecommendedContentsByUser(user.getId(), count);
+        return contentRepository.findRecommendedContentsByUser(userId, count);
     }
 
     private Map<String, List<GenreContentDto>> recommendContentsByUserGenre(final User user, final int count) {
