@@ -1,8 +1,13 @@
 package org.highfive.backend.content.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -12,10 +17,13 @@ import org.highfive.backend.common.fixture.MetaInfoContentsFixture;
 import org.highfive.backend.common.fixture.MetaInfoFixture;
 import org.highfive.backend.common.fixture.ShortsFixture;
 import org.highfive.backend.content.dto.response.ContentDetailResponseDto;
+import org.highfive.backend.content.dto.response.SearchContentResponseDto;
 import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.content.exception.ContentErrorCode;
+import org.highfive.backend.content.repository.jpa.ContentRepository;
 import org.highfive.backend.content.repository.querydsl.ContentQueryRepositoryImpl;
 import org.highfive.backend.global.code.SuccessCode;
+import org.highfive.backend.global.dto.CursorPageResponse;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.metadata.entity.MetaInfo;
@@ -28,12 +36,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Pageable;
 
 @ExtendWith(MockitoExtension.class)
 public class ContentServiceTest {
 
     @Mock
     private ContentQueryRepositoryImpl contentQueryRepositoryImpl;
+
+    @Mock
+    private ContentRepository contentRepository;
 
     @InjectMocks
     private ContentService contentService;
@@ -96,4 +108,57 @@ public class ContentServiceTest {
         //then
         assertEquals(ContentErrorCode.CONTENT_NOT_FOUND, exception.getErrorCode());
     }
+
+    @Test
+    @DisplayName("컨텐츠 페이지네이션 - size개의 컨텐츠가 조회된다.")
+    public void content_pagination_correctly() {
+
+        //given
+        int size = 3;
+
+        List<Content> contents = List.of(
+                ContentFixture.createContent(10L),
+                ContentFixture.createContent(11L),
+                ContentFixture.createContent(12L),
+                ContentFixture.createContent(13L)
+        );
+
+        when(contentRepository.searchByInput(anyString(), any(), any(Pageable.class)))
+                .thenReturn(contents);
+
+        //when
+        Response<CursorPageResponse<SearchContentResponseDto>> response = contentService.search("범죄도시", null, size);
+
+        //then
+        CursorPageResponse<SearchContentResponseDto> page = response.content();
+        assertTrue(page.hasNext());
+        assertEquals(size, page.items().size());
+        assertEquals(String.valueOf(12L), page.nextCursor());
+
+    }
+
+    @Test
+    @DisplayName("컨텐츠 페이지네이션 - 마지막 페이지이면 size개 이하의 컨텐츠가 조회된다.")
+    public void content_pagination_last_page() {
+        //given
+        int size = 2;
+
+        List<Content> contents = List.of(
+                ContentFixture.createContent(100L),
+                ContentFixture.createContent(101L)
+        );
+
+        when(contentRepository.searchByInput(anyString(), any(), any(Pageable.class)))
+                .thenReturn(contents);
+
+        //when
+        Response<CursorPageResponse<SearchContentResponseDto>> response = contentService.search("범죄도시", null, size);
+
+        //then
+        CursorPageResponse<SearchContentResponseDto> page = response.content();
+        assertFalse(page.hasNext());
+        assertNull(page.nextCursor());
+        assertEquals(2, page.items().size());
+    }
+    
 }
