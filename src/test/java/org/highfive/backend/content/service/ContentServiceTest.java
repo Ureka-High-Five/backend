@@ -17,6 +17,7 @@ import org.highfive.backend.common.fixture.MetaInfoContentsFixture;
 import org.highfive.backend.common.fixture.MetaInfoFixture;
 import org.highfive.backend.common.fixture.ShortsFixture;
 import org.highfive.backend.content.dto.response.ContentDetailResponseDto;
+import org.highfive.backend.content.dto.response.ContentVideoResponseDto;
 import org.highfive.backend.content.dto.response.SearchContentResponseDto;
 import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.content.exception.ContentErrorCode;
@@ -160,5 +161,36 @@ public class ContentServiceTest {
         assertNull(page.nextCursor());
         assertEquals(2, page.items().size());
     }
-    
+
+    @Test
+    @DisplayName("컨텐츠에 해당하는 videoUrl을 반환한다.")
+    public void getContentVideo_success() {
+        //given
+        Long contentId = 200L;
+        String expectedVideoUrl = "s3://video.mp4";
+        Content content = ContentFixture.createContent(contentId);
+        when(contentRepository.findById(contentId)).thenReturn(Optional.of(content));
+
+        //when
+        Response<ContentVideoResponseDto> response = contentService.getContentVideo(contentId);
+
+        //then
+        assertEquals(expectedVideoUrl, response.content().videoUrl());
+    }
+
+    @Test
+    @DisplayName("컨텐츠가 존재하지 않으면 CONTENT_NOT_FOUND 예외가 발생한다.")
+    void getContentVideo_notFound() {
+        // given
+        Long contentId = 99999L;
+        when(contentRepository.findById(contentId)).thenReturn(Optional.empty());
+
+        // when
+        BusinessException exception = assertThrows(BusinessException.class,
+                () -> contentService.getContentVideo(contentId));
+
+        // then
+        assertEquals(ContentErrorCode.CONTENT_NOT_FOUND, exception.getErrorCode());
+    }
+
 }
