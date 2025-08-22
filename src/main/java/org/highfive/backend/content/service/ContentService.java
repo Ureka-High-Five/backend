@@ -40,7 +40,7 @@ public class ContentService {
                 .orElseThrow(() -> new BusinessException(ContentErrorCode.CONTENT_META_INFO_NOT_FOUND));
 
         final ContentDetailResponseDto response = ContentMapper.toContentDetailResponseDto(
-                contentDetailDto, metaInfoDto.director(), metaInfoDto.actors(), metaInfoDto.genres()
+                contentDetailDto, metaInfoDto
         );
 
         return Response.ok(response);
