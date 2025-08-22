@@ -15,15 +15,10 @@ import org.highfive.backend.content.repository.querydsl.ContentQueryRepositoryIm
 import org.highfive.backend.global.dto.CursorPageResponse;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
-import org.highfive.backend.metadata.entity.MetaInfo;
-import org.highfive.backend.metadata.entity.MetaInfoContents;
-import org.highfive.backend.metadata.entity.MetaType;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static org.highfive.backend.content.dto.mapper.ContentMapper.toSearchContentResponseDto;
 
