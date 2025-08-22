@@ -141,10 +141,12 @@ public class ContentQueryRepositoryImpl implements ContentQueryRepository {
         QContent c = QContent.content;
         QShorts s = QShorts.shorts;
 
-        final SubQueryExpression<Long> shortsIdSub = JPAExpressions
-                .select(s.id.min())
+        final SubQueryExpression<Long> latestShortId = JPAExpressions
+                .select(s.id.max())
                 .from(s)
-                .where(s.content.id.eq(c.id));
+                .where(s.content.id.eq(c.id))
+                .orderBy(s.createdAt.desc(), s.id.desc())
+                .limit(1);
 
         ContentDetailDto dto = queryFactory
                 .select(Projections.constructor(
@@ -155,7 +157,7 @@ public class ContentQueryRepositoryImpl implements ContentQueryRepository {
                         c.postUrl,
                         c.openDate,
                         c.description,
-                        shortsIdSub,
+                        latestShortId,
                         c.videoUrl
                 ))
                 .from(c)
