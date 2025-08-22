@@ -2,7 +2,10 @@ package org.highfive.backend.user.entity.preference;
 
 import jakarta.persistence.Id;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.time.Instant;
 
 @Getter
 @Builder
@@ -24,4 +27,7 @@ public class MongoUserWeight {
     private double weight;
 
     private String type;
+
+    @CreatedDate
+    private Instant createdAt;
 }

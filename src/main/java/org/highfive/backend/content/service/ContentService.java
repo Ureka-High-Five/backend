@@ -1,12 +1,8 @@
 package org.highfive.backend.content.service;
 
-import static org.highfive.backend.content.dto.mapper.ContentMapper.toSearchContentResponseDto;
-import static org.highfive.backend.global.code.SuccessCode.OK;
-
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.highfive.backend.content.dto.ContentDetailDto;
+import org.highfive.backend.content.dto.MetaInfoDto;
 import org.highfive.backend.content.dto.VideoType;
 import org.highfive.backend.content.dto.mapper.ContentMapper;
 import org.highfive.backend.content.dto.response.ContentDetailResponseDto;
@@ -25,6 +21,12 @@ import org.highfive.backend.metadata.entity.MetaType;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static org.highfive.backend.content.dto.mapper.ContentMapper.toSearchContentResponseDto;
+
 @Service
 @RequiredArgsConstructor
 public class ContentService {
@@ -34,21 +36,19 @@ public class ContentService {
     private final ContentRepository contentRepository;
     private final ContentQueryRepositoryImpl contentQueryRepositoryImpl;
 
-    public Response<ContentDetailResponseDto> getContentDetail(final Long contentId) {
+    public Response<ContentDetailResponseDto> getContentDetailById(final long contentId) {
 
-        final Content content = contentQueryRepositoryImpl.findWithMetaInfoById(contentId)
+        final ContentDetailDto contentDetailDto = contentQueryRepositoryImpl.findContentDetailById(contentId)
                 .orElseThrow(() -> new BusinessException(ContentErrorCode.CONTENT_NOT_FOUND));
 
-        final Map<MetaType, List<String>> metaMap = extractMetaInfoMap(content);
-        final String director = extractDirector(metaMap);
-        final List<String> actors = metaMap.getOrDefault(MetaType.ACTOR, List.of());
-        final List<String> genres = metaMap.getOrDefault(MetaType.GENRE, List.of());
+        final MetaInfoDto metaInfoDto = contentQueryRepositoryImpl.findMetaInfoById(contentId)
+                .orElseThrow(() -> new BusinessException(ContentErrorCode.CONTENT_META_INFO_NOT_FOUND));
 
         final ContentDetailResponseDto response = ContentMapper.toContentDetailResponseDto(
-                content, director, actors, genres
+                contentDetailDto, metaInfoDto.director(), metaInfoDto.actors(), metaInfoDto.genres()
         );
 
-        return new Response<>(OK.getCode(), response, null);
+        return Response.ok(response);
     }
 
     public Response<CursorPageResponse<SearchContentResponseDto>> search(final String input, final String cursor,
@@ -64,22 +64,6 @@ public class ContentService {
         final String nextCursor = hasNext ? contents.get(contents.size() - 1).getId().toString() : null;
 
         return Response.ok(toSearchContentResponseDto(contents, hasNext, nextCursor));
-    }
-
-    private String extractDirector(final Map<MetaType, List<String>> metaMap) {
-        return metaMap.getOrDefault(MetaType.DIRECTOR, List.of())
-                .stream()
-                .findFirst()
-                .orElse(null);
-    }
-
-    private Map<MetaType, List<String>> extractMetaInfoMap(Content content) {
-        return content.getMetaInfoContents().stream()
-                .map(MetaInfoContents::getMetaInfo)
-                .collect(Collectors.groupingBy(
-                        MetaInfo::getType,
-                        Collectors.mapping(MetaInfo::getName, Collectors.toList())
-                ));
     }
 
     public Response<ContentVideoResponseDto> getContentVideo(final Long contentId) {
