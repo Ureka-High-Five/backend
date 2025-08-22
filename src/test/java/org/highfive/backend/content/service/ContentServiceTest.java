@@ -1,36 +1,26 @@
 package org.highfive.backend.content.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import org.highfive.backend.common.fixture.ContentFixture;
-import org.highfive.backend.common.fixture.MetaInfoContentsFixture;
-import org.highfive.backend.common.fixture.MetaInfoFixture;
-import org.highfive.backend.common.fixture.ShortsFixture;
 import org.highfive.backend.content.dto.ContentDetailDto;
 import org.highfive.backend.content.dto.MetaInfoDto;
 import org.highfive.backend.content.dto.response.ContentDetailResponseDto;
-import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.content.exception.ContentErrorCode;
 import org.highfive.backend.content.repository.querydsl.ContentQueryRepositoryImpl;
 import org.highfive.backend.global.code.SuccessCode;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.global.exception.BusinessException;
-import org.highfive.backend.metadata.entity.MetaInfo;
-import org.highfive.backend.metadata.entity.MetaInfoContents;
-import org.highfive.backend.metadata.entity.MetaType;
-import org.highfive.backend.shorts.entity.Shorts;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ContentServiceTest {
