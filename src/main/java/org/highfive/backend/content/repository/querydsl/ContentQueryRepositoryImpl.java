@@ -1,14 +1,22 @@
 package org.highfive.backend.content.repository.querydsl;
 
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.SubQueryExpression;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
+import org.highfive.backend.content.dto.ContentDetailDto;
 import org.highfive.backend.content.dto.ContentGenreDto;
+import org.highfive.backend.content.dto.MetaInfoDto;
 import org.highfive.backend.content.dto.response.GenreCountDto;
 import org.highfive.backend.content.dto.response.OnboardingContentDto;
 import org.highfive.backend.content.dto.response.TopContentsByGenreDto;
@@ -17,6 +25,7 @@ import org.highfive.backend.content.entity.QContent;
 import org.highfive.backend.metadata.entity.MetaType;
 import org.highfive.backend.metadata.entity.QMetaInfo;
 import org.highfive.backend.metadata.entity.QMetaInfoContents;
+import org.highfive.backend.shorts.entity.QShorts;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -95,8 +104,8 @@ public class ContentQueryRepositoryImpl implements ContentQueryRepository {
                 .orderBy(m.name.countDistinct().desc())
                 .fetch();
     }
-    @SuppressWarnings("unchecked")
 
+    @SuppressWarnings("unchecked")
     public List<Map<String, Object>> findContentGenresByContentIds(List<Long> contentIds) {
 
         QMetaInfoContents mic = QMetaInfoContents.metaInfoContents;
@@ -128,17 +137,70 @@ public class ContentQueryRepositoryImpl implements ContentQueryRepository {
                 .toList();
     }
 
+    public Optional<ContentDetailDto> findContentDetailById(final long contentId) {
+        QContent c = QContent.content;
+        QShorts s = QShorts.shorts;
+
+        final SubQueryExpression<Long> shortsIdSub = JPAExpressions
+                .select(s.id.min())
+                .from(s)
+                .where(s.content.id.eq(c.id));
+
+        ContentDetailDto dto = queryFactory
+                .select(Projections.constructor(
+                        ContentDetailDto.class,
+                        c.title,
+                        c.runningTime,
+                        c.grade,
+                        c.postUrl,
+                        c.openDate,
+                        c.description,
+                        shortsIdSub,
+                        c.videoUrl
+                ))
+                .from(c)
+                .where(c.id.eq(contentId))
+                .fetchOne();
+
+        return Optional.ofNullable(dto);
+    }
+
+    public Optional<MetaInfoDto> findMetaInfoById(final long contentId) {
+        QMetaInfoContents metaInfoContents = QMetaInfoContents.metaInfoContents;
+        QMetaInfo metaInfo = QMetaInfo.metaInfo;
+
+        final List<Tuple> rows = queryFactory
+                .select(metaInfo.type, metaInfo.name)
+                .from(metaInfoContents)
+                .join(metaInfoContents.metaInfo, metaInfo)
+                .where(metaInfoContents.content.id.eq(contentId))
+                .fetch();
+
+        final Map<MetaType, List<String>> typeValue = rows.stream()
+                .collect(Collectors.groupingBy(
+                        t -> t.get(metaInfo.type),
+                        Collectors.mapping(t -> t.get(metaInfo.name), Collectors.toList())
+                ));
+
+        final List<String> actors = typeValue.getOrDefault(MetaType.ACTOR, List.of());
+        final List<String> genres = typeValue.getOrDefault(MetaType.GENRE, List.of());
+        final String director = typeValue.getOrDefault(MetaType.DIRECTOR, List.of())
+                .stream().findFirst().orElse(null);
+
+        return Optional.of(new MetaInfoDto(genres, actors, director));
+    }
+
     @Override
-    public Optional<Content> findWithMetaInfoById(Long contentId) {
+    public Optional<Content> findWithMetaInfoById(final Long contentId) {
         QContent content = QContent.content;
         QMetaInfoContents metaInfoContents = QMetaInfoContents.metaInfoContents;
         QMetaInfo metaInfo = QMetaInfo.metaInfo;
 
-        Content result = queryFactory.selectFrom(content)
+        Content result = queryFactory
+                .selectFrom(content)
                 .leftJoin(content.metaInfoContents, metaInfoContents).fetchJoin()
                 .leftJoin(metaInfoContents.metaInfo, metaInfo).fetchJoin()
                 .where(content.id.eq(contentId))
-                .distinct()
                 .fetchOne();
 
         return Optional.ofNullable(result);
