@@ -22,8 +22,7 @@ public class MetaInfo extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "meta_info_seq_generator")
     @SequenceGenerator(
             name = "meta_info_seq_generator",
-            sequenceName = "meta_info_seq",
-            allocationSize = 50
+            sequenceName = "meta_info_seq"
     )
     private Long id;
 

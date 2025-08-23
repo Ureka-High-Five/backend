@@ -1,5 +1,7 @@
 package org.highfive.backend.content.dto.mapper;
 
+import org.highfive.backend.content.dto.ContentDetailDto;
+import org.highfive.backend.content.dto.MetaInfoDto;
 import org.highfive.backend.content.dto.request.AdminAddContentRequestDto;
 import org.highfive.backend.content.dto.response.ContentDetailResponseDto;
 import org.highfive.backend.content.dto.response.SearchContentResponseDto;
@@ -19,11 +21,10 @@ public class ContentMapper {
     @Value("${cloud.aws.region.static}")
     private static String awsRegion;
 
-    public static ContentDetailResponseDto toContentDetailResponseDto(Content content, String director,
-                                                                      List<String> actors, List<String> genres) {
-        return new ContentDetailResponseDto(content.getTitle(), genres, content.getRunningTime(), content.getGrade(),
-                content.getPostUrl(), actors, director, content.getOpenDate().getYear(), content.getDescription(),
-                content.getShorts().getFirst().getId(), content.getVideoUrl());
+    public static ContentDetailResponseDto toContentDetailResponseDto(ContentDetailDto dto, MetaInfoDto metaInfo) {
+        return new ContentDetailResponseDto(dto.title(), metaInfo.genres(), dto.runningTime(), dto.grade(),
+                dto.postUrl(), metaInfo.actors(), metaInfo.director(), dto.openDate().getYear(),dto.description(),
+                dto.shortsId(), dto.videoUrl());
     }
 
     public static SearchContentResponseDto toSearchContentResponseDto(final Content content) {

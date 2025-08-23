@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 public enum ContentErrorCode implements ErrorCode {
 
     CONTENT_NOT_FOUND(40402, "존재하지 않는 컨텐츠입니다.", HttpStatus.NOT_FOUND),
+    CONTENT_META_INFO_NOT_FOUND(404013, "컨텐츠의 메타 정보가 존재하지 않습니다.", HttpStatus.NOT_FOUND),
     CONTENT_ALREADY_DELETED(40001, "이미 삭제된 컨텐츠입니다.", HttpStatus.BAD_REQUEST),
     CONTENT_ACCESS_DENIED(40303, "컨텐츠에 대한 권한이 없습니다.", HttpStatus.FORBIDDEN),
     VIDEO_TYPE_NOT_FOUND(40411, "존재하지 않는 Video Type입니다.", HttpStatus.NOT_FOUND),

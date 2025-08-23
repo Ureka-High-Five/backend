@@ -102,10 +102,6 @@ public class Content extends BaseEntity {
         this.shorts.add(shorts);
     }
 
-    public void updateContentVector(final ContentVector contentVector) {
-        this.contentVector = contentVector;
-    }
-
     public Content updateFromDto(AdminUpdateContentRequestDto request) {
         this.title = request.title();
         this.description = request.description();
