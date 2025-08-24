@@ -184,6 +184,15 @@ public class ShortsService {
         return Response.ok(ShortsMapper.toShortsResponseDto(shorts, liked));
     }
 
+    public Response<ShortsResponseDto> getShortsByContent(final Long contentId, User user) {
+        Shorts randomShorts = shortsRepository.findRandomByContentId(contentId)
+                .orElseThrow(() -> new BusinessException(SHORTS_NOT_FOUND));
+        boolean liked = shortsLikeTimeLogRepository.existsByUserIdAndShortsId(user.getId(), randomShorts.getId());
+        ShortsResponseDto response = ShortsMapper.toShortsResponseDto(randomShorts, liked);
+
+        return Response.ok(response);
+    }
+
     private void generateShorts(final List<Long> cachedIds, final Long userId) {
 
         List<Long> ids = new ArrayList<>(cachedIds);
@@ -217,14 +226,5 @@ public class ShortsService {
         return recommend.stream()
                 .map(item -> ShortsMapper.toShortsResponseDto(item, likedIds.contains(item.id())))
                 .toList();
-    }
-
-    public Response<ShortsResponseDto> getShortsByContent(final Long contentId, User user) {
-        Shorts randomShorts = shortsRepository.findRandomByContentId(contentId)
-                .orElseThrow(() -> new BusinessException(SHORTS_NOT_FOUND));
-        boolean liked = shortsLikeTimeLogRepository.existsByUserIdAndShortsId(user.getId(), randomShorts.getId());
-        ShortsResponseDto response = ShortsMapper.toShortsResponseDto(randomShorts, liked);
-
-        return Response.ok(response);
     }
 }
