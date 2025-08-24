@@ -144,9 +144,7 @@ public class ContentQueryRepositoryImpl implements ContentQueryRepository {
         final SubQueryExpression<Long> latestShortId = JPAExpressions
                 .select(s.id.max())
                 .from(s)
-                .where(s.content.id.eq(c.id))
-                .orderBy(s.createdAt.desc(), s.id.desc())
-                .limit(1);
+                .where(s.content.id.eq(c.id));
 
         ContentDetailDto dto = queryFactory
                 .select(Projections.constructor(
