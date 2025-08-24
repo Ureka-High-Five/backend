@@ -113,11 +113,43 @@ public class ShortsServiceTest {
         }
 
         @Test
-        @DisplayName("첫 페이지와 두 번째 페이지 쇼츠에 중복이 없습니다.")
-        void noDuplicatedShorts_inContinuousShortsTest() {
+        @DisplayName("'쇼츠에 자신의 좋아요 여부가 표시된다")
+        void recommendShorts_likedFlagTest() {
+            // given
+            Content content = ContentFixture.createDefaultContent();
+            Shorts shorts1 = ShortsFixture.createShortsById(content, 1L);
+            Shorts shorts2 = ShortsFixture.createShortsById(content, 2L);
+            User testUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
+            List<ShortsDto> shortsDtos = List.of(
+                    ShortsMapper.toShortsDto(shorts1),
+                    ShortsMapper.toShortsDto(shorts2)
+            );
+
+            given(userRedisRepository.getUserVector(testUser.getId())).willReturn("test");
+
+            given(shortsRedisRepository.findByCursor(eq(testUser.getId()), isNull(), eq(6)))
+                    .willReturn(shortsDtos);
+
+            given(shortsLikeTimeLogRepository.findLikedShortsIds(eq(testUser.getId()), anyList()))
+                    .willReturn(List.of(1L));
+
+            // when
+            Response<CursorPageResponse<ShortsResponseDto>> resp = shortsService.recommendShorts(null, 5, testUser);
+
+            // then
+            List<ShortsResponseDto> dto = resp.content().items();
+
+            assertThat(dto.size()).isEqualTo(2);
+
+            ShortsResponseDto likedItem = dto.get(0);
+            ShortsResponseDto notLikedItem = dto.get(1);
+
+            assertThat(likedItem.shortsId()).isEqualTo(1L);
+            assertThat(likedItem.liked()).isTrue();
+
+            assertThat(notLikedItem.shortsId()).isEqualTo(2L);
+            assertThat(notLikedItem.liked()).isFalse();
         }
     }
-
-
 }
