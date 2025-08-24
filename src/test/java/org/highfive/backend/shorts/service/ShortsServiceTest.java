@@ -3,13 +3,20 @@ package org.highfive.backend.shorts.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import org.highfive.backend.common.fixture.ContentFixture;
+import org.highfive.backend.common.fixture.ShortsFixture;
+import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.global.dto.CursorPageResponse;
 import org.highfive.backend.global.dto.Response;
 import org.highfive.backend.shorts.dto.ShortsDto;
+import org.highfive.backend.shorts.dto.mapper.ShortsMapper;
 import org.highfive.backend.shorts.dto.response.ShortsResponseDto;
+import org.highfive.backend.shorts.entity.Shorts;
 import org.highfive.backend.shorts.repository.jpa.ShortsCommentRepository;
 import org.highfive.backend.shorts.repository.jpa.ShortsLikeTimeLogRepository;
 import org.highfive.backend.shorts.repository.jpa.ShortsRedisRepository;
@@ -74,7 +81,7 @@ public class ShortsServiceTest {
         void firstPageTest() {
             int size = 10;
             User testUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            List<ShortsDto> testShortsDto = TestShortsDtoFactory.createManyShorts(size);
+            List<ShortsDto> testShortsDto = TestShortsDtoFactory.createManyShorts(20);
 
             when(userRedisRepository.getUserVector(testUser.getId())).thenReturn("test vector");
             when(shortsRedisRepository.findShortsIdsByUserId(testUser.getId())).thenReturn(List.of());
@@ -92,7 +99,17 @@ public class ShortsServiceTest {
         @Test
         @DisplayName("두 번째 이상 페이지 요청 시 쇼츠가 size 개수 만큼 정상적으로 반환됩니다.")
         void secondAndBeyondPageTest() {
+            int size = 10;
+            User testUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            List<ShortsDto> testShortsDto = TestShortsDtoFactory.createManyShorts(20);
 
+            when(shortsRedisRepository.findByCursor(testUser.getId(), 10L, size + 1)).thenReturn(testShortsDto);
+
+            Response<CursorPageResponse<ShortsResponseDto>> response = shortsService.recommendShorts(
+                    10L, size, testUser);
+
+            List<ShortsResponseDto> items = response.content().items();
+            assertThat(items.size()).isEqualTo(size);
         }
 
         @Test
