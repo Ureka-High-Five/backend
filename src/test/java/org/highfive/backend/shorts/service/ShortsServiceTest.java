@@ -1,6 +1,7 @@
 package org.highfive.backend.shorts.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
@@ -8,13 +9,16 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Optional;
 import org.highfive.backend.common.fixture.ContentFixture;
 import org.highfive.backend.common.fixture.ShortsFixture;
 import org.highfive.backend.content.entity.Content;
 import org.highfive.backend.global.dto.CursorPageResponse;
 import org.highfive.backend.global.dto.Response;
+import org.highfive.backend.global.exception.BusinessException;
 import org.highfive.backend.shorts.dto.ShortsDto;
 import org.highfive.backend.shorts.dto.mapper.ShortsMapper;
+import org.highfive.backend.shorts.dto.request.ShortsLikeCreateRequestDto;
 import org.highfive.backend.shorts.dto.response.ShortsResponseDto;
 import org.highfive.backend.shorts.entity.Shorts;
 import org.highfive.backend.shorts.repository.jpa.ShortsCommentRepository;
@@ -150,6 +154,32 @@ public class ShortsServiceTest {
 
             assertThat(notLikedItem.shortsId()).isEqualTo(2L);
             assertThat(notLikedItem.liked()).isFalse();
+        }
+    }
+
+    @Nested
+    class LikeTest {
+
+        @BeforeEach
+        void setAuth() {
+            List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("USER"));
+            User principal = TestUserFactory.createSimpleUserWithId(1L);
+            UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+                    principal, "N/A", authorities);
+            SecurityContextHolder.getContext().setAuthentication(auth);
+        }
+
+        @Test
+        @DisplayName("이미 좋아요 처리 된 쇼츠에 좋아요 요청을 보내면 예외를 발생시킵니다.")
+        void duplicatedLikeThrowExceptionTest() {
+            ShortsLikeCreateRequestDto dto = new ShortsLikeCreateRequestDto(1L, 1L);
+            User testUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+            when(shortsRepository.findById(1L)).thenReturn(Optional.of(ShortsFixture.createDefaultShorts()));
+            when(shortsLikeTimeLogRepository.existsByUserIdAndShortsId(1L, 1L)).thenReturn(true);
+
+            assertThatThrownBy(() -> shortsService.like(testUser, dto))
+                    .isInstanceOf(BusinessException.class);
         }
     }
 }
